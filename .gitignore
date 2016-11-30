@@ -1,0 +1,50 @@
+# globals
+*~
+#*#
+
+# octave files
+octave-core
+
+# these files got dumped for some reason
+core.*
+
+# Parallel batch output files
+single_node_batch.*
+run_standalone_job.*
+matlab_single_node_batch.sh.*
+localOutput
+localoutput
+
+# large mat files which should probably move to crc-nak.
+*.mat
+*.fig
+*.zip
+
+# Mac/Linux/Windows files
+*.DS_Store
+.DS_Store
+Thumbs.db
+
+# Media files
+*.html
+*.pdf
+*.eps
+*.bmp
+*.svg
+*.tif
+#*.png
+readme.txt
+
+# Binary files
+run_analysis_binwrapp
+run_analysis_binwrapp_roy
+run_analysis_binwrapp_normalPAC
+run_analysis_cells_binwrapp
+merge_i0j0_binwrapp
+mccExcludedFiles.log
+
+# Dropbox files
+.dropbox.attr
+
+# Publish
+html

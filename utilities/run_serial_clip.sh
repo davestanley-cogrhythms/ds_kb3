@@ -1,0 +1,11 @@
+qsub single_node_batch "curr_stage=-2; run_idclip_parallel" localOutput
+qsub single_node_batch "curr_stage=-1; run_idclip_parallel" localOutput
+qsub single_node_batch "curr_stage=0; run_idclip_parallel" localOutput
+qsub single_node_batch "curr_stage=1; run_idclip_parallel" localOutput
+qsub single_node_batch "curr_stage=2; run_idclip_parallel" localOutput
+qsub single_node_batch "curr_stage=3; run_idclip_parallel" localOutput
+qsub single_node_batch "curr_stage=4; run_idclip_parallel" localOutput
+qsub single_node_batch "curr_stage=5; run_idclip_parallel" localOutput
+qsub single_node_batch "curr_stage=6; run_idclip_parallel" localOutput
+qsub single_node_batch "curr_stage=7; run_idclip_parallel" localOutput
+qsub single_node_batch "curr_stage=8; run_idclip_parallel" localOutput

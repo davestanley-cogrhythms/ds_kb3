@@ -1,0 +1,25 @@
+
+
+High beta cells:
+
+n=14
+[fnum, unum, curr_funame] = autorun_unum2fnum(14)
+fnum =
+     2
+unum =
+     8
+curr_funame =
+L011207.mat PFC Elect 7 unit 1
+
+
+
+n=176
+[fnum, unum, curr_funame] = autorun_unum2fnum(176)
+fnum =
+    33
+unum =
+     6
+curr_funame =
+L120606.mat PFC Elect 8 unit 3
+
+SEE EVERNOTE FOR FULL NOTES!!

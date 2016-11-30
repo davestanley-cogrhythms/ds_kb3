@@ -1,0 +1,10 @@
+
+Beta ffc scatterplot numbers (Fig 6c)
+
+Sample_L - N SchA +ve:168 N SchA -ve:22 N SchB +ve:20 N SchB -ve:1 N CueA:3 N CueB:11
+
+Delay_L - N SchA +ve:13 N SchA -ve:165 N SchB +ve:5 N SchB -ve:6 N CueA:3 N CueB:13
+
+Sample_O - N SchA +ve:15 N SchA -ve:99 N SchB +ve:37 N SchB -ve:105 N CueA:38 N CueB:6
+
+Delay_O - N SchA +ve:9 N SchA -ve:9 N SchB +ve:101 N SchB -ve:555 N CueA:15 N CueB:17
