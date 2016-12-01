@@ -57,6 +57,8 @@ classdef Grp
         xdata
         xdata2
         datastats
+        data_overlay1       % For spectrograms, this will be transparency matrix
+        data_overlay2       % For spectrograms, this will be contours matrix
         numcells = -1
         funames
     end

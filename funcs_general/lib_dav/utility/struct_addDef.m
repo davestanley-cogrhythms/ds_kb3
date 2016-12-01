@@ -6,5 +6,9 @@ function s = struct_addDef(s,fieldname,default_value)
         default_value = [];
     end
     
-    if ~isfield(s,fieldname); s.(fieldname) = default_value; end
+    % If field doesn't exist, create it but leave empty
+    if ~isfield(s,fieldname); s.(fieldname) = []; end
+    
+    % If it does exist, but is empty, fill it with the default value
+    if isempty(s.(fieldname)); s.(fieldname) = default_value; end
 end

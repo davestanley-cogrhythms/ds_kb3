@@ -47,14 +47,11 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
     
     % Overlay options structure
         % For transparency
-    if ~isfield(overlay_opts,'do_transparency'); overlay_opts.do_transparency = 0; end  % Flag for doing transparency
-    if ~isfield(overlay_opts,'alpha_mat'); overlay_opts.alpha_mat = []; end             % Transparency matrix to overlay
-    
+    overlay_opts = struct_addDef(overlay_opts,'do_transparency',0);                 % Flag for doing transparency
         % For contours
-    if ~isfield(overlay_opts,'do_contours'); overlay_opts.do_contours = 0; end      % Flag for doing contours
-    if ~isfield(overlay_opts,'co_mat'); overlay_opts.co_mat = []; end               % Contour data to overlay
-    if ~isfield(overlay_opts,'contour_nv'); overlay_opts.contour_nv = [0.01,0.001,0.0001]; end            % Contour param n or v - number of contour lines or levels
-    if ~isfield(overlay_opts,'contour_linespec'); overlay_opts.contour_linespec = {'k.'}; end     % Linespec
+    overlay_opts = struct_addDef(overlay_opts,'do_contours',0);                     % Flag for doing contours
+    overlay_opts = struct_addDef(overlay_opts,'contour_nv',[0.01,0.001,0.0001]);    % Contour param n or v - number of contour lines or levels
+    overlay_opts = struct_addDef(overlay_opts,'contour_linespec',{'k.'});           % Linespec
     
     % Stats options structure (using new struct_addDef command here)
     stats_opts = struct_addDef(stats_opts,'stats_displaymode',3);
@@ -126,13 +123,13 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
         
         % Calculate stats if necessary
         if stats_opts.stats_displaymode > 0
-            [overlay_opts] = calc_pvals(data,stats_opts,overlay_opts); end
+            [group(i).data_overlay1, group(i).data_overlay2, overlay_opts] = calc_pvals(group(i).data,stats_opts,overlay_opts); end
         
         % Plot image
         h=imagesc(x2,x,squeeze(mean(data,2))); set(gca,'YDir','normal');
 
         % Add overlays - transparency and contours as needed
-        draw_contours(overlay_opts,h,x2,x);
+        draw_contours(group(i),h,group(1).xlims_desired,group(1).ylims_desired,overlay_opts);
         
         legend_arr = get_legendarr(group);
 
@@ -227,9 +224,13 @@ function Y=ste(varargin)
 end
 
 
-function [data_out, xout, x2out] = extract_data(group,abscissa,do_sgolay,xld,yld)
+function [data_out, xout, x2out] = extract_data(group,abscissa,do_sgolay,xld,yld,myfieldname)
+
+    if nargin < 6
+        myfieldname = 'data';
+    end
     
-    data = group.data;
+    data = group.(myfieldname);
     xdata = group.xdata;
     if ~isempty(xdata); xout = xdata;
     else xout = abscissa;
@@ -321,9 +322,17 @@ function [amask] = calc_transparency_mask(data,overlay_opts)
 end
 
 
-function [overlay_opts] = calc_pvals(data,stats_opts,overlay_opts)
+function [alpha_mat, co_mat, overlay_opts] = calc_pvals(data,stats_opts,overlay_opts)
 
+    % Plot switches
     test_plot_on = 0;
+    
+    % Sim switches
+    use_for_loop = 1;       % For loop seems to be a bit faster, surprisingly.
+    
+    % Defaults
+    alpha_mat = [];
+    co_mat = [];
 
     % Import data from options structure
     stats_displaymode = stats_opts.stats_displaymode;
@@ -337,27 +346,33 @@ function [overlay_opts] = calc_pvals(data,stats_opts,overlay_opts)
 
 
     % Calculate stats to get alpha mask
-    sz=size(data); datac = mat2cell(data,ones(1,sz(1)),sz(2),ones(1,sz(3)));
-    statsfunc2 = @(x) statsfunc(x,stats_comparison);
-    pvals = cellfun(statsfunc2,datac);
-    pvals = squeeze(pvals);
+    if ~use_for_loop
+        sz=size(data); datac = mat2cell(data,ones(1,sz(1)),sz(2),ones(1,sz(3)));
+        statsfunc2 = @(x) statsfunc(x,stats_comparison);
+        pvals = cellfun(statsfunc2,datac);
+    else
+        sz=size(data);
+        pvals = zeros([sz(1),1,sz(3)]);
+        for i = 1:sz(1);
+            for j = 1:sz(3)
+                pvals(i,1,j) = statsfunc(data(i,:,j),stats_comparison);
+            end
+        end
+    end
+    %pvals = squeeze(pvals);        % Don't squeeze because extract_data expects unsqueezed data (3D matrix)
 
     if any(stats_displaymode == [1,3])         % Display as transparency
         alpha_mat = double(pvals < transparency_alpha);
         alpha_mat = (alpha_mat + 1) / 2;       % Transparency matrix ranges between 0.5 and 1.0.
-        
-        % Set up transparency
+
         overlay_opts.do_transparency = 1;
-        overlay_opts.alpha_mat = alpha_mat;
     end
 
     if any(stats_displaymode == [2,3])         % Display as contours
         co_mat = pvals;
-        %co_mat = -1*log10(pvals);              % Transform to tell number of decimal points.
+        %co_mat = -1*log10(pvals);              % Transform to log scale - tells # zeros after decimal.
         
-        % Set up contours
         overlay_opts.do_contours = 1;
-        overlay_opts.co_mat = co_mat;
     end
     
     % Test plotting
@@ -365,9 +380,9 @@ function [overlay_opts] = calc_pvals(data,stats_opts,overlay_opts)
         %figure; imagesc(-1*log10(pvals));
         
         figure; h = imagesc(squeeze(mean(data,2))); colorbar; set(gca,'YDir','normal');
-        set(h,'AlphaData',alpha_mat);
+        set(h,'AlphaData',squeeze(alpha_mat));
         %hold on; contour(pvals,[0.01,0.01],'w');
-        hold on; contour(pvals,[0.01, 0.001],'w');
+        hold on; contour(squeeze(pvals),[0.01, 0.001],'w');
         %hold on; contour(co_mat,'w');
 
 
@@ -376,17 +391,22 @@ function [overlay_opts] = calc_pvals(data,stats_opts,overlay_opts)
 end
 
 
-function draw_contours(s,h,x,y)
-    
+function draw_contours(group,h,xlims_desired,ylims_desired,overlay_opts)
+
     % Add transparency
-    if s.do_transparency
-        set(h,'AlphaData',s.alpha_mat);
+    if overlay_opts.do_transparency
+        [alpha_mat] = extract_data(group,group.xdata,0,xlims_desired,ylims_desired,'data_overlay1');
+        alpha_mat = squeeze(alpha_mat);
+        set(h,'AlphaData',alpha_mat);
     end
     
     % Add contours
-    if s.do_contours
+    if overlay_opts.do_contours
         hold on;
-        contour(x,y,s.co_mat,s.contour_nv,s.contour_linespec{:});
+        [co_mat, x, x2] = extract_data(group,group.xdata,0,xlims_desired,ylims_desired,'data_overlay2');
+        co_mat = squeeze(co_mat);
+        contour(x2,x,co_mat,overlay_opts.contour_nv,overlay_opts.contour_linespec{:});
+        %contour(x2,x,co_mat);
     end
     
 end
