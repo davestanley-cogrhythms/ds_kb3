@@ -50,7 +50,7 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
     overlay_opts = struct_addDef(overlay_opts,'do_transparency',0);                 % Flag for doing transparency
         % For contours
     overlay_opts = struct_addDef(overlay_opts,'do_contours',0);                     % Flag for doing contours
-    overlay_opts = struct_addDef(overlay_opts,'contour_nv',[0.01,0.001,0.0001]);    % Contour param n or v - number of contour lines or levels
+    overlay_opts = struct_addDef(overlay_opts,'contour_nv',10);    % Contour param n or v - number of contour lines or levels
     overlay_opts = struct_addDef(overlay_opts,'contour_linespec',{'k.'});           % Linespec
     
     % Stats options structure (using new struct_addDef command here)
@@ -61,6 +61,7 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
                                         % 3 = both transparency and contours
     stats_opts = struct_addDef(stats_opts,'statsfunc',@signrank);                         % Stats function to use
     stats_opts = struct_addDef(stats_opts,'stats_comparison',0);                           % Value against which data is compared
+    stats_opts = struct_addDef(stats_opts,'contours_alphas',[0.01 0.001 0.0001]);                      % Chosen alpha value
     stats_opts = struct_addDef(stats_opts,'transparency_alpha',0.01);                      % Chosen alpha value
     
     
@@ -107,7 +108,6 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
     hsp = [];
     max_subplots_per_fig = min(max_subplots_per_fig,length(group));         % Reduce max subplots if length of group is less
     for i = 1:length(group)
-        
         % Manage figure creation
         if do_subplots;
             [hsp, curr_subplots,returns] = new_subplot(max_subplots_per_fig,curr_subplots,hsp,use_subplot_grid);    % Create a new subplot entry or start a new figure if current fig is full.
@@ -342,7 +342,9 @@ function [alpha_mat, co_mat, overlay_opts] = calc_pvals(data,stats_opts,overlay_
                                 % 3 = both transparency and contours
     statsfunc = stats_opts.statsfunc;               % Stats function to use
     stats_comparison = stats_opts.stats_comparison; % Value against which data is compared
-    transparency_alpha = stats_opts.transparency_alpha;           % Chosen alpha value
+    contours_alphas = stats_opts.contours_alphas;                 % Chosen alphas for contours
+    transparency_alpha = stats_opts.transparency_alpha;           % Chosen alpha value for transparency
+    
 
 
     % Calculate stats to get alpha mask
@@ -373,6 +375,7 @@ function [alpha_mat, co_mat, overlay_opts] = calc_pvals(data,stats_opts,overlay_
         %co_mat = -1*log10(pvals);              % Transform to log scale - tells # zeros after decimal.
         
         overlay_opts.do_contours = 1;
+        overlay_opts.contour_nv = contours_alphas;
     end
     
     % Test plotting
@@ -396,7 +399,7 @@ function draw_contours(group,h,xlims_desired,ylims_desired,overlay_opts)
     % Add transparency
     if overlay_opts.do_transparency
         [alpha_mat] = extract_data(group,group.xdata,0,xlims_desired,ylims_desired,'data_overlay1');
-        alpha_mat = squeeze(alpha_mat);
+        alpha_mat = squeeze(mean(alpha_mat,2));
         set(h,'AlphaData',alpha_mat);
     end
     
@@ -404,8 +407,12 @@ function draw_contours(group,h,xlims_desired,ylims_desired,overlay_opts)
     if overlay_opts.do_contours
         hold on;
         [co_mat, x, x2] = extract_data(group,group.xdata,0,xlims_desired,ylims_desired,'data_overlay2');
-        co_mat = squeeze(co_mat);
-        contour(x2,x,co_mat,overlay_opts.contour_nv,overlay_opts.contour_linespec{:});
+        if ~isempty(co_mat)
+            co_mat = squeeze(mean(co_mat,2));
+            contour(x2,x,co_mat,overlay_opts.contour_nv,overlay_opts.contour_linespec{:});
+        else
+            warning('Empty contours matrix');
+        end
         %contour(x2,x,co_mat);
     end
     
