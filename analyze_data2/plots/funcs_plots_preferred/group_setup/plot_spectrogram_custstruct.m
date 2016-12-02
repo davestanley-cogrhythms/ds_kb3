@@ -54,7 +54,7 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
     overlay_opts = struct_addDef(overlay_opts,'contour_linespec',{'k.'});           % Linespec
     
     % Stats options structure (using new struct_addDef command here)
-    stats_opts = struct_addDef(stats_opts,'stats_displaymode',3);
+    stats_opts = struct_addDef(stats_opts,'stats_displaymode',0);
                                         % 0 = no stats
                                         % 1 = display as transparency
                                         % 2 = display as contours

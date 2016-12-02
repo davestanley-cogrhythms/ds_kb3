@@ -68,8 +68,8 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     opts_exclude.exclude_clipping = 1;
     opts_exclude.exclude_60 = 0;
     opts_exclude.exclude_nans = 0;
-    opts_exclude.excludeL = 1;
-    opts_exclude.excludeO = 0; 
+    opts_exclude.excludeL = 0;
+    opts_exclude.excludeO = 1; 
     opts_exclude.remove_dependent = 0;       % Remove dependent electrode pairs for FFC
     
     
@@ -84,8 +84,8 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     s.tf_label_stats = 'Default'; s.tf_label_perm = 'Default';
     [tf_avail] = get_freqband_timeband(s.perm_mode,opts_exclude); s.tf_avail = tf_avail;
     
-%     i=1; s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
-%     i=1; s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+    i=6; s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+    i=6; s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
     
 
     % More pls switches
@@ -129,8 +129,9 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     
     % Groupmode
     s.groupmode = 0;   % 0-Use default grouping (all pairs, enumerate over ctgs);
-                 % 1-Group based on permutation test output for diff.
-                 % 2-Group based on permutation test output all.
+                       % 1:4-Select various subgroups
+                       % 5:6-Separate into days
+
     s.swap_mode = 0;
 
     s.group_do_merge = 0;
@@ -170,6 +171,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
         % Transparency
         s.PM3Dsp_overlay_opts.do_transparency = 0;
         % Contours
+        swap_in_groupdata_contours = 0;
         s.PM3Dsp_overlay_opts.do_contours = 0;
         s.PM3Dsp_overlay_opts.contour_nv = [];
         % Stats
@@ -237,11 +239,35 @@ end
 
 %% Build group
 
-% Group based on perm_mode
+examine_Sch_based_on_animal = 1;
+
+
+% Load sp if necessary
+if groupmode ~= 0
+    % Load sp's
+    [wrkspc_buffer, out_perm] = load_pr(wrkspc_buffer,perm_mode,curr_stage_sp,freqband_perm,bad_any,opts_perm,opts_exclude);
+    sp = out_perm.sig_cells;
+
+    % Load bads perm
+    [bad_any_perm] = load_bads(perm_mode,curr_stage_sp,opts_exclude,wrkspc_buffer.currmd.md,out_perm.mypairs,out_perm.funames1D);
+
+    % Map sp's as needed
+    [sp] = map_sp(perm_mode, sfc_mode,out_perm.mypairs,mypairs,sp,wrkspc_buffer.currmd.md,bad_any_perm,bad_any,sp_threshold);
+
+    % Create group template
+    mycrit = [2*ones(1,size(sp,2))];
+    grt = group0(1);
+    grt.criteria = mycrit; grt.criteria_alt = []; grt.criteria_sfc = []; grt.ctgs = 1;
+    grt.freqband_perm = freqband_perm; grt.timeband_perm = opts_perm.timeband_perm; grt.tf_label_perm = opts_perm.tf_label_perm;
+    grt.Nwind_perm = out_perm.os.Nwind;
+    grt.tapers_perm = out_perm.os.params.tapers;
+    grt.full_bandwidth_perm = out_perm.os.f_fullbandwidth;
+end
+
 if ~exist('group','var')
     switch groupmode
-        case 0
-            % Use default grouping (all pairs, enumerate over ctgs)
+        case 0                          % All units, all ctgs
+            
             group = group0;
             sp = ~bad_any(:);
             
@@ -252,252 +278,89 @@ if ~exist('group','var')
                 else group = group.query_colourmap_desired(group0);
                 end
             end
-
-        case 1
-            % Load sp's
-            [wrkspc_buffer, out_perm] = load_pr(wrkspc_buffer,perm_mode,curr_stage_sp,freqband_perm,bad_any,opts_perm,opts_exclude);
-            sp = out_perm.sig_cells;
-            sum(sp)
+        case 1                          % Only sig units, all ctgs
+            N = length(group0);
             
-            % Load bads perm
-            [bad_any_perm] = load_bads(perm_mode,curr_stage_sp,opts_exclude,wrkspc_buffer.currmd.md,out_perm.mypairs,out_perm.funames1D);
-            
-            % Map sp's as needed
-            [sp] = map_sp(perm_mode, sfc_mode,out_perm.mypairs,mypairs,sp,wrkspc_buffer.currmd.md,bad_any_perm,bad_any,sp_threshold);
-
-            % Create group template
-            mycrit = [2*ones(1,size(sp,2))];
-            grt = group0(1);
-            grt.criteria = mycrit; grt.criteria_alt = []; grt.criteria_sfc = []; grt.ctgs = 1;
-            grt.freqband_perm = freqband_perm; grt.timeband_perm = opts_perm.timeband_perm; grt.tf_label_perm = opts_perm.tf_label_perm;
-            grt.Nwind_perm = out_perm.os.Nwind;
-            grt.tapers_perm = out_perm.os.params.tapers;
-            grt.full_bandwidth_perm = out_perm.os.f_fullbandwidth;
-            
-            i1 = 1;
-            i2 = 2;
-            if ~opts_exclude.excludeL         % Select cells based on SchA
-                i1 = 1;
-                i2 = 1;
-            elseif ~opts_exclude.excludeO     % Select cells based on SchB
-                i1 = 2;
-                i2 = 2;
+            % Build Sch A
+            for i = 1:N
+                group(i) = grt;
+                group(i).ctgs = i;
+                group(i).criteria(1) = [1];
             end
+            
+            % Build for Sch B
+            for i = 1:N
+                group(i+N) = grt;
+                group(i+N).ctgs = i;
+                group(i+N).criteria(2) = [1];
+            end
+            
+            if examine_Sch_based_on_animal
+                if opts_exclude.excludeO         % Animal L only
+                    group = group(1:N);
+                elseif opts_exclude.excludeL     % Animal O only
+                    group = group(N+1:2*N);
+                end
+            end
+            
+            % Calculate legend entries
+            group = group.query_legend(group0);
 
-            % Run a simple test
+        case 2                              % Sig vs non-sig
             clear group
             i=0;
-            i=i+1; group(i)=grt; group(i).criteria(i1)=[1]; group(i).ctgs=1;   % Ctg1-2 deciders
-            i=i+1; group(i)=grt; group(i).criteria(i1)=[0]; group(i).ctgs=1;   % Ctg1-2 non-deciders
-            i=i+1; group(i)=grt; group(i).criteria(i2)=[1]; group(i).ctgs=2;   % Ctg1-2 deciders
-            i=i+1; group(i)=grt; group(i).criteria(i2)=[0]; group(i).ctgs=2;   % Ctg1-2 non-deciders
-%             i=i+1; group(i)=grt; group(i).criteria(5)=[1]; group(i).ctgs=5;   % Ctg1-2 non-deciders
-%             i=i+1; group(i)=grt; group(i).criteria(5)=[0]; group(i).ctgs=5;   % Ctg1-2 non-deciders
+            i=i+1; group(i)=grt; group(i).criteria(1)=[1]; group(i).ctgs=1;
+            i=i+1; group(i)=grt; group(i).criteria(1)=[0]; group(i).ctgs=1;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=2;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=2;
 
-            if ~opts_exclude.excludeL         % Select cells based on SchA
-                group = group(1:2);
-            elseif ~opts_exclude.excludeO     % Select cells based on SchB
-                group = group(3:4);
+            if examine_Sch_based_on_animal
+                if opts_exclude.excludeO         % Animal L only
+                    group = group(1:2);
+                elseif opts_exclude.excludeL     % Animal O only
+                    group = group(3:4);
+                end
             end
             
             % Calculate legend entries
             group = group.query_legend(group0);
         
-        case 1.25
-            % Load sp's
-            [wrkspc_buffer, out_perm] = load_pr(wrkspc_buffer,perm_mode,curr_stage_sp,freqband_perm,bad_any,opts_perm,opts_exclude);
-            sp = out_perm.sig_cells;
-            
-            % Load bads perm
-            [bad_any_perm] = load_bads(perm_mode,curr_stage_sp,opts_exclude,wrkspc_buffer.currmd.md,out_perm.mypairs,out_perm.funames1D);
-            
-            % Map sp's as needed
-            [sp] = map_sp(perm_mode, sfc_mode,out_perm.mypairs,mypairs,sp,wrkspc_buffer.currmd.md,bad_any_perm,bad_any,sp_threshold);
-
-            % Create group template
-            mycrit = [2*ones(1,size(sp,2))];
-            grt = group0(1);
-            grt.criteria = mycrit; grt.criteria_alt = []; grt.criteria_sfc = []; grt.ctgs = 1;
-            grt.freqband_perm = freqband_perm; grt.timeband_perm = opts_perm.timeband_perm; grt.tf_label_perm = opts_perm.tf_label_perm;
-            grt.Nwind_perm = out_perm.os.Nwind;
-            grt.tapers_perm = out_perm.os.params.tapers;
-            grt.full_bandwidth_perm = out_perm.os.f_fullbandwidth;
-            
-            i1 = 1:2;
-            i2 = 1:2;
-           
-            % Run a simple test
+        case 3                               % Significant units preferred vs non-preferred
             clear group
             i=0;
-            i=i+1; group(i)=grt; group(i).criteria(i1)=[1,2]; group(i).ctgs=1;   % Ctg1-2 deciders
-            i=i+1; group(i)=grt; group(i).criteria(i1)=[0,2]; group(i).ctgs=1;   % Ctg1-2 non-deciders
-            i=i+1; group(i)=grt; group(i).criteria(i2)=[2,1]; group(i).ctgs=2;   % Ctg1-2 deciders
-            i=i+1; group(i)=grt; group(i).criteria(i2)=[2,0]; group(i).ctgs=2;   % Ctg1-2 non-deciders
+            i=i+1; group(i)=grt; group(i).criteria(1)=[1]; group(i).ctgs=1;
+            i=i+1; group(i)=grt; group(i).criteria(1)=[1]; group(i).ctgs=2;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=2;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=1;
 
-            % Calculate legend entries
-            group = group.query_legend(group0);
-            
-        case 1.5
-            % Load sp's
-            [wrkspc_buffer, out_perm] = load_pr(wrkspc_buffer,perm_mode,curr_stage_sp,freqband_perm,bad_any,opts_perm,opts_exclude);
-            sp = out_perm.sig_cells;
-            
-            % Load bads perm
-            [bad_any_perm] = load_bads(perm_mode,curr_stage_sp,opts_exclude,wrkspc_buffer.currmd.md,out_perm.mypairs,out_perm.funames1D);
-            
-            % Map sp's as needed
-            [sp] = map_sp(perm_mode, sfc_mode,out_perm.mypairs,mypairs,sp,wrkspc_buffer.currmd.md,bad_any_perm,bad_any,sp_threshold);
-
-            % Create group template
-            mycrit = [2*ones(1,size(sp,2))];
-            grt = group0(1);
-            grt.criteria = mycrit; grt.criteria_alt = []; grt.criteria_sfc = []; grt.ctgs = 1;
-            grt.freqband_perm = freqband_perm; grt.timeband_perm = opts_perm.timeband_perm; grt.tf_label_perm = opts_perm.tf_label_perm;
-            grt.Nwind_perm = out_perm.os.Nwind;
-            grt.tapers_perm = out_perm.os.params.tapers;
-            grt.full_bandwidth_perm = out_perm.os.f_fullbandwidth;
-            
-            i1 = 1:2;
-            i2 = 1:2;
-           
-            % Run a simple test
-            clear group
-            i=0;
-            i=i+1; group(i)=grt; group(i).criteria(i1)=[1,1]; group(i).ctgs=1;   % Ctg1-2 deciders
-            i=i+1; group(i)=grt; group(i).criteria(i1)=[1,0]; group(i).ctgs=1;   % Ctg1-2 non-deciders
-            i=i+1; group(i)=grt; group(i).criteria(i2)=[0,1]; group(i).ctgs=2;   % Ctg1-2 deciders
-            i=i+1; group(i)=grt; group(i).criteria(i2)=[0,0]; group(i).ctgs=2;   % Ctg1-2 non-deciders
-%             i=i+1; group(i)=grt; group(i).criteria(5)=[1]; group(i).ctgs=5;   % Ctg1-2 non-deciders
-%             i=i+1; group(i)=grt; group(i).criteria(5)=[0]; group(i).ctgs=5;   % Ctg1-2 non-deciders
-
-            % Calculate legend entries
-            group = group.query_legend(group0);
-
-        case 2
-            % Load sp's
-            [wrkspc_buffer, out_perm] = load_pr(wrkspc_buffer,perm_mode,curr_stage_sp,freqband_perm,bad_any,opts_perm,opts_exclude);
-            sp = out_perm.sig_cells;
-
-            % Create group template
-            mycrit = [2*ones(1,size(sp,2))];
-            grt = group0(1);
-            grt.criteria = mycrit; grt.criteria_alt = []; grt.criteria_sfc = []; grt.ctgs = 1;
-            grt.freqband_perm = freqband_perm; grt.timeband_perm = opts_perm.timeband_perm; grt.tf_label_perm = opts_perm.tf_label_perm;
-            grt.Nwind_perm = out_perm.os.Nwind;
-            grt.tapers_perm = out_perm.os.params.tapers;
-            grt.full_bandwidth_perm = out_perm.os.f_fullbandwidth;
-
-            % Run a simple test
-            clear group
-            i=0;
-            i=i+1; group(i)=grt; group(i).criteria(1:2)=[1 0]; group(i).ctgs=1;   % Ctg1-2 deciders
-            i=i+1; group(i)=grt; group(i).criteria(1:2)=[1 0]; group(i).ctgs=2;   % Ctg1-2 deciders
-            i=i+1; group(i)=grt; group(i).criteria(1:2)=[0 1]; group(i).ctgs=3;   % Ctg3-4 deciders
-            i=i+1; group(i)=grt; group(i).criteria(1:2)=[0 1]; group(i).ctgs=4;   % Ctg3-4 deciders
-            
-            % Calculate legend entries
-            group = group.query_legend(group0);
-            
-        case 3
-            % Load sp's
-            [wrkspc_buffer, out_perm] = load_pr(wrkspc_buffer,perm_mode,curr_stage_sp,freqband_perm,bad_any,opts_perm,opts_exclude);
-            sp = out_perm.sig_cells;
-            
-            % Load bads perm
-            [bad_any_perm] = load_bads(perm_mode,curr_stage_sp,opts_exclude,wrkspc_buffer.currmd.md,out_perm.mypairs,out_perm.funames1D);
-            
-            % Map sp's as needed
-            [sp] = map_sp(perm_mode, sfc_mode,out_perm.mypairs,mypairs,sp,wrkspc_buffer.currmd.md,bad_any_perm,bad_any,sp_threshold);
-
-            % Create group template
-            mycrit = [2*ones(1,size(sp,2))];
-            grt = group0(1);
-            grt.criteria = mycrit; grt.criteria_alt = []; grt.criteria_sfc = []; grt.ctgs = 1;
-            grt.freqband_perm = freqband_perm; grt.timeband_perm = opts_perm.timeband_perm; grt.tf_label_perm = opts_perm.tf_label_perm;
-            grt.Nwind_perm = out_perm.os.Nwind;
-            grt.tapers_perm = out_perm.os.params.tapers;
-            grt.full_bandwidth_perm = out_perm.os.f_fullbandwidth;
-            
-            i1 = 1;
-            i2 = 2;
-            if ~opts_exclude.excludeL        % Select cells based on SchA
-                i1 = 1;
-                i2 = 1;
-            elseif ~opts_exclude.excludeO     % Select cells based on SchB
-                i1 = 2;
-                i2 = 2;
-            end
-
-            % Run a simple test
-            clear group
-            i=0;
-            i=i+1; group(i)=grt; group(i).criteria(i1)=[1]; group(i).ctgs=1;   % Ctg1-2 deciders
-            i=i+1; group(i)=grt; group(i).criteria(i1)=[1]; group(i).ctgs=2;   % Ctg1-2 non-deciders
-            i=i+1; group(i)=grt; group(i).criteria(i1)=[0]; group(i).ctgs=1;   % Ctg1-2 deciders
-            i=i+1; group(i)=grt; group(i).criteria(i1)=[0]; group(i).ctgs=2;   % Ctg1-2 non-deciders
-            i=i+1; group(i)=grt; group(i).criteria(i2)=[1]; group(i).ctgs=3;   % Ctg1-2 deciders
-            i=i+1; group(i)=grt; group(i).criteria(i2)=[1]; group(i).ctgs=4;   % Ctg1-2 non-deciders
-            i=i+1; group(i)=grt; group(i).criteria(i2)=[0]; group(i).ctgs=3;   % Ctg1-2 deciders
-            i=i+1; group(i)=grt; group(i).criteria(i2)=[0]; group(i).ctgs=4;   % Ctg1-2 non-deciders
-%             i=i+1; group(i)=grt; group(i).criteria(5)=[1]; group(i).ctgs=5;   % Ctg1-2 non-deciders
-%             i=i+1; group(i)=grt; group(i).criteria(5)=[0]; group(i).ctgs=5;   % Ctg1-2 non-deciders
-
-            do_irrel = 0;
-            if do_irrel
-                for i = 1:length(group);
-                    group(i).ctgs = group(i).ctgs + 4;
+            if examine_Sch_based_on_animal
+                if opts_exclude.excludeO         % Animal L only
+                    group = group(1:2);
+                elseif opts_exclude.excludeL     % Animal O only
+                    group = group(3:4);
                 end
             end
-
-            if ~opts_exclude.excludeL           % Select cells based on SchA
-                group = group(1:4);
-            elseif ~opts_exclude.excludeO        % Select cells based on SchB
-                group = group(5:8);
-            end
-            
             
             % Calculate legend entries
             group = group.query_legend(group0);
-            
-        case 4
-            % Load sp's
-            [wrkspc_buffer, out_perm] = load_pr(wrkspc_buffer,perm_mode,curr_stage_sp,freqband_perm,bad_any,opts_perm,opts_exclude);
-            sp = out_perm.sig_cells;
-            
-            % Load bads perm
-            [bad_any_perm] = load_bads(perm_mode,curr_stage_sp,opts_exclude,wrkspc_buffer.currmd.md,out_perm.mypairs,out_perm.funames1D);
-            
-            % Map sp's as needed
-            [sp] = map_sp(perm_mode, sfc_mode,out_perm.mypairs,mypairs,sp,wrkspc_buffer.currmd.md,bad_any_perm,bad_any,sp_threshold);
 
-            % Create group template
-            mycrit = [2*ones(1,size(sp,2))];
-            grt = group0(1);
-            grt.criteria = mycrit; grt.criteria_alt = []; grt.criteria_sfc = []; grt.ctgs = 1;
-            grt.freqband_perm = freqband_perm; grt.timeband_perm = opts_perm.timeband_perm; grt.tf_label_perm = opts_perm.tf_label_perm;
-            grt.Nwind_perm = out_perm.os.Nwind;
-            grt.tapers_perm = out_perm.os.params.tapers;
-            grt.full_bandwidth_perm = out_perm.os.f_fullbandwidth;
 
-            % Run a simple test
+        case 4                                  % For raw data - Ctgs 1-4
             clear group
             i=0;
-            i=i+1; group(i)=grt; group(i).criteria(1:4)=[1 0 2 2]; group(i).ctgs=1;   % Ctg1-2 deciders
-            i=i+1; group(i)=grt; group(i).criteria(1:4)=[0 1 2 2]; group(i).ctgs=1;   % Ctg1-2 deciders
-            i=i+1; group(i)=grt; group(i).criteria(1:4)=[0 0 2 2]; group(i).ctgs=1;   % Ctg1-2 deciders
-            i=i+1; group(i)=grt; group(i).criteria(1:4)=[2 2 1 0]; group(i).ctgs=2;   % Ctg1-2 deciders
-            i=i+1; group(i)=grt; group(i).criteria(1:4)=[2 2 0 1]; group(i).ctgs=2;   % Ctg1-2 deciders
-            i=i+1; group(i)=grt; group(i).criteria(1:4)=[2 2 0 0]; group(i).ctgs=2;   % Ctg1-2 deciders
-%             i=i+1; group(i)=grt; group(i).criteria(1:4)=[0,0,0,0]; group(i).ctgs=2;   % Ctg1-2 deciders
+            i=i+1; group(i)=grt; group(i).criteria(1)=[1]; group(i).ctgs=1;
+            i=i+1; group(i)=grt; group(i).criteria(1)=[1]; group(i).ctgs=2;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=3;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=4;
 
-%             i=i+1; group(i)=grt; group(i).criteria(3:4)=[1 2]; group(i).ctgs=3;   % Ctg1-2 deciders
-%             i=i+1; group(i)=grt; group(i).criteria(3:4)=[1 2]; group(i).ctgs=4;   % Ctg1-2 deciders
-
-%             i=i+1; group(i)=grt; group(i).criteria(3:4)=[2 1]; group(i).ctgs=3;   % Ctg1-2 deciders
-%             i=i+1; group(i)=grt; group(i).criteria(3:4)=[2 1]; group(i).ctgs=4;   % Ctg1-2 deciders
-
-%             for i = 1:length(group); group(i).ctgs = 9; end
-
+            if examine_Sch_based_on_animal
+                if opts_exclude.excludeO         % Animal L only
+                    group = group(1:2);
+                elseif opts_exclude.excludeL     % Animal O only
+                    group = group(3:4);
+                end
+            end
+            
             % Calculate legend entries
             group = group.query_legend(group0);
             
@@ -642,7 +505,6 @@ end
 
 %% Test spectrogram
 if plot_on_spect && is_spectrogram
-    swap_in_groupdata_contours = 1;
     
     %group = group.arrayload('zlims_desired',[0 3]);
     group = group.arrayload('ylims_desired',[0 100]);
@@ -650,7 +512,7 @@ if plot_on_spect && is_spectrogram
 %     group = group.arrayload('xlims_desired',[ -.5 1.62]);
     ind = 1:length(group);
     if groupmode == 0; opts_PM3Dsp.show_text_stats = 1; opts_PM3Dsp.show_text_perm = 1; end
-    if groupmode == 0; ind = [1,2,5]; end
+    if any(groupmode == [0,1]); ind = [1,2,5]; end
     
     
     if swap_in_groupdata_contours
@@ -687,12 +549,14 @@ if plot_on_spect && is_spectrogram
         end
     end
     
-%     %%
-%     group = group.arrayload('ylims_desired',[0 40]);
-%     group = group.arrayload('xlims_desired',[ -.1 1.62]);
-%     gr_sp = group_individualize(group(1));
-%     gr_sp(1).zlims_desired = [];
-%     plot_spectrogram_custstruct(gr_sp(:),opts_PM3Dsp);
+    if 0
+        %%
+        gr_sp = group_individualize(group(14));
+        gr_sp = gr_sp.arrayload('ylims_desired',[0 80]);
+        gr_sp = gr_sp.arrayload('xlims_desired',[ -.1 1.62]);
+        gr_sp(1).zlims_desired = [];
+        plot_spectrogram_custstruct(gr_sp(:),opts_PM3Dsp);
+    end
 
 end
 
