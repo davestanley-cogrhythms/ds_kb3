@@ -171,9 +171,11 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
         % Transparency
         s.PM3Dsp_overlay_opts.do_transparency = 0;
         % Contours
-        swap_in_groupdata_contours = 0;
+        overlay_raw_contours = 1;
+        swap_in_groupdata_contours = 0;         % Mainly for testing
         s.PM3Dsp_overlay_opts.do_contours = 0;
-        s.PM3Dsp_overlay_opts.contour_nv = [];
+        s.PM3Dsp_overlay_opts.contour_nv = 20;
+        s.PM3Dsp_overlay_opts.contour_linespec = {'k.'};
         % Stats
         s.PM3Dsp_stats_opts.stats_displaymode = 0;    % 0-no stats; 1 transparency; 2-contours; 3-both
         s.PM3Dsp_stats_opts.statsfunc = [];
@@ -234,6 +236,27 @@ clear out_pls
 if any(ctgsetli_mode == [4,5]) && opts_pls.do_diff
     pls = pls * -1;
     pls_stats = pls_stats * -1;
+end
+
+if overlay_raw_contours
+    opts_pls2 = opts_pls;
+    opts_pls2.permdat2pls = 1;
+    opts_pls2.perm2pls = 0;
+    opts_pls2.do_diff = 0;
+    [wrkspc_buffer, out_pls2] = load_pls(wrkspc_buffer,sfc_mode,curr_stage_sfc,freqband_stats,opts_exclude,opts_pls2);
+    pls_raw_temp = out_pls2.pls;
+    
+    % Take average pls_raw
+    sz=size(pls_raw_temp);
+    N = floor(sz(3)/2);
+    pls_raw = zeros(sz(1),sz(2),N,sz(4));
+    for i = 1:N
+        pls_raw(:,:,i,:,:) = (pls_raw_temp(:,:,i*2-1,:,:) + pls_raw_temp(:,:,i*2,:,:)) / 2;
+    end
+    
+    PM3Dsp_stats_opts.stats_displaymode = 0;    % Turn off stats!
+    PM3Dsp_overlay_opts.do_contours = 1;
+    clear opts_pls2 out_pls2 pls_raw_temp
 end
 
 
@@ -429,7 +452,18 @@ if ~exist('group','var')
 end
 
 %% Load data into groups
+group_temp = group;
 group = get_grouped_cells_and_data(group,sp,pls,abscissa,mypairs,bad_any,opts_pls.plotmode,freqband_stats,funames1D,abscissa2,is_spectrogram,opts_pls.timeband_stats);
+
+if overlay_raw_contours         % Load raw data too if needed and drop it in data_overlay2 (for contours)
+    group_temp = get_grouped_cells_and_data(group_temp,sp,pls_raw,abscissa,mypairs,bad_any,opts_pls.plotmode,freqband_stats,funames1D,abscissa2,is_spectrogram,opts_pls.timeband_stats);
+    for i = 1:length(group)
+        group(i).data_overlay2 = group_temp(i).data;
+    end
+    clear group_temp
+    clear pls_raw
+end
+clear group_temp
 
 if do_group_collapse_pls2days
     group = group_collapse_pls2days(group);
@@ -510,6 +544,11 @@ if plot_on_spect && is_spectrogram
     group = group.arrayload('ylims_desired',[0 100]);
     group = group.arrayload('xlims_desired',[ -1.2 1.62]);
 %     group = group.arrayload('xlims_desired',[ -.5 1.62]);
+
+    if any(groupmode == [5,6])
+        group = group.arrayload('ylims_desired',[0 60]);
+        group = group.arrayload('xlims_desired',[ -1.2 1.62]);
+    end
     ind = 1:length(group);
     if groupmode == 0; opts_PM3Dsp.show_text_stats = 1; opts_PM3Dsp.show_text_perm = 1; end
     if any(groupmode == [0,1]); ind = [1,2,5]; end
@@ -519,8 +558,7 @@ if plot_on_spect && is_spectrogram
         % Overlays the contours associated with group.data
         PM3Dsp_stats_opts.stats_displaymode = 0;
         PM3Dsp_overlay_opts.do_contours = 1;
-        for i = 1:length(group); group(i).data_overlay2 = (mean(group(i).data,2)); end
-        PM3Dsp_overlay_opts.contour_nv = 10;
+        for i = 1:length(group); group(i).data_overlay2 = group(i).data; end
     end
     
     hsp = plot_spectrogram_custstruct(group(ind),opts_PM3Dsp,PM3Dsp_overlay_opts,PM3Dsp_stats_opts);
@@ -530,8 +568,10 @@ if plot_on_spect && is_spectrogram
     if groupmode == 0
         % Plot groups
         if opts_PM3Dsp.show_range_stats
+            subplot_ind = 0;
             for i = ind
-                hsp.set_gca(i);
+                subplot_ind = subplot_ind + 1;
+                hsp.set_gca(subplot_ind);
                 for j = 1:length(tf_avail)
                     fullband_T = group(i).Nwind*get_dt;
                     fullband_F = group(i).full_bandwidth;
@@ -551,11 +591,11 @@ if plot_on_spect && is_spectrogram
     
     if 0
         %%
-        gr_sp = group_individualize(group(14));
-        gr_sp = gr_sp.arrayload('ylims_desired',[0 80]);
-        gr_sp = gr_sp.arrayload('xlims_desired',[ -.1 1.62]);
+        gr_sp = group_individualize(group(1));
+        gr_sp = gr_sp.arrayload('ylims_desired',[0 100]);
+%         gr_sp = gr_sp.arrayload('xlims_desired',[ -.1 1.62]);
         gr_sp(1).zlims_desired = [];
-        plot_spectrogram_custstruct(gr_sp(:),opts_PM3Dsp);
+        plot_spectrogram_custstruct(gr_sp(:),opts_PM3Dsp,PM3Dsp_overlay_opts,PM3Dsp_stats_opts);
     end
 
 end
