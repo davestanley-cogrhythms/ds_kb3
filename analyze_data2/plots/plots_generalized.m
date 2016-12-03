@@ -41,10 +41,12 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
         case 41         % PSD
             s.sfc_mode =  41.601811101;
             s.perm_mode = 41.601811101;
+            %s.perm_mode = 52.700001001;         % Units
         case 45         % PSD spectrogram
             %s.sfc_mode =  45.6018103043;
-            s.sfc_mode =  45.6013111011;
+            s.sfc_mode =  45.6018111011;
             s.perm_mode = s.sfc_mode;
+            s.perm_mode = 52.700001001;         % Units
         case 52         % Units time series
             s.sfc_mode  = 52.700001001;
             s.perm_mode = 52.700001001;
@@ -56,8 +58,8 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     end
 
     % Stage selection
-    s.curr_stage_sfc = 3;
-    s.curr_stage_sp = 3;
+    s.curr_stage_sfc = 2;
+    s.curr_stage_sp = 2;
     if get_is_stage4(s.sfc_mode); s.curr_stage_sfc = 4; end
     if get_is_stage4(s.perm_mode); s.curr_stage_sp = 4; end
 
@@ -84,8 +86,8 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     s.tf_label_stats = 'Default'; s.tf_label_perm = 'Default';
     [tf_avail] = get_freqband_timeband(s.perm_mode,opts_exclude); s.tf_avail = tf_avail;
     
-    i=6; s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
-    i=6; s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+%     i=6; s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+%     i=6; s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
     
 
     % More pls switches
@@ -113,10 +115,10 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     opts_perm = Opts_Perm;
     opts_perm.do_bh0 = 1;
     opts_perm.do_phi = 0;
-    opts_perm.split_plusminus = 0;      % 0-Either; 1-Both; 2-Positive; 3-Negative
+    opts_perm.split_plusminus = 2;      % 0-Either; 1-Both; 2-Positive; 3-Negative
     opts_perm.alpha0 = 0.05;
     opts_perm.alpha_bh0 = 0.2;
-    opts_perm.alpha_bh0 = 0.05;
+%     opts_perm.alpha_bh0 = 0.05;
     opts_perm.do_quantiles_mode = 0;
         opts_perm.chosen_quantile = .15;
         opts_perm.upper_quantile = 0;
@@ -128,14 +130,15 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     s.do_group_collapse_pls2days = 0;
     
     % Groupmode
-    s.groupmode = 0;   % 0-Use default grouping (all pairs, enumerate over ctgs);
+    s.groupmode = 2;   % 0-Use default grouping (all pairs, enumerate over ctgs);
                        % 1:4-Select various subgroups
                        % 5:6-Separate into days
+        s.examine_Sch_based_on_animal = 0;          % For animal L, do Cat/Dog; for O do Goc/Tad
 
     s.swap_mode = 0;
 
-    s.group_do_merge = 0;
-        s.grouppmerge_do_percent = 1;
+    s.group_do_merge = 1;
+        s.groupmerge_operation = 0;
 
 % % Plot switches
     s.plot_on_spect = 1;
@@ -168,19 +171,21 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
         s.opts_PM3Dsp.max_subplots_per_fig = 16;
     s.opts_PM3Dsp.show_range_stats = 1;
     s.opts_PM3Dsp.show_range_perm = 1;
-        % Transparency
+        % Overlay Options - Transparency & Contours
         s.PM3Dsp_overlay_opts.do_transparency = 0;
-        % Contours
-        overlay_raw_contours = 1;
-        swap_in_groupdata_contours = 0;         % Mainly for testing
         s.PM3Dsp_overlay_opts.do_contours = 0;
-        s.PM3Dsp_overlay_opts.contour_nv = 20;
+            s.overlay_raw_contours = 0;               % Overlays contours showing raw (non-diffed) FFC values.
+            s.swap_in_groupdata_contours = 0;         % Overlays contours showing the same data being plotted in spectrogram (taken from group.data)
+            s.swap_in_grouppairs_merge_pvals = 1;     % Overlay contours showing p values
+            warning('Also need to implemetn code to query data_STE in plotting codes.');
+        s.PM3Dsp_overlay_opts.contour_nv = [0.01,0.001,0.0001];
         s.PM3Dsp_overlay_opts.contour_linespec = {'k.'};
         % Stats
-        s.PM3Dsp_stats_opts.stats_displaymode = 0;    % 0-no stats; 1 transparency; 2-contours; 3-both
+        s.PM3Dsp_stats_opts.stats_displaymode = 0;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
         s.PM3Dsp_stats_opts.statsfunc = [];
         s.PM3Dsp_stats_opts.stats_comparison = [];
-        s.PM3Dsp_stats_opts.transparency_alpha = [];
+        s.PM3Dsp_stats_opts.contours_alphas = [0.01 0.001 0.0001];
+        s.PM3Dsp_stats_opts.transparency_alpha = [0.01];
     
     s.opts_PSC.paperfig_mode = paperfig_mode;
     s.opts_PSC.remove_dependent = 0;
@@ -246,7 +251,7 @@ if overlay_raw_contours
     [wrkspc_buffer, out_pls2] = load_pls(wrkspc_buffer,sfc_mode,curr_stage_sfc,freqband_stats,opts_exclude,opts_pls2);
     pls_raw_temp = out_pls2.pls;
     
-    % Take average pls_raw
+    % Take average pls_raw between adjacent groups
     sz=size(pls_raw_temp);
     N = floor(sz(3)/2);
     pls_raw = zeros(sz(1),sz(2),N,sz(4));
@@ -261,10 +266,6 @@ end
 
 
 %% Build group
-
-examine_Sch_based_on_animal = 1;
-
-
 % Load sp if necessary
 if groupmode ~= 0
     % Load sp's
@@ -479,7 +480,19 @@ if group_do_merge
                                                    % OR (group2-group1) / group1 (for percent diff)
                                                    % Commenting this out makes it group1-group2 (e.g. same direction as pls do_diff)
     temp=temp(:);
-    group = grouppairs_merge(group(temp),opts_pls.perm2pls_dophi,grouppmerge_do_percent);
+    group = grouppairs_merge2(group(temp),opts_pls.perm2pls_dophi,groupmerge_operation);
+    
+    if swap_in_grouppairs_merge_pvals
+        for i = 1:length(group)
+            group(i).data_overlay1 = double(group(i).data_pvals < 0.01);
+            group(i).data_overlay2 = group(i).data_pvals;
+            
+            PM3Dsp_overlay_opts.do_transparency = 1;
+            PM3Dsp_overlay_opts.do_contours = 1;
+            PM3Dsp_overlay_opts.contour_nv = [0.01,0.001,0.0001];
+            
+        end
+    end
 end
 
 %% Test Plot groups, at last

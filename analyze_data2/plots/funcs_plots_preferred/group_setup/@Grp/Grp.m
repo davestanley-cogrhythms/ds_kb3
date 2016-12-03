@@ -54,9 +54,13 @@ classdef Grp
         % Populated data
         cells
         data
+        data_STE
+        data_pvals
         xdata
         xdata2
         datastats
+        datastats_STE
+        datastats_pvals
         data_overlay1       % For spectrograms, this will be transparency matrix
         data_overlay2       % For spectrograms, this will be contours matrix
         numcells = -1

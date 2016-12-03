@@ -27,8 +27,8 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
     if ~isfield(opts,'uniform_zaxis_allgroups'); opts.uniform_zaxis_allgroups = 0; end
     if ~isfield(opts,'do_subplots'); opts.do_subplots = 0; end
     if ~isfield(opts,'max_subplots_per_fig'); opts.max_subplots_per_fig = 16; end
-    if ~isfield(opts,'show_range_stats'); opts.show_range_stats = 1; end
-    if ~isfield(opts,'show_range_perm'); opts.show_range_perm = 1; end
+    if ~isfield(opts,'show_range_stats'); opts.show_range_stats = 1; end    % Rectangle associated with stats data
+    if ~isfield(opts,'show_range_perm'); opts.show_range_perm = 1; end      % Rectangle associated with permutation data (used to select significant cells)
     if ~isfield(opts,'show_text_stats'); opts.show_text_stats = 1; end
     if ~isfield(opts,'show_text_perm'); opts.show_text_perm = 1; end
     
@@ -54,14 +54,14 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
     overlay_opts = struct_addDef(overlay_opts,'contour_linespec',{'k.'});           % Linespec
     
     % Stats options structure (using new struct_addDef command here)
-    stats_opts = struct_addDef(stats_opts,'stats_displaymode',0);
+    stats_opts = struct_addDef(stats_opts,'stats_displaymode',0);                   % Calculates stats on the data and copies it over to contours or overlay or both (data_overlay1 and data_overlay2, respectively).
                                         % 0 = no stats
                                         % 1 = display as transparency
                                         % 2 = display as contours
                                         % 3 = both transparency and contours
-    stats_opts = struct_addDef(stats_opts,'statsfunc',@signrank);                         % Stats function to use
+    stats_opts = struct_addDef(stats_opts,'statsfunc',@signrank);                          % Stats function to use
     stats_opts = struct_addDef(stats_opts,'stats_comparison',0);                           % Value against which data is compared
-    stats_opts = struct_addDef(stats_opts,'contours_alphas',[0.01 0.001 0.0001]);                      % Chosen alpha value
+    stats_opts = struct_addDef(stats_opts,'contours_alphas',[0.01 0.001 0.0001]);          % Chosen alpha value
     stats_opts = struct_addDef(stats_opts,'transparency_alpha',0.01);                      % Chosen alpha value
     
     
@@ -365,7 +365,7 @@ function [alpha_mat, co_mat, overlay_opts] = calc_pvals(data,stats_opts,overlay_
 
     if any(stats_displaymode == [1,3])         % Display as transparency
         alpha_mat = double(pvals < transparency_alpha);
-        alpha_mat = (alpha_mat + 1) / 2;       % Transparency matrix ranges between 0.5 and 1.0.
+        %alpha_mat = (alpha_mat + 1) / 2;       % Transparency matrix ranges between 0.5 and 1.0.
 
         overlay_opts.do_transparency = 1;
     end
@@ -400,6 +400,7 @@ function draw_contours(group,h,xlims_desired,ylims_desired,overlay_opts)
     if overlay_opts.do_transparency
         [alpha_mat] = extract_data(group,group.xdata,0,xlims_desired,ylims_desired,'data_overlay1');
         alpha_mat = squeeze(mean(alpha_mat,2));
+        alpha_mat = (alpha_mat + 1) / 2;       % Transparency matrix should range between 0.5 and 1.0.
         set(h,'AlphaData',alpha_mat);
     end
     

@@ -4,6 +4,8 @@ function groups_merged = grouppairs_merge(group,iscirc,operation)
     % Does a diff on adjacent elements of group (i.e. subtracts them)
     %
     % Now replaced by grouppairs_diff
+    % grouppairs_diff is now replaced by grouppairs_merge2. It's quite
+    % different, but should switch over to this latest one.
     
     if nargin < 3
         operation = [];      % 0 - Raw difference: ind1-ind2
