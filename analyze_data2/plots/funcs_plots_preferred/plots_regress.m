@@ -195,7 +195,7 @@ function [sbar] = plots_regress(X0,names0,group,marker,opts)
     if plot_bargraph
     %% Plot bargraph
         fign;
-        [hbar herr] = bar_errsig(h(ind),xerr(ind),x(ind),'k','myfontsize',30,'star_shift_factor',1.1);
+        [hbar herr] = barwitherr(xerr(ind),x(ind),'k');
         if any(cellfun(@length,legend_arr(ind)) > 3); xticklabel_rotate(1:length(legend_arr(ind)),90,legend_arr(ind), 'FontSize',get_fontlevel(1)*get_scaling_factor*0.5,'interpreter','none')  % If long legends, rotate
         else
             temp=legend_arr(ind);

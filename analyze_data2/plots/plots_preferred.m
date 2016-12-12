@@ -72,7 +72,7 @@ gr_submode = 1;             % Which of the ctgs to plot from the bndry, RT modes
     plotmode = 1;               % 1-SFC; 2-PSD; 3-time series; 4-phase; 5-SpkPSD; 6- Abs(Cave*exp(i*phi)); 7 - angle(Cave*exp(i*phi)); 8 - CFC
         ispaired = 0;
     permdat2pls = 0;            % Instead of using Cave from sfc_mode, use Cave1 and Cave2 data from perm_mode
-    perm2pls = 1;               % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
+    perm2pls = 0;               % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
         perm2pls_do_bh = 0;        % Do bh stepup instead of basic test
         perm2pls_dophi = 0;
         sort_pls = 0;           % Sort into preferred and non-preferred
@@ -201,9 +201,9 @@ showError = 1;
     plot_badfiles_venn = 0;
 
 % Scatter plots
-    scattergroups_sens_vs_sens = 0;
+    scattergroups_sens_vs_sens = 1;
     scattergroups_sens_vs_pls = 0;
-    regress_pls_vs_sens = 0;
+    regress_pls_vs_sens = 1;
     plot_fisher_test_suite = 0;
     
     
@@ -271,8 +271,8 @@ if ~exist('group','var')
     gr = group_enumerate_stages(gr);                      % Create a grouping structure that can handle compairsons between two stages
     [gr.SD_QP, gr.S_QP] = group_enumerate_all(gr.all,gr.single);     % Create a group that compares all stages and all inputs (P-preferred and Q-Cue)
     gr.sd_newcoords = group_coords2to4(gr.sd);
-    group = gr.all;
-    group(1:3) = group([3,2,1]);
+    group = gr.rmr;
+%     group(1:3) = group([3,2,1]);
 
     % group = gr.all([1:4 11]);
     % group = gr.all([1 5 9 13 11]);
