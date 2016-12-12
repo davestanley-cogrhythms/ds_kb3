@@ -5,9 +5,9 @@ function [pls_new] = perm2pls_swap(s_perm,perm2pls_dophi,perm2pls_do_bh,bad_any,
         allow_signed = 0;               % depending on sign of original Cave1-Cave2
     end
     
-    if ~exist('allow_signed','var');    
+    if ~exist('split_plusminus','var');    
         split_plusminus = 0;
-                    % 0-Return everything; 1-return pos+negative inseparate columns;
+                    % 1-Return everything; 1-return pos+negative inseparate columns;
                     % 2-return only positive (others set to 0);
                     % 3-return only negative;
                     % 4-return only significant (only makes sense for return_mode=4)
