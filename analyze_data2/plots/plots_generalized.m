@@ -12,7 +12,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
 % Setup params 
     clear group group0
 
-    data_mode = 41;
+    data_mode = 45;
     switch data_mode
         case 2.2          % SFC
             s.sfc_mode =  2.201511101;
@@ -130,14 +130,14 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     s.do_group_collapse_pls2days = 0;
     
     % Groupmode
-    s.groupmode = 2;   % 0-Use default grouping (all pairs, enumerate over ctgs);
+    s.groupmode = 0;   % 0-Use default grouping (all pairs, enumerate over ctgs);
                        % 1:4-Select various subgroups
                        % 5:6-Separate into days
         s.examine_Sch_based_on_animal = 0;          % For animal L, do Cat/Dog; for O do Goc/Tad
 
     s.swap_mode = 0;
 
-    s.group_do_merge = 1;
+    s.group_do_merge = 0;
         s.groupmerge_operation = 0;
 
 % % Plot switches
@@ -176,7 +176,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
         s.PM3Dsp_overlay_opts.do_contours = 0;
             s.overlay_raw_contours = 0;               % Overlays contours showing raw (non-diffed) FFC values.
             s.swap_in_groupdata_contours = 0;         % Overlays contours showing the same data being plotted in spectrogram (taken from group.data)
-            s.swap_in_grouppairs_merge_pvals = 1;     % Overlay contours showing p values
+            s.swap_in_grouppairs_merge_pvals = 0;     % Overlay contours showing p values
             warning('Also need to implemetn code to query data_STE in plotting codes.');
         s.PM3Dsp_overlay_opts.contour_nv = [0.01,0.001,0.0001];
         s.PM3Dsp_overlay_opts.contour_linespec = {'k.'};
