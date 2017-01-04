@@ -12,7 +12,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
 % Setup params 
     clear group group0
 
-    data_mode = 45;
+    data_mode = 41;
     switch data_mode
         case 2.2          % SFC
             s.sfc_mode =  2.201511101;
@@ -46,7 +46,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
             %s.sfc_mode =  45.6018103043;
             s.sfc_mode =  45.6018111011;
             s.perm_mode = s.sfc_mode;
-            s.perm_mode = 52.700001001;         % Units
+            %s.perm_mode = 52.700001001;         % Units
         case 52         % Units time series
             s.sfc_mode  = 52.700001001;
             s.perm_mode = 52.700001001;
@@ -115,7 +115,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     opts_perm = Opts_Perm;
     opts_perm.do_bh0 = 1;
     opts_perm.do_phi = 0;
-    opts_perm.split_plusminus = 2;      % 0-Either; 1-Both; 2-Positive; 3-Negative
+    opts_perm.split_plusminus = 0;      % 0-Either; 1-Both; 2-Positive; 3-Negative
     opts_perm.alpha0 = 0.05;
     opts_perm.alpha_bh0 = 0.2;
 %     opts_perm.alpha_bh0 = 0.05;

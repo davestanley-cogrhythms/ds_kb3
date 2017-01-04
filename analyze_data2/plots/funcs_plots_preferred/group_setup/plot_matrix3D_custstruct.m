@@ -120,7 +120,13 @@ function [h1, out] = plot_matrix3D_custstruct_subfunc(abscissa,group,opts_PM3D,o
             %hold on; [h1(i)] = plott_matrix3D(x,data,opts_PM3D{:},'LineSpec',{colorspec{:},'LineWidth',2});   % Old code, using plott_matrix3D. This code is okay in most cases,
                                                                                                                 % but doesn't work with remove_dependent turned on.
             
-            hold on; [h1(i)] = plott_matrix3D_simplified(x,data,{colorspec{:},'LineWidth',2},{},bad_dependent,opts_PM3D{find(strcmp(opts_PM3D,'showErrorbars'))+1});
+            if size(data,2) > 1
+                Xste=std(data(:,~bad_dependent),[],2) / sqrt(size(data(:,~bad_dependent),2)); % Standard error  - only across non-dependent
+            else
+                Xste=group(i).data_STE;
+            end
+            X=mean(data,2);
+            hold on; [h1(i)] = plott_matrix3D_simplified(x,X,Xste,{colorspec{:},'LineWidth',2},{},opts_PM3D{find(strcmp(opts_PM3D,'showErrorbars'))+1});
                                                                                                                 % ^^ This is a really cheap temporary hack!
             
         else
@@ -374,11 +380,7 @@ function [data_out, x] = extract_data(group,abscissa,do_sgolay)
 end
 
 
-function [hl1,hl2] = plott_matrix3D_simplified(t,X,LineSpec,LineSpec2,bad_dependent,show_errorbars)
-            Xste=std(X(:,~bad_dependent),[],2) / sqrt(size(X(:,~bad_dependent),2)); % Standard error  - only across non-dependent
-            %Xste=std(X,[],2);                   % Standard deviation
-            X=mean(X,2);
-            %X=median(X,2);
+function [hl1,hl2] = plott_matrix3D_simplified(t,X,Xste,LineSpec,LineSpec2,show_errorbars)
             t=t(:);
             t = mean(t,2);      % Some extra operations, but it's worth it.
             
