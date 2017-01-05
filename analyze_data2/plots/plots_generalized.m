@@ -127,7 +127,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     s.sp_threshold = 10;
     
     % Group options
-    s.do_group_collapse_pls2days = 0;
+    s.do_group_collapse_pls2days = 1;
     
     % Groupmode
     s.groupmode = 0;   % 0-Use default grouping (all pairs, enumerate over ctgs);

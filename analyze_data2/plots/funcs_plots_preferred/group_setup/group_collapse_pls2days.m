@@ -11,7 +11,7 @@ function group = group_collapse_pls2days(group)
         ids = cellfun(@fname_to_filedate,funames1D);    % ID's
         idsu = unique(ids);                             % ID's unique
         Ndays=length(idsu);
-        pls_new    =    zeros([sz(1),Ndays]);
+        pls_new    =    zeros([size(pls,1),Ndays,size(pls,3)]);
         pls_stats_new = zeros([1,Ndays]);
         
         for j = 1:Ndays
