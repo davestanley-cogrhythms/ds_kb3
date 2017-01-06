@@ -275,14 +275,14 @@ end
 %% Manipulations to spectrogram data
 % Normalize spectrogram to pre-cue data (only works for spectrogram data)
 if spectrogram_normalize_to_baseline
-    normalize_by_average = 0;       % 1 - normalize by mean of the pre-cue period; this should be less noisy
-                                    % 0 - normalize by each electrode individually. This within-electrode
-                                    %     normalizing seems to give better noise reduction.
+    normalize_within_elects = 1;    % 0 - normalize by mean of the pre-cue period.
+                                    % 1 - normalize by each electrode individually. This within-electrode
+                                    %    normalizing removes electrode-electrode variability.
 
     pls = unwrap_3Dpls(pls,f,f2);
-    ind = find(f2 > spectrogram_baseline_time, 1, 'first');     % Find index to normalize along
+    ind = find(f2 >= spectrogram_baseline_time, 1, 'first');     % Find index to normalize along
     
-    if normalize_by_average
+    if ~normalize_within_elects
         pls = pls ./ repmat(mean(pls(:,~bad_any,:,ind),2),[1,size(pls,2),1,size(pls,4)]);
     else
         pls = pls ./ repmat(pls(:,:,:,ind),[1,1,1,size(pls,4)]);

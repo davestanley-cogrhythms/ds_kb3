@@ -70,8 +70,8 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     opts_exclude.exclude_clipping = 1;
     opts_exclude.exclude_60 = 0;
     opts_exclude.exclude_nans = 0;
-    opts_exclude.excludeL = 0;
-    opts_exclude.excludeO = 1; 
+    opts_exclude.excludeL = 1;
+    opts_exclude.excludeO = 0; 
     opts_exclude.remove_dependent = 0;       % Remove dependent electrode pairs for FFC
     
     
@@ -107,11 +107,11 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
         opts_pls.do_diff_percent = 0;
         opts_pls.do_abs_diff = 0;            % Take absolute value after doing diff.
     opts_pls.target_pls_format = 0; % Convert pls to match this format!
-    opts_pls.collapse_pls_to_days = 1;
+    opts_pls.collapse_pls_to_days = 0;
     opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
-    opts_pls.spectrogram_normalize_to_baseline = 1;          % Normalize spectrograms to pre-cue data to a value of 1.0
-            opts_pls.spectrogram_baseline_time = -1.19;       % During pre-cue
+    opts_pls.spectrogram_normalize_to_baseline = 0;          % Normalize spectrograms to pre-cue data to a value of 1.0
+            opts_pls.spectrogram_baseline_time = -1.199;       % During pre-cue
     
     
 
@@ -131,7 +131,10 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     s.sp_threshold = 10;
     
     % Group options
-    s.do_group_collapse_pls2days = 0;
+    s.do_group_collapse_pls2days = 1;
+    s.do_group_normalize_specgram_to_baseline_time = 1;
+        s.normalize_within_elects = 1;
+        s.specgram_baseline_time = -1.199;
     
     % Groupmode
     s.groupmode = 0;   % 0-Use default grouping (all pairs, enumerate over ctgs);
@@ -169,7 +172,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
         s.opts_PM3Dcs.max_subplots_per_fig = 16;
     % % Spectrogram plotting options
     s.opts_PM3Dsp.paperfig_mode=paperfig_mode;
-    s.opts_PM3Dsp.symmetric_axes = s.doing_cat_vs_dog || opts_pls.spectrogram_normalize_to_baseline;
+    s.opts_PM3Dsp.symmetric_axes = s.doing_cat_vs_dog || opts_pls.spectrogram_normalize_to_baseline || s.do_group_normalize_specgram_to_baseline_time;
     s.opts_PM3Dsp.uniform_zaxis_allgroups = 1;           % Makes z-axis the same for all groups plotted
     s.opts_PM3Dsp.do_subplots = 1;
         s.opts_PM3Dsp.max_subplots_per_fig = 16;
@@ -473,6 +476,11 @@ clear group_temp
 if do_group_collapse_pls2days
     group = group_collapse_pls2days(group);
 end
+
+if do_group_normalize_specgram_to_baseline_time
+    group = group_normalize_specgram_to_baseline_time(group,specgram_baseline_time,normalize_within_elects);
+end
+
 
 if group_do_merge
     % Flip if ctgsetli mode = 4 or 5.
