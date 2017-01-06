@@ -153,6 +153,9 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
             cl = caxis;
             cl = max(abs(cl));
             caxis([-cl cl]);
+%             cl = caxis;
+%             cl = max(abs(cl-1));
+%             caxis([-cl cl]+1);
         end
         if ~isempty(group(i).zlims_desired); caxis(group(i).zlims_desired); end
         

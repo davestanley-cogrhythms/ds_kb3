@@ -49,6 +49,8 @@ end
     tf_label_stats = pls_opts.tf_label_stats;
     spectrogram2spectra_timeslice = pls_opts.spectrogram2spectra_timeslice;    % If working with a spectrogram, take a slice at time given by timeband_stats.
     spectrogram2ts_freqslice = pls_opts.spectrogram2ts_freqslice;    % If working with a spectrogram, take a slice at time given by freqband_stats.
+    spectrogram_normalize_to_baseline = pls_opts.spectrogram_normalize_to_baseline;     % Normalize spectrograms to pre-cue data to a value of 1.0
+            spectrogram_baseline_time = pls_opts.spectrogram_baseline_time;             % During pre-cue
     
     
     % Test plot switches
@@ -196,12 +198,14 @@ end
 
 %% Import PLS data
 if ~permutation_test
-    %% Not permutation test
+    %% Not permutation test simulation
     % Extract pls based on plotmode.
     [pls, group, SPG] = invoke_plotmode(Cave,phiave,group,plotmode,do_fisher,data_type,freqband_stats,f);
     
     
     %% Reshape group & fill in missing data if necessary
+        % This is for Cromer data or other weird cases where we don't want
+        % to calculate everything pointlessly in analyze_data
     
     if ctgsetli_mode == 0 && size(pls,3) == 4
         group = group([1,9,10,11]);
@@ -267,6 +271,28 @@ else
 
 end
 
+
+%% Manipulations to spectrogram data
+% Normalize spectrogram to pre-cue data (only works for spectrogram data)
+if spectrogram_normalize_to_baseline
+    normalize_by_average = 0;       % 1 - normalize by mean of the pre-cue period; this should be less noisy
+                                    % 0 - normalize by each electrode individually. This within-electrode
+                                    %     normalizing seems to give better noise reduction.
+
+    pls = unwrap_3Dpls(pls,f,f2);
+    ind = find(f2 > spectrogram_baseline_time, 1, 'first');     % Find index to normalize along
+    
+    if normalize_by_average
+        pls = pls ./ repmat(mean(pls(:,~bad_any,:,ind),2),[1,size(pls,2),1,size(pls,4)]);
+    else
+        pls = pls ./ repmat(pls(:,:,:,ind),[1,1,1,size(pls,4)]);
+    end
+    
+    pls = log(pls);
+    pls = wrap_3Dpls(pls);
+    
+end
+   
 if spectrogram2spectra_timeslice
     if ~is_spectrogram
         error('This options only makes sense if loading spectrogram data.');
@@ -419,7 +445,6 @@ if collapse_pls_to_days
     bad_clip_new=bad_clip;
     ismonkeyL=ismonkeyL_new;
 end
-
 
 
 

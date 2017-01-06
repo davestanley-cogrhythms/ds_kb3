@@ -93,8 +93,8 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     % More pls switches
     opts_pls = Opts_Pls;
     opts_pls.plotmode = 1;                   % 1-SFC; 2-PSD; 3-time series; 4-phase; 5-SpkPSD; 6- Abs(Cave*exp(i*phi)); 7 - angle(Cave*exp(i*phi)); 8-Cave*exp(i*phi))
-    opts_pls.permdat2pls = 0; % Instead of using Cave from sfc_mode, use Cave1 and Cave2 data from perm_mode
-    opts_pls.perm2pls = 1;                   % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
+    opts_pls.permdat2pls = 1; % Instead of using Cave from sfc_mode, use Cave1 and Cave2 data from perm_mode
+    opts_pls.perm2pls = 0;                   % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
         opts_pls.perm2pls_do_bh = 1;         % Do bh stepup instead of basic test
         opts_pls.perm2pls_dophi = 0;
         opts_pls.perm2pls_return_mode = 4;                 % Return mode of perm2pls (4=zscore)
@@ -107,9 +107,13 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
         opts_pls.do_diff_percent = 0;
         opts_pls.do_abs_diff = 0;            % Take absolute value after doing diff.
     opts_pls.target_pls_format = 0; % Convert pls to match this format!
-    opts_pls.collapse_pls_to_days = 0;
+    opts_pls.collapse_pls_to_days = 1;
     opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
+    opts_pls.spectrogram_normalize_to_baseline = 1;          % Normalize spectrograms to pre-cue data to a value of 1.0
+            opts_pls.spectrogram_baseline_time = -1.19;       % During pre-cue
+    
+    
 
     % Permutation test options
     opts_perm = Opts_Perm;
@@ -127,7 +131,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     s.sp_threshold = 10;
     
     % Group options
-    s.do_group_collapse_pls2days = 1;
+    s.do_group_collapse_pls2days = 0;
     
     % Groupmode
     s.groupmode = 0;   % 0-Use default grouping (all pairs, enumerate over ctgs);
@@ -165,7 +169,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
         s.opts_PM3Dcs.max_subplots_per_fig = 16;
     % % Spectrogram plotting options
     s.opts_PM3Dsp.paperfig_mode=paperfig_mode;
-    s.opts_PM3Dsp.symmetric_axes = s.doing_cat_vs_dog;
+    s.opts_PM3Dsp.symmetric_axes = s.doing_cat_vs_dog || opts_pls.spectrogram_normalize_to_baseline;
     s.opts_PM3Dsp.uniform_zaxis_allgroups = 1;           % Makes z-axis the same for all groups plotted
     s.opts_PM3Dsp.do_subplots = 1;
         s.opts_PM3Dsp.max_subplots_per_fig = 16;
@@ -178,12 +182,12 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
             s.swap_in_groupdata_contours = 0;         % Overlays contours showing the same data being plotted in spectrogram (taken from group.data)
             s.swap_in_grouppairs_merge_pvals = 0;     % Overlay contours showing p values
             warning('Also need to implemetn code to query data_STE in plotting codes.');
-        s.PM3Dsp_overlay_opts.contour_nv = [0.01,0.001,0.0001];
+        s.PM3Dsp_overlay_opts.contour_nv = [];
         s.PM3Dsp_overlay_opts.contour_linespec = {'k.'};
         % Stats
-        s.PM3Dsp_stats_opts.stats_displaymode = 0;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
+        s.PM3Dsp_stats_opts.stats_displaymode = 3;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
         s.PM3Dsp_stats_opts.statsfunc = [];
-        s.PM3Dsp_stats_opts.stats_comparison = [];
+        s.PM3Dsp_stats_opts.stats_comparison = [0];
         s.PM3Dsp_stats_opts.contours_alphas = [0.01 0.001 0.0001];
         s.PM3Dsp_stats_opts.transparency_alpha = [0.01];
     
@@ -486,12 +490,10 @@ if group_do_merge
         for i = 1:length(group)
             group(i).data_overlay1 = double(group(i).data_pvals < 0.01);
             group(i).data_overlay2 = group(i).data_pvals;
-            
-            PM3Dsp_overlay_opts.do_transparency = 1;
-            PM3Dsp_overlay_opts.do_contours = 1;
-            PM3Dsp_overlay_opts.contour_nv = [0.01,0.001,0.0001];
-            
         end
+        PM3Dsp_overlay_opts.do_transparency = 1;
+        PM3Dsp_overlay_opts.do_contours = 1;
+        PM3Dsp_overlay_opts.contour_nv = [0.01,0.001,0.0001];
     end
 end
 
@@ -564,7 +566,7 @@ if plot_on_spect && is_spectrogram
     end
     ind = 1:length(group);
     if groupmode == 0; opts_PM3Dsp.show_text_stats = 1; opts_PM3Dsp.show_text_perm = 1; end
-    if any(groupmode == [0,1]); ind = [1,2,5]; end
+    if any(groupmode == [0,1]); ind = [1,2]; end
     
     
     if swap_in_groupdata_contours
