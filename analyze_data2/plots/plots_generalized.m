@@ -70,8 +70,8 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     opts_exclude.exclude_clipping = 1;
     opts_exclude.exclude_60 = 0;
     opts_exclude.exclude_nans = 0;
-    opts_exclude.excludeL = 1;
-    opts_exclude.excludeO = 0; 
+    opts_exclude.excludeL = 0;
+    opts_exclude.excludeO = 1; 
     opts_exclude.remove_dependent = 0;       % Remove dependent electrode pairs for FFC
     
     
