@@ -33,16 +33,17 @@ function groups_merged = grouppairs_merge2(group,iscirc,operation)
         
         % Perform operation
         group1 = group(2*i-1); group2 = group(2*i);
-        [z_mu, z_ste, pvals] = do_operation(group1,group2,'data',operation,iscirc);
-        groups_merged(i).data_mu = z_mu;
-        groups_merged(i).data_STE = z_ste;
-        groups_merged(i).data_pvals = pvals;
-        
-        fieldname = 'datastats'; data1 = group(2*i-1).(fieldname); data2 = group(2*i).(fieldname);
-        [groups_merged(i).(fieldname)] = do_operation(group1,group2,fieldname,operation,iscirc);
-        
-        groups_merged(i).data_name = '% change';
-
+        ispaired = get_ispaired(group1,group2);
+        if ispaired
+            [groups_merged(i).data] = do_operation_paired(group1,group2,'data',operation,iscirc);
+            [groups_merged(i).datastats] = do_operation_paired(group1,group2,'datastats',operation,iscirc);  % should probably just get rid of this.
+        else
+            [z_mu, z_ste, pvals] = do_operation_unpaired(group1,group2,'data',operation,iscirc);
+            groups_merged(i).data_mu = z_mu;
+            groups_merged(i).data_STE = z_ste;
+            groups_merged(i).data_pvals = pvals;
+            [groups_merged(i).datastats] = do_operation_unpaired(group1,group2,'datastats',operation,iscirc);  % should probably just get rid of this.
+        end
 
         % Update legend (vs)
         n1 = group(i*2-1).legend;
@@ -104,8 +105,8 @@ function data_permutednull = mean_of_permuted_null(my_function,data1,data2,Nboot
 end
 
 
-function [z, z_ste, pvals] = do_operation(group1,group2, fieldname, operation,iscirc)
-%% function [z, z_ste, z_pval] = do_operation(group1,group2, fieldname, operation,iscirc)
+function [z, z_ste, pvals] = do_operation_unpaired(group1,group2, fieldname, operation,iscirc)
+%% function [z, z_ste, z_pval] = do_operation_unpaired(group1,group2, fieldname, operation, iscirc)
 
         z = [];
         z_ste = [];
@@ -114,91 +115,95 @@ function [z, z_ste, pvals] = do_operation(group1,group2, fieldname, operation,is
         data1 = group1.(fieldname);
         data2 = group2.(fieldname);
         
-        % Check if data is paired or unpaired
-        if all(group1.criteria(:) == group2.criteria(:)) 
-            ispaired = true;
-        else
-            ispaired = false;
+        switch operation
+            case 0
+                % Mean difference
+                z = mean(data1,2) - mean(data2,2);
+
+                % Calculate standard error (assume gaussian!)
+                z_ste = calc_ste(data1,data2);
+
+                % Calculate p values
+                statsfunc = @ranksum;   % Since it's unpaired!
+                pvals = get_pvals(data1,data2,statsfunc);
+
+            case 1
+                warning('Untested!')
+                % Mean % difference
+                z = (mean(data1,2) - mean(data2,2)) ./ mean(data2,2) * 100;
+
+                % Calculate standard error (assume gaussian!)
+                z_ste = calc_ste(data1,data2) ./ mean(data2,2) * 100;
+
+                % Calculate p values
+                statsfunc = @ranksum;   % Since it's unpaired!
+                pvals = get_pvals(data1,data2,statsfunc);
+
+            case 2
+                warning('Untested!')
+                % Mean % difference
+                z = (mean(data1,2) - mean(data2,2)) ./ (mean(data2,2) + mean(data2,2))/2 * 100;
+
+                % Calculate standard error (assume gaussian!)
+                z_ste = calc_ste(data1,data2) ./ (mean(data2,2) + mean(data2,2))/2 * 100;
+
+                % Calculate p values
+                statsfunc = @ranksum;   % Since it's unpaired!
+                pvals = get_pvals(data1,data2,statsfunc);
+
+            case 4
+                % Bootstrap normalized difference
+                % E.g. Difference between data1 and data 2... 
+                    % normalized by the MEAN of permuted distribution of the absolute difference.
+                % Useful when group(1) and group(2) have different
+                % numcells.
+
+                my_function = @(x,y) abs(mean(x,2) - mean(y,2));
+                data_permutednull = mean_of_permuted_null(my_function,data1,data2);
+
+                z = (mean(data1,2)- mean(data2,2)) ./ data_permutednull;
+
+                % Calculate standard error (assume gaussian!)
+                z_ste = calc_ste(data1,data2) ./ data_permutednull;
+
+                % Calculate p values
+                statsfunc = @ranksum;   % Since it's unpaired!
+                pvals = get_pvals(data1,data2,statsfunc);
+
+            otherwise
+                error('Undefined operation');
+
+        end
+        
+        if iscirc && any(operation == [1,2,3])
+            ind=z>pi; z(ind)=z(ind)-2*pi;
+            ind=z<-pi; z(ind)=z(ind)+2*pi;
+            %z = abs(z);
+        end
+end
+
+function [z] = do_operation_paired(group1,group2, fieldname, operation,iscirc)
+%% function [z, z_ste, z_pval] = do_operation_paired(group1,group2, fieldname, operation,iscirc)
+
+        z = [];
+        
+        data1 = group1.(fieldname);
+        data2 = group2.(fieldname);
+        
+         switch operation
+            case 0
+                z = data1 - data2;
+            case 1
+                sz = size(data2);
+                %z = (data1 - data2)./ data2 * 100;
+                z = (data1 - data2)./ repmat(mean(data2,2),[1,sz(2),1,1,1]) * 100;
+            case 2
+                sz = size(data2);
+                z = (data1 - data2)./ repmat(mean((data1 + data2)/2,2),[1,sz(2),1,1,1]) * 100;
+            otherwise
+                error('Undefined operation');
         end
 
-        % % % % Do operation for data % % % % 
-        if ispaired
-            switch operation
-                case 0
-                    z = data1 - data2;
-                case 1
-                    sz = size(data2);
-                    %z = (data1 - data2)./ data2 * 100;
-                    z = (data1 - data2)./ repmat(mean(data2,2),[1,sz(2),1,1,1]) * 100;
-                case 2
-                    sz = size(data2);
-                    z = (data1 - data2)./ repmat(mean((data1 + data2)/2,2),[1,sz(2),1,1,1]) * 100;
-                otherwise
-                    error('Undefined operation');
-            end
-        else
-            switch operation
-                case 0
-                    % Mean difference
-                    z = mean(data1,2) - mean(data2,2);
-                    
-                    % Calculate standard error (assume gaussian!)
-                    z_ste = calc_ste(data1,data2);
-                    
-                    % Calculate p values
-                    statsfunc = @ranksum;   % Since it's unpaired!
-                    pvals = get_pvals(data1,data2,statsfunc);
-                    
-                case 1
-                    warning('Untested!')
-                    % Mean % difference
-                    z = (mean(data1,2) - mean(data2,2)) ./ mean(data2,2) * 100;
-                    
-                    % Calculate standard error (assume gaussian!)
-                    z_ste = calc_ste(data1,data2) ./ mean(data2,2) * 100;
-                    
-                    % Calculate p values
-                    statsfunc = @ranksum;   % Since it's unpaired!
-                    pvals = get_pvals(data1,data2,statsfunc);
-                    
-                case 2
-                    warning('Untested!')
-                    % Mean % difference
-                    z = (mean(data1,2) - mean(data2,2)) ./ (mean(data2,2) + mean(data2,2))/2 * 100;
-                    
-                    % Calculate standard error (assume gaussian!)
-                    z_ste = calc_ste(data1,data2) ./ (mean(data2,2) + mean(data2,2))/2 * 100;
-                    
-                    % Calculate p values
-                    statsfunc = @ranksum;   % Since it's unpaired!
-                    pvals = get_pvals(data1,data2,statsfunc);
-
-                case 4
-                    % Bootstrap normalized difference
-                    % E.g. Difference between data1 and data 2... 
-                        % normalized by the MEAN of permuted distribution of the absolute difference.
-                    % Useful when group(1) and group(2) have different
-                    % numcells.
-
-                    my_function = @(x,y) abs(mean(x,2) - mean(y,2));
-                    data_permutednull = mean_of_permuted_null(my_function,data1,data2);
-
-                    z = (mean(data1,2)- mean(data2,2)) ./ data_permutednull;
-
-                    % Calculate standard error (assume gaussian!)
-                    z_ste = calc_ste(data1,data2) ./ data_permutednull;
-                    
-                    % Calculate p values
-                    statsfunc = @ranksum;   % Since it's unpaired!
-                    pvals = get_pvals(data1,data2,statsfunc);
-                    
-                otherwise
-                    error('Undefined operation');
-                    
-            end
-        end
-       
-            
         if iscirc && any(operation == [1,2,3])
             ind=z>pi; z(ind)=z(ind)-2*pi;
             ind=z<-pi; z(ind)=z(ind)+2*pi;
@@ -225,4 +230,13 @@ function z_ste = calc_ste(data1,data2)
     varmean1 = var(data1,[],2) / size(data1,2);  % Variance of mean of data1
     varmean2 = var(data2,[],2) / size(data2,2);  % Variance of mean of data2
     z_ste = sqrt(varmean1 + varmean2);           % Variance of data1-data2
+end
+
+function ispaired = get_ispaired(group1,group2)
+    % Check if data is paired or unpaired
+    if all(group1.criteria(:) == group2.criteria(:)) 
+        ispaired = true;
+    else
+        ispaired = false;
+    end
 end
