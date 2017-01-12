@@ -37,7 +37,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
             %s.sfc_mode =  23.4018111011;
             s.perm_mode = s.sfc_mode;
             %s.perm_mode = 52.700001001;
-%             s.perm_mode =  22.401811101;
+            %s.perm_mode =  22.401811101;
         case 41         % PSD
             s.sfc_mode =  41.601811101;
             s.perm_mode = 41.601811101;
@@ -137,10 +137,10 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
         s.specgram_baseline_time = -1.199;
     
     % Groupmode
-    s.groupmode = 0;   % 0-Use default grouping (all pairs, enumerate over ctgs);
+    s.groupmode = 2;   % 0-Use default grouping (all pairs, enumerate over ctgs);
                        % 1:4-Select various subgroups
                        % 5:6-Separate into days
-        s.examine_Sch_based_on_animal = 1;          % For animal L, do Cat/Dog; for O do Goc/Tad
+        s.examine_Sch_based_on_animal = 0;          % For animal L, do Cat/Dog; for O do Goc/Tad
 
     s.swap_mode = 0;
 
@@ -183,8 +183,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
         s.PM3Dsp_overlay_opts.do_contours = 0;
             s.overlay_raw_contours = 0;               % Overlays contours showing raw (non-diffed) FFC values.
             s.swap_in_groupdata_contours = 0;         % Overlays contours showing the same data being plotted in spectrogram (taken from group.data)
-            s.swap_in_grouppairs_merge_pvals = 1;     % Overlay contours showing p values
-            warning('Also need to implemetn code to query data_STE in plotting codes.');
+            s.swap_in_grouppairs_merge_pvals = 0;     % Overlays contours showing p values
         s.PM3Dsp_overlay_opts.contour_nv = [];
         s.PM3Dsp_overlay_opts.contour_linespec = {'k.'};
         % Stats
@@ -312,14 +311,14 @@ if ~exist('group','var')
         case 1                          % Only sig units, all ctgs
             N = length(group0);
             
-            % Build Sch A
+            % All ctgs, significant for A
             for i = 1:N
                 group(i) = grt;
                 group(i).ctgs = i;
                 group(i).criteria(1) = [1];
             end
             
-            % Build for Sch B
+            % All ctgs, significant for B
             for i = 1:N
                 group(i+N) = grt;
                 group(i+N).ctgs = i;
@@ -502,6 +501,7 @@ if group_do_merge
         PM3Dsp_overlay_opts.do_transparency = 1;
         PM3Dsp_overlay_opts.do_contours = 1;
         PM3Dsp_overlay_opts.contour_nv = [0.01,0.001,0.0001];
+        PM3Dsp_stats_opts.stats_displaymode = 0;
     end
 end
 
