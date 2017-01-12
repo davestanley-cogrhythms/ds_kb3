@@ -54,6 +54,7 @@ classdef Grp
         % Populated data
         cells
         data
+        data_mu
         data_STE
         data_pvals
         xdata

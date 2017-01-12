@@ -32,8 +32,9 @@ function groups_merged = grouppairs_merge2(group,iscirc,operation)
         groups_merged(i) = group(i*2-1);        % Inherit everything from 1st group in pair
         
         % Perform operation
-        fieldname = 'data'; group1 = group(2*i-1); group2 = group(2*i);
-        [groups_merged(i).(fieldname), z_ste, pvals] = do_operation(group1,group2,fieldname,operation,iscirc);
+        group1 = group(2*i-1); group2 = group(2*i);
+        [z_mu, z_ste, pvals] = do_operation(group1,group2,'data',operation,iscirc);
+        groups_merged(i).data_mu = z_mu;
         groups_merged(i).data_STE = z_ste;
         groups_merged(i).data_pvals = pvals;
         

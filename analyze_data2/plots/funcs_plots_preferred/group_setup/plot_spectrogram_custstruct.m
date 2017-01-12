@@ -90,15 +90,21 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
         
     end
     
+    % Calculate means across cells if not already populated
+    for i = 1:length(group)
+        if isempty(group(i).data_mu)
+            group(i).data_mu = mean(group(i).data,2);
+        end
+    end
+    
     % Get max and min z-axis
     if uniform_zaxis_allgroups
         currmax = -Inf;
         currmin = Inf;
         for i = 1:length(group);
-            [data] = extract_data(group(i),abscissa,do_sgolay,group(1).xlims_desired,group(1).ylims_desired);
-            dat = squeeze(mean(data,2));
-            currmin = min(currmin, min(dat(:)));
-            currmax = max(currmax, max(dat(:)));
+            [data_mu] = extract_data(group(i),abscissa,do_sgolay,group(1).xlims_desired,group(1).ylims_desired,'data_mu');
+            currmin = min(currmin, min(data_mu(:)));
+            currmax = max(currmax, max(data_mu(:)));
         end
     end
 
@@ -117,7 +123,7 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
         end
         
         % Pull out data
-        [data, x, x2] = extract_data(group(i),abscissa,do_sgolay,group(1).xlims_desired,group(1).ylims_desired);
+        [data_mu, x, x2] = extract_data(group(i),abscissa,do_sgolay,group(1).xlims_desired,group(1).ylims_desired,'data_mu');
         %x2 = group(i).xdata2;
         
         
@@ -126,7 +132,7 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
             [group(i).data_overlay1, group(i).data_overlay2, overlay_opts] = calc_pvals(group(i).data,stats_opts,overlay_opts); end
         
         % Plot image
-        h=imagesc(x2,x,squeeze(mean(data,2))); set(gca,'YDir','normal');
+        h=imagesc(x2,x,squeeze(data_mu)); set(gca,'YDir','normal');
 
         % Add overlays - transparency and contours as needed
         draw_contours(group(i),h,group(1).xlims_desired,group(1).ylims_desired,overlay_opts);
@@ -227,56 +233,6 @@ function Y=ste(varargin)
 end
 
 
-function [data_out, xout, x2out] = extract_data(group,abscissa,do_sgolay,xld,yld,myfieldname)
-
-    if nargin < 6
-        myfieldname = 'data';
-    end
-    
-    data = group.(myfieldname);
-    xdata = group.xdata;
-    if ~isempty(xdata); xout = xdata;
-    else xout = abscissa;
-    end
-    
-    x2out = group.xdata2;
-
-    % If data still isn't real, we convert it to real, only after
-    % taking mean.
-    if ~isreal(data)
-        data = mean(data,2);
-        data = abs(data);
-        %data = pls_complex2angle_centpi(data);
-        warning('Complex data received! We should be bootstrapping now, meaning that input data should always be real.');
-    end
-        
-    if ~isempty(data) && do_sgolay
-        fprintf('Filtering data with SG order 3 filter.\n');
-        df = mode(diff(xout));
-        sgf = round(20/df);
-        if mod(sgf,2) == 0; sgf=sgf+1;end
-        data_out = sgolayfilt(data,3,sgf);
-    else
-        data_out=data;
-    end
-    
-    % Trim trim y-axis (freq) data as needed
-    %yld = group.ylims_desired;
-    if ~isempty(yld)   % X data holds frequencies, which go along y-axis
-        ind = xout >= yld(1) & xout < yld(2);
-        xout = xout(ind);
-        data_out = data_out(ind,:,:);
-    end
-    
-    % Trim x-axis (time) data as needed
-    %xld = group.xlims_desired;
-    if ~isempty(xld)            % X-axis data is time, which is stored in xdata2
-        ind = x2out > xld(1) & x2out < xld(2);
-        x2out = x2out(ind);
-        data_out = data_out(:,:,ind);
-    end
-
-end
 
 
 function [amask] = calc_transparency_mask(data,overlay_opts)

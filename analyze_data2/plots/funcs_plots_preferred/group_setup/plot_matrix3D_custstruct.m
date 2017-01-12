@@ -96,17 +96,36 @@ function [h1, out] = plot_matrix3D_custstruct_subfunc(abscissa,group,opts_PM3D,o
         end
         
     end
+    
+    
+    % Calculate means across cells if not already populated
+    for i = 1:length(group)
+        
+        if remove_dependent
+            bad_dependent = ~remove_dependent_FFC_pairs(group(i).metadata.mypairs);
+        else
+            bad_dependent = false(1,size(group(i).data,2));
+        end
+        
+        % Calculate mean of data
+        if isempty(group(i).data_mu)
+            group(i).data_mu = mean(group(i).data,2);
+        end
+        
+        % Calculate STE of data
+        if isempty(group(i).data_STE)
+            group(i).data_STE=std(group(i).data(:,~bad_dependent),[],2) / sqrt(size(group(i).data(:,~bad_dependent),2)); % Standard error  - only across non-dependent
+        end
+        
+    end
+
+    
 
     
     % Plot the data
     h1=[];
     for i = 1:length(group)
-        [data, x] = extract_data(group(i),abscissa,do_sgolay);
-        if remove_dependent
-            bad_dependent = ~remove_dependent_FFC_pairs(group(i).metadata.mypairs);
-        else
-            bad_dependent = false(1,size(data,2));
-        end
+        [data_mu, x] = extract_data(group(i),abscissa,do_sgolay,[],[],'data_mu');
         
         if ~isempty(group(i).colour_desired)
             colorspec = {'Color',group(i).colour_desired};
@@ -116,17 +135,15 @@ function [h1, out] = plot_matrix3D_custstruct_subfunc(abscissa,group,opts_PM3D,o
             end
         end
         
-        if ~isempty(data)            
+        if ~isempty(data_mu)            
             %hold on; [h1(i)] = plott_matrix3D(x,data,opts_PM3D{:},'LineSpec',{colorspec{:},'LineWidth',2});   % Old code, using plott_matrix3D. This code is okay in most cases,
                                                                                                                 % but doesn't work with remove_dependent turned on.
+                                                                                                                
+                                                                                                                
+                                                                                                                
+            data_STE = group(i).data_STE;
+            hold on; [h1(i)] = plott_matrix3D_simplified(x,data_mu,data_STE,{colorspec{:},'LineWidth',2},{},opts_PM3D{find(strcmp(opts_PM3D,'showErrorbars'))+1});
             
-            if size(data,2) > 1
-                Xste=std(data(:,~bad_dependent),[],2) / sqrt(size(data(:,~bad_dependent),2)); % Standard error  - only across non-dependent
-            else
-                Xste=group(i).data_STE;
-            end
-            X=mean(data,2);
-            hold on; [h1(i)] = plott_matrix3D_simplified(x,X,Xste,{colorspec{:},'LineWidth',2},{},opts_PM3D{find(strcmp(opts_PM3D,'showErrorbars'))+1});
                                                                                                                 % ^^ This is a really cheap temporary hack!
             
         else
@@ -249,7 +266,7 @@ function [h1, out] = plot_matrix3D_custstruct_subfunc(abscissa,group,opts_PM3D,o
             end
             for i = 1:group_spacing:length(group)
                 
-                [data, x] = extract_data(group(i),abscissa,do_sgolay);
+                [data, x] = extract_data(group(i),abscissa,do_sgolay,[],[],'data');
                 if stats_mode == 4
                     [data2, x] = extract_data(group(i+1),abscissa,do_sgolay);
                 end
@@ -341,42 +358,6 @@ function [h1, out] = plot_matrix3D_custstruct_subfunc(abscissa,group,opts_PM3D,o
 %     title(['p = ' num2str(p(1))])
 %     
     out = [];
-end
-
-
-function Y=ste(varargin)
-    Y = std(varargin{:}) / sqrt(size(varargin{1},varargin{3}));
-end
-
-
-function [data_out, x] = extract_data(group,abscissa,do_sgolay)
-    
-    data = group.data;
-    xdata = group.xdata;
-    if ~isempty(xdata); x = xdata;
-    else x = abscissa;
-    end
-    
-
-    % If data still isn't real, we convert it to real, only after
-    % taking mean.
-    if ~isreal(data)
-        data = mean(data,2);
-        data = abs(data);
-        %data = pls_complex2angle_centpi(data);
-        warning('Complex data received! We should be bootstrapping now, meaning that input data should always be real.');
-    end
-        
-    if ~isempty(data) && do_sgolay
-        fprintf('Filtering data with SG order 3 filter.\n');
-        df = mode(diff(x));
-        sgf = round(20/df);
-        if mod(sgf,2) == 0; sgf=sgf+1;end
-        data_out = sgolayfilt(data,3,sgf);
-    else
-        data_out=data;
-    end
-
 end
 
 

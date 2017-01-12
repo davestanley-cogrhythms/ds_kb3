@@ -46,7 +46,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
             %s.sfc_mode =  45.6018103043;
             s.sfc_mode =  45.6018111011;
             s.perm_mode = s.sfc_mode;
-            %s.perm_mode = 52.700001001;         % Units
+            s.perm_mode = 52.700001001;         % Units
         case 52         % Units time series
             s.sfc_mode  = 52.700001001;
             s.perm_mode = 52.700001001;
@@ -93,8 +93,8 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     % More pls switches
     opts_pls = Opts_Pls;
     opts_pls.plotmode = 1;                   % 1-SFC; 2-PSD; 3-time series; 4-phase; 5-SpkPSD; 6- Abs(Cave*exp(i*phi)); 7 - angle(Cave*exp(i*phi)); 8-Cave*exp(i*phi))
-    opts_pls.permdat2pls = 1; % Instead of using Cave from sfc_mode, use Cave1 and Cave2 data from perm_mode
-    opts_pls.perm2pls = 0;                   % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
+    opts_pls.permdat2pls = 0; % Instead of using Cave from sfc_mode, use Cave1 and Cave2 data from perm_mode
+    opts_pls.perm2pls = 1;                   % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
         opts_pls.perm2pls_do_bh = 1;         % Do bh stepup instead of basic test
         opts_pls.perm2pls_dophi = 0;
         opts_pls.perm2pls_return_mode = 4;                 % Return mode of perm2pls (4=zscore)
@@ -131,8 +131,8 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     s.sp_threshold = 10;
     
     % Group options
-    s.do_group_collapse_pls2days = 1;
-    s.do_group_normalize_specgram_to_baseline_time = 1;
+    s.do_group_collapse_pls2days = 0;
+    s.do_group_normalize_specgram_to_baseline_time = 0;
         s.normalize_within_elects = 1;
         s.specgram_baseline_time = -1.199;
     
@@ -140,7 +140,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     s.groupmode = 0;   % 0-Use default grouping (all pairs, enumerate over ctgs);
                        % 1:4-Select various subgroups
                        % 5:6-Separate into days
-        s.examine_Sch_based_on_animal = 0;          % For animal L, do Cat/Dog; for O do Goc/Tad
+        s.examine_Sch_based_on_animal = 1;          % For animal L, do Cat/Dog; for O do Goc/Tad
 
     s.swap_mode = 0;
 
@@ -183,12 +183,12 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
         s.PM3Dsp_overlay_opts.do_contours = 0;
             s.overlay_raw_contours = 0;               % Overlays contours showing raw (non-diffed) FFC values.
             s.swap_in_groupdata_contours = 0;         % Overlays contours showing the same data being plotted in spectrogram (taken from group.data)
-            s.swap_in_grouppairs_merge_pvals = 0;     % Overlay contours showing p values
+            s.swap_in_grouppairs_merge_pvals = 1;     % Overlay contours showing p values
             warning('Also need to implemetn code to query data_STE in plotting codes.');
         s.PM3Dsp_overlay_opts.contour_nv = [];
         s.PM3Dsp_overlay_opts.contour_linespec = {'k.'};
         % Stats
-        s.PM3Dsp_stats_opts.stats_displaymode = 3;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
+        s.PM3Dsp_stats_opts.stats_displaymode = 0;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
         s.PM3Dsp_stats_opts.statsfunc = [];
         s.PM3Dsp_stats_opts.stats_comparison = [0];
         s.PM3Dsp_stats_opts.contours_alphas = [0.01 0.001 0.0001];
