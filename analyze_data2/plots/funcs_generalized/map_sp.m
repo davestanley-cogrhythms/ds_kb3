@@ -45,14 +45,30 @@ function [sp_out] = map_sp(mode1, mode2,mypairs1,mypairs2,sp,md,bad_any1,bad_any
 
                 clear inds
                 sp_out = false(size(mypairs2,1),size(sp,2));
+                do_either_electrode = 0;        % 1-Either electrode can carry a unit
+                                                % 0-Both electrodes must carry a unit
                 for i = 1:size(mypairs2,1)
-                    p1 = mypairs2(i,1); p2=mypairs2(i,2);
-                    inds{i} = find(sp_index_2_elect == p1 | sp_index_2_elect == p2);     % indices of units associated with the ith pair
-                    sp_curr = sp(inds{i},:);
-                    sp_out(i,:) = any(sp_curr,1);                                % Uncomment for either electrode carrying sig. unit.
-                    %sp_out(i,:) = all(sp_curr,1) * double(~isempty(sp_curr));   % Uncomment for both electrodes carrying sig. Unit.
-                                                    % ^^ Note - for some all returns trues if sp_curr is empty. This
-                                                    %    forces the entries to be zero.
+                    
+                    if do_either_electrode
+                        p1 = mypairs2(i,1); p2=mypairs2(i,2);
+                        inds{i} = find(sp_index_2_elect == p1 | sp_index_2_elect == p2);     % indices of units associated with the ith pair
+                        sp_curr = sp(inds{i},:);
+                        %sp_out(i,:) = any(sp_curr,1);                                % Uncomment for either electrode carrying sig. unit.
+                        sp_out(i,:) = all(sp_curr,1) * double(~isempty(sp_curr));  
+                                                        % Legacy code - note this actually doesnt work well, since it gives a 
+                                                        %             free pass to electrodes without any units on them!
+                                                        % Uncomment for both electrodes carrying sig. Unit.
+                                                        % ^^ Note - for some all returns trues if sp_curr is empty. This
+                                                        %    forces the entries to be zero.
+                    else
+                        p1 = mypairs2(i,1); p2=mypairs2(i,2);
+                        ind1 = sp_index_2_elect == p1;     % indices of units on 1st electrode in pair
+                        ind2 = sp_index_2_elect == p2;     % indices of units on 2nd electrode in pair
+                        sp_curr1 = any(sp(ind1,:),1);       % Are any of electrode 1's units significant?
+                        sp_curr2 = any(sp(ind2,:),1);       % Are any of electrode 2's units significant?
+                        sp_out(i,:) = sp_curr1 & sp_curr2;  % Both electrode 1 and electrode 2 must have at
+                                                            % least 1 significant unit
+                    end
                 end
         end
 %         toc
