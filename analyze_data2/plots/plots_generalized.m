@@ -14,10 +14,13 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
 
     data_mode = 45;
     switch data_mode
+        case 2.0          % SFC
+            s.sfc_mode =  2.0511101;
+            s.perm_mode = 52.700001001;
         case 2.2          % SFC
-            s.sfc_mode =  2.201511101;
-            s.perm_mode = 2.201511101;
-%             s.perm_mode = 52.700001001;
+            %s.sfc_mode =  2.2511101;
+            s.sfc_mode =  2.201711101;
+            s.perm_mode = 52.700001001;
         case 2.3          % SFC all pairs
             s.sfc_mode =  2.301711101;
             s.perm_mode = 2.301711101;
@@ -30,7 +33,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
 %             s.sfc_mode =  22.401511111;     % Partial FFC
 %             s.perm_mode = s.sfc_mode;
 %             s.sfc_mode =  22.451411103;     % FFC boundary vs non-boundary
-%               s.perm_mode = 52.700001001;
+            s.perm_mode = 52.700001001;
         case 23         % FFC spectrogram
             s.sfc_mode =  23.4013113041;
             %s.sfc_mode = 23.4513101031;
