@@ -26,7 +26,7 @@ currfigname = 'Fg6_00a';
     % Setup params 
     clear group group0
 
-    data_mode = 45;
+    data_mode = 23;
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -49,12 +49,10 @@ currfigname = 'Fg6_00a';
 %             s.sfc_mode =  22.451411103;     % FFC boundary vs non-boundary
             s.perm_mode = 52.700001001;
         case 23         % FFC spectrogram
-            s.sfc_mode =  23.4013113041;
             %s.sfc_mode = 23.4513101031;
-            %s.sfc_mode =  23.4018111011;
+            %s.sfc_mode =  23.4013111011;
+            s.sfc_mode =  23.4018111011;
             s.perm_mode = s.sfc_mode;
-            %s.perm_mode = 52.700001001;
-            %s.perm_mode =  22.401811101;
         case 41         % PSD
             s.sfc_mode =  41.601811101;
             s.perm_mode = 41.601811101;
@@ -110,8 +108,8 @@ currfigname = 'Fg6_00a';
     % More pls switches
     opts_pls = Opts_Pls;
     opts_pls.plotmode = 1;                   % 1-SFC; 2-PSD; 3-time series; 4-phase; 5-SpkPSD; 6- Abs(Cave*exp(i*phi)); 7 - angle(Cave*exp(i*phi)); 8-Cave*exp(i*phi))
-    opts_pls.permdat2pls = 0; % Instead of using Cave from sfc_mode, use Cave1 and Cave2 data from perm_mode
-    opts_pls.perm2pls = 1;                   % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
+    opts_pls.permdat2pls = 1; % Instead of using Cave from sfc_mode, use Cave1 and Cave2 data from perm_mode
+    opts_pls.perm2pls = 0;                   % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
         opts_pls.perm2pls_do_bh = 1;         % Do bh stepup instead of basic test
         opts_pls.perm2pls_dophi = 0;
         opts_pls.perm2pls_return_mode = 4;                 % Return mode of perm2pls (4=zscore)
@@ -120,7 +118,7 @@ currfigname = 'Fg6_00a';
         opts_pls.sort_pls = 0;               % Sort into preferred and non-preferred
         opts_pls.swap_pls = [];
         %opts_pls.swap_pls = [2,4;5,7];      
-        opts_pls.do_diff = 0;                % Take difference between adjacent pls (pls(:,:,2) - pls(:,:,1))
+        opts_pls.do_diff = 1;                % Take difference between adjacent pls (pls(:,:,2) - pls(:,:,1))
         opts_pls.do_diff_percent = 0;
         opts_pls.do_abs_diff = 0;            % Take absolute value after doing diff.
     opts_pls.target_pls_format = 0; % Convert pls to match this format!
@@ -239,7 +237,7 @@ currfigname = 'Fg6_01a';
     % Setup params 
     clear group group0
 
-    data_mode = 45;
+    data_mode = 23;
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -262,12 +260,9 @@ currfigname = 'Fg6_01a';
 %             s.sfc_mode =  22.451411103;     % FFC boundary vs non-boundary
             s.perm_mode = 52.700001001;
         case 23         % FFC spectrogram
-            s.sfc_mode =  23.4013113041;
-            %s.sfc_mode = 23.4513101031;
-            %s.sfc_mode =  23.4018111011;
+            s.sfc_mode =  23.4018103041;
+            %s.sfc_mode =  23.4013113041;
             s.perm_mode = s.sfc_mode;
-            %s.perm_mode = 52.700001001;
-            %s.perm_mode =  22.401811101;
         case 41         % PSD
             s.sfc_mode =  41.601811101;
             s.perm_mode = 41.601811101;
@@ -437,15 +432,17 @@ currfigname = 'Fg6_01a';
 
 opts_exclude.excludeL = 0;
 opts_exclude.excludeO = 1; 
-ind = 1:2;
-[wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind);
+ind = 1:2; myylims = [0 100];
+ind=1:5; myylims = [0 50];
+[wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
 
    
 
 opts_exclude.excludeL = 1;
 opts_exclude.excludeO = 0; 
-ind = 3:4;
-[wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind);
+ind = 3:4; myylims = [0 100];
+ind=1:5; myylims = [0 50];
+[wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
 
 
 
@@ -463,7 +460,7 @@ currfigname = 'Fg6_01b';
     clear group group0
     
 
-    data_mode = 45;
+    data_mode = 23;
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -486,12 +483,13 @@ currfigname = 'Fg6_01b';
 %             s.sfc_mode =  22.451411103;     % FFC boundary vs non-boundary
             s.perm_mode = 52.700001001;
         case 23         % FFC spectrogram
-            s.sfc_mode =  23.4013113041;
-            %s.sfc_mode = 23.4513101031;
-            %s.sfc_mode =  23.4018111011;
-            s.perm_mode = s.sfc_mode;
-            %s.perm_mode = 52.700001001;
-            %s.perm_mode =  22.401811101;
+            %s.sfc_mode =  23.4013113041;
+            s.sfc_mode =  23.4018103041;
+            if testing_mode
+                s.sfc_mode =  23.4013111011;                
+            end
+            %s.perm_mode = 23.4013111011;
+            s.perm_mode = 23.4018111011;
         case 41         % PSD
             s.sfc_mode =  41.601811101;
             s.perm_mode = 41.601811101;
@@ -648,6 +646,7 @@ currfigname = 'Fg6_01b';
         s.PM3Dsp_overlay_opts.contour_linespec = {'k.'};
         % Stats
         s.PM3Dsp_stats_opts.stats_displaymode = 3;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
+        if testing_mode; s.PM3Dsp_stats_opts.stats_displaymode = 0; end
         s.PM3Dsp_stats_opts.statsfunc = [];
         s.PM3Dsp_stats_opts.stats_comparison = [0];
         s.PM3Dsp_stats_opts.contours_alphas = [0.01 0.001 0.0001];
@@ -661,20 +660,63 @@ currfigname = 'Fg6_01b';
     s.opts_PSC.opts_diagtest.threshold = 1.0; 
     s.opts_PDays.do_subplots = 1;
         s.opts_PDays.max_subplots_per_fig = 16;
+  
         
-       
+        
+     
+
 opts_exclude.excludeL = 0;
 opts_exclude.excludeO = 1; 
 
 [tf_avail] = get_freqband_timeband(s.perm_mode,opts_exclude); s.tf_avail = tf_avail;
-i=3;
-s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
-s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+switch data_mode
+    case 45
+        i=3;
+        
+        s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+        s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
 
-ind = 1:6;
-% ind = 1:2;
-myylims = [0 50];
-[wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims)
+        ind = 1:6;
+        % ind = 1:2;
+        myylims = [0 50];
+        [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims)
+
+        
+    case 23
+        ind = 1:6;
+        myylims = [0 50];
+        
+        % Beta
+        i=3;
+        s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+        s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+        [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
+        %title('Monkey L Beta')
+        
+        % Alpha
+        i=4;
+        s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+        s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+        [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
+        %title('Monkey L Alpha')
+        
+        % Alpha
+        i=5;
+        s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+        s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+        [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
+        %title('Monkey L Alpha')
+        
+        % Theta
+        % Alpha
+        i=6;
+        s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+        s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+        [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
+        %title('Monkey L Theta')
+        
+        
+end
 
  
 
@@ -682,13 +724,43 @@ opts_exclude.excludeL = 1;
 opts_exclude.excludeO = 0; 
 
 [tf_avail] = get_freqband_timeband(s.perm_mode,opts_exclude); s.tf_avail = tf_avail;
-i=6; 
-s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
-s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
 
-ind = 7:12;
-% ind = 7:8;
-myylims = [0 50];
-[wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims)
+switch data_mode
+    case 45
+        i=6; 
+        s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+        s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+
+        ind = 7:12;
+        % ind = 7:8;
+        myylims = [0 50];
+        [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
+    case 23
+        
+        ind = 7:12;
+        myylims = [0 50];
+        
+        % Beta
+        i=10; 
+        s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+        s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+        [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
+        %title('Monkey O Beta')
+        
+        % Alpha
+        i=11; 
+        s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+        s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+        [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
+        %title('Monkey O Alpha')
+        
+        % Theta
+        i=9; 
+        s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+        s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+        [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
+        %title('Monkey O Theta')
+        
+end
 
 

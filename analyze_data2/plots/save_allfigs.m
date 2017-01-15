@@ -3,7 +3,7 @@
 function save_allfigs(currcommit,currfigname)
     %% save_allfigs
     % % For loop for saving figs
-    if ~exist('currcommit'); currcommit = '002c_SFNprep_'; end
+    if ~exist('currcommit'); currcommit = '003_paper2_'; end
     if ~exist('currfigname'); currfigname = 'Fig6'; end
     savenames={'fig1','fig2','fig3','fig4','fig5','fig6','fig7','fig8','fig9','fig10','fig11','fig12','fig13','fig14','fig15','fig16','fig17','fig18','fig19','fig20','fig21','fig22','fig23','fig24','fig25','fig26','fig27','fig28','fig28','fig30','fig31','fig32'};
     mydate = datestr(datenum(date),'yy/mm/dd'); mydate = strrep(mydate,'/','');
@@ -16,7 +16,7 @@ function save_allfigs(currcommit,currfigname)
     mkdir(fullfile(basepath,sp));
     multiplot_on = 0;
     do_pdf = 0;
-    for i=[1:4]
+    for i=[1:11]
         %figure(i); %ylim([0 0.175])
 %         title('');
         %ylabel('');
@@ -45,9 +45,9 @@ function save_allfigs(currcommit,currfigname)
         end
     end
     %%
-    mycomment = ['Autocommit associated with saved figures.'];
+    mycomment = ['Autocommit associated with saved figures. Figs_batch_6_0, Fg6_00 to Fg6_01b'];
     currd = pwd;
-    cd ..
+    cd ../..
     system('git add *');
     system(['git commit -am "' sp ' ' mycomment '"']);
     cd(currd);
