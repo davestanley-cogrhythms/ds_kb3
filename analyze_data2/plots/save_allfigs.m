@@ -45,7 +45,7 @@ function save_allfigs(currcommit,currfigname)
         end
     end
     %%
-    mycomment = ['Autocommit associated with saved figures. Figs_batch_6_0, Fg6_00 to Fg6_01b'];
+    mycomment = ['Autocommit associated with saved figures. Figs_batch_6_0, Fg6_00 to Fg6_01b. Imag'];
     currd = pwd;
     cd ../..
     system('git add *');
