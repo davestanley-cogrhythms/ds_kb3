@@ -107,7 +107,7 @@ currfigname = 'Fg6_00a';
 
     % More pls switches
     opts_pls = Opts_Pls;
-    opts_pls.plotmode = 7;                   % 1-SFC; 2-PSD; 3-time series; 4-phase; 5-SpkPSD; 6- Abs(Cave*exp(i*phi)); 7 - angle(Cave*exp(i*phi)); 8-Cave*exp(i*phi))
+    opts_pls.plotmode = 1;                   % 1-SFC; 2-PSD; 3-time series; 4-phase; 5-SpkPSD; 6- Abs(Cave*exp(i*phi)); 7 - angle(Cave*exp(i*phi)); 8-Cave*exp(i*phi))
     opts_pls.permdat2pls = 1; % Instead of using Cave from sfc_mode, use Cave1 and Cave2 data from perm_mode
     opts_pls.perm2pls = 0;                   % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
         opts_pls.perm2pls_do_bh = 1;         % Do bh stepup instead of basic test
@@ -199,11 +199,11 @@ currfigname = 'Fg6_00a';
         s.PM3Dsp_overlay_opts.do_contours = 0;
             s.overlay_raw_contours = 0;               % Overlays contours showing raw (non-diffed) FFC values.
             s.swap_in_groupdata_contours = 0;         % Overlays contours showing the same data being plotted in spectrogram (taken from group.data)
-            s.swap_in_grouppairs_merge_pvals = 1;     % Overlays contours showing p values
+            s.swap_in_grouppairs_merge_pvals = 0;     % Overlays contours showing p values
         s.PM3Dsp_overlay_opts.contour_nv = [];
         s.PM3Dsp_overlay_opts.contour_linespec = {'k.'};
         % Stats
-        s.PM3Dsp_stats_opts.stats_displaymode = 0;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
+        s.PM3Dsp_stats_opts.stats_displaymode = 3;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
         s.PM3Dsp_stats_opts.statsfunc = [];
         s.PM3Dsp_stats_opts.stats_comparison = [0];
         s.PM3Dsp_stats_opts.contours_alphas = [0.01 0.001 0.0001];
@@ -322,7 +322,7 @@ currfigname = 'Fg6_01a';
 
     % More pls switches
     opts_pls = Opts_Pls;
-    opts_pls.plotmode = 7;                   % 1-SFC; 2-PSD; 3-time series; 4-phase; 5-SpkPSD; 6- Abs(Cave*exp(i*phi)); 7 - angle(Cave*exp(i*phi)); 8-Cave*exp(i*phi))
+    opts_pls.plotmode = 1;                   % 1-SFC; 2-PSD; 3-time series; 4-phase; 5-SpkPSD; 6- Abs(Cave*exp(i*phi)); 7 - angle(Cave*exp(i*phi)); 8-Cave*exp(i*phi))
     opts_pls.permdat2pls = 1; % Instead of using Cave from sfc_mode, use Cave1 and Cave2 data from perm_mode
     opts_pls.perm2pls = 0;                   % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
         opts_pls.perm2pls_do_bh = 1;         % Do bh stepup instead of basic test
@@ -414,15 +414,15 @@ currfigname = 'Fg6_01a';
         s.PM3Dsp_overlay_opts.do_contours = 0;
             s.overlay_raw_contours = 0;               % Overlays contours showing raw (non-diffed) FFC values.
             s.swap_in_groupdata_contours = 0;         % Overlays contours showing the same data being plotted in spectrogram (taken from group.data)
-            s.swap_in_grouppairs_merge_pvals = 1;     % Overlays contours showing p values
+            s.swap_in_grouppairs_merge_pvals = 0;     % Overlays contours showing p values
         s.PM3Dsp_overlay_opts.contour_nv = [];
         s.PM3Dsp_overlay_opts.contour_linespec = {'k.'};
         % Stats
-        s.PM3Dsp_stats_opts.stats_displaymode = 0;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
+        s.PM3Dsp_stats_opts.stats_displaymode = 3;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
         s.PM3Dsp_stats_opts.statsfunc = [];
         s.PM3Dsp_stats_opts.stats_comparison = [0];
-        s.PM3Dsp_stats_opts.contours_alphas = [0.05 0.001 0.0001];
-        s.PM3Dsp_stats_opts.transparency_alpha = [0.05];
+        s.PM3Dsp_stats_opts.contours_alphas = [0.01 0.001 0.0001];
+        s.PM3Dsp_stats_opts.transparency_alpha = [0.01];
     
     s.opts_PSC.paperfig_mode = paperfig_mode;
     s.opts_PSC.remove_dependent = 0;
