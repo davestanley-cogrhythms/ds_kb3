@@ -33,7 +33,7 @@ Thumbs.db
 *.svg
 *.tif
 #*.png
-readme.txt
+#readme.txt
 
 # Binary files
 run_analysis_binwrapp
