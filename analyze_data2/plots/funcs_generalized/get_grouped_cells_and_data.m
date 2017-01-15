@@ -42,11 +42,11 @@ for i = 1:length(group)
             end
             
             if plotmode == 6 || plotmode == 7
-                warning('This still might not work properly');
-                myfunc = @(x) (fcomplex2real(mean(x))); Nbs = 100;
-                group(i).data = bootstrp_and_scale(Nbs,myfunc,group(i).data')';
-                group(i).datastats = bootstrp_and_scale(Nbs,myfunc,group(i).datastats')';
-                clear myfunc Nbs
+%                 warning('This still might not work properly');
+%                 myfunc = @(x) (fcomplex2real(mean(x))); Nbs = 100;
+%                 group(i).data = bootstrp_and_scale(Nbs,myfunc,group(i).data')';
+%                 group(i).datastats = bootstrp_and_scale(Nbs,myfunc,group(i).datastats')';
+%                 clear myfunc Nbs
                 
                 % Bootstrap override
 %                 group(i).data = fcomplex2real(mean(group(i).data,2));
