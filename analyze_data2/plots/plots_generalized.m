@@ -12,7 +12,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
 % Setup params 
     clear group group0
 
-    data_mode = 45;
+    data_mode = 22;
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -61,8 +61,8 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     end
 
     % Stage selection
-    s.curr_stage_sfc = 2;
-    s.curr_stage_sp = 2;
+    s.curr_stage_sfc = 3;
+    s.curr_stage_sp = 3;
     if get_is_stage4(s.sfc_mode); s.curr_stage_sfc = 4; end
     if get_is_stage4(s.perm_mode); s.curr_stage_sp = 4; end
 
@@ -96,8 +96,8 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     % More pls switches
     opts_pls = Opts_Pls;
     opts_pls.plotmode = 1;                   % 1-SFC; 2-PSD; 3-time series; 4-phase; 5-SpkPSD; 6- Abs(Cave*exp(i*phi)); 7 - angle(Cave*exp(i*phi)); 8-Cave*exp(i*phi))
-    opts_pls.permdat2pls = 0; % Instead of using Cave from sfc_mode, use Cave1 and Cave2 data from perm_mode
-    opts_pls.perm2pls = 1;                   % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
+    opts_pls.permdat2pls = 1; % Instead of using Cave from sfc_mode, use Cave1 and Cave2 data from perm_mode
+    opts_pls.perm2pls = 0;                   % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
         opts_pls.perm2pls_do_bh = 1;         % Do bh stepup instead of basic test
         opts_pls.perm2pls_dophi = 0;
         opts_pls.perm2pls_return_mode = 4;                 % Return mode of perm2pls (4=zscore)
@@ -147,7 +147,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
 
     s.swap_mode = 0;
 
-    s.group_do_merge = 0;
+    s.group_do_merge = 1;
         s.groupmerge_operation = 0;
 
 % % Plot switches

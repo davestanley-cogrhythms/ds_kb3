@@ -34,15 +34,24 @@ function groups_merged = grouppairs_merge2(group,iscirc,operation)
         % Perform operation
         group1 = group(2*i-1); group2 = group(2*i);
         ispaired = get_ispaired(group1,group2);
-        if ispaired
-            [groups_merged(i).data] = do_operation_paired(group1,group2,'data',operation,iscirc);
-            [groups_merged(i).datastats] = do_operation_paired(group1,group2,'datastats',operation,iscirc);  % should probably just get rid of this.
+        iscomplex = get_iscomplex(group1,group2);
+        if ~iscomplex
+            if ispaired
+                [groups_merged(i).data] = do_operation_paired(group1,group2,'data',operation,iscirc);
+                [groups_merged(i).datastats] = do_operation_paired(group1,group2,'datastats',operation,iscirc);  % should probably just get rid of this.
+            else
+                [z_mu, z_ste, pvals] = do_operation_unpaired(group1,group2,'data',operation,iscirc);
+                groups_merged(i).data_mu = z_mu;
+                groups_merged(i).data_STE = z_ste;
+                groups_merged(i).data_pvals = pvals;
+                [groups_merged(i).datastats] = do_operation_unpaired(group1,group2,'datastats',operation,iscirc);  % should probably just get rid of this.
+            end
         else
-            [z_mu, z_ste, pvals] = do_operation_unpaired(group1,group2,'data',operation,iscirc);
-            groups_merged(i).data_mu = z_mu;
-            groups_merged(i).data_STE = z_ste;
-            groups_merged(i).data_pvals = pvals;
-            [groups_merged(i).datastats] = do_operation_unpaired(group1,group2,'datastats',operation,iscirc);  % should probably just get rid of this.
+                [z_mu, z_ste, pvals] = do_operation_complex(group1,group2,'data',operation,iscirc);
+                groups_merged(i).data_mu = z_mu;
+                groups_merged(i).data_STE = z_ste;
+                groups_merged(i).data_pvals = pvals;
+                [groups_merged(i).datastats] = do_operation_unpaired(group1,group2,'datastats',operation,iscirc);  % should probably just get rid of this.
         end
 
         % Update legend (vs)
@@ -182,6 +191,42 @@ function [z, z_ste, pvals] = do_operation_unpaired(group1,group2, fieldname, ope
         end
 end
 
+
+
+function [z, z_ste, pvals] = do_operation_complex(group1,group2, fieldname, operation,iscirc)
+%% function [z, z_ste, z_pval] = do_operation_complex(group1,group2, fieldname, operation, iscirc)
+
+        z = [];
+        z_ste = [];
+        pvals = [];
+        
+        data1 = group1.(fieldname);
+        data2 = group2.(fieldname);
+        
+        switch operation
+            case 0
+                % Mean difference
+                z = abs(mean(data1,2)) - abs(mean(data2,2));
+
+                % Calculate standard error (assume gaussian!)
+                z_ste = calc_ste(data1,data2);
+
+                % Calculate p values
+                statsfunc = @ranksum;   % Since it's unpaired!
+                pvals = get_pvals(data1,data2,statsfunc);
+                
+            otherwise
+                error('Undefined operation');
+
+        end
+        
+        if iscirc && any(operation == [1,2,3])
+            ind=z>pi; z(ind)=z(ind)-2*pi;
+            ind=z<-pi; z(ind)=z(ind)+2*pi;
+            %z = abs(z);
+        end
+end
+
 function [z] = do_operation_paired(group1,group2, fieldname, operation,iscirc)
 %% function [z, z_ste, z_pval] = do_operation_paired(group1,group2, fieldname, operation,iscirc)
 
@@ -239,4 +284,9 @@ function ispaired = get_ispaired(group1,group2)
     else
         ispaired = false;
     end
+end
+
+
+function iscomplex = get_iscomplex(group1,group2)
+    iscomplex = any(~isreal(group1(1).data(:))) || any(~isreal(group2(1).data(:)));
 end
