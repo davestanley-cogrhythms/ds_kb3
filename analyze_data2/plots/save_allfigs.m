@@ -16,7 +16,7 @@ function save_allfigs(currcommit,currfigname)
     mkdir(fullfile(basepath,sp));
     multiplot_on = 0;
     do_pdf = 0;
-    for i=[1:6]
+    for i=[1:11]
         %figure(i); %ylim([0 0.175])
 %         title('');
         %ylabel('');
@@ -45,7 +45,7 @@ function save_allfigs(currcommit,currfigname)
         end
     end
     %%
-    mycomment = ['Autocommit associated with saved figures. Figs_batch_6_0, Fg6_00 to Fg6_01b. PSD'];
+    mycomment = ['Autocommit associated with saved figures. Figs_batch_6_0, Fg6_00 to Fg6_01b. plotmode 7'];
     currd = pwd;
     cd ../..
     system('git add *');
