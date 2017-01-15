@@ -39,6 +39,15 @@ function [h1] = plot_histplot(varargin)
     remove_nans_in_stats = 1;
     
     
+    % Convert group data to real if it's complex
+    if any(~isreal(group(1).data(:)))
+        for i = 1:length(group)
+            group(i).data = abs(group(i).data);
+            group(i).datastats = abs(group(i).datastats);
+        end
+    end
+    
+    
     switch plot_type
         case {'hist','histall_imagesc','histall_pdf','histall_cdf'}
             [h1] = hist_all(group,plot_type);
