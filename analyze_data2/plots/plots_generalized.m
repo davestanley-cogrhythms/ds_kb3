@@ -161,7 +161,8 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     s.plot_on_electrode_distances = 0;
     
     s.doing_cat_vs_dog = (opts_pls.perm2pls && opts_pls.perm2pls_allow_signed == 1) || ...
-        (opts_pls.permdat2pls == 1 && opts_pls.do_diff == 1 && opts_pls.do_abs_diff == 0);
+        (opts_pls.permdat2pls == 1 && opts_pls.do_diff == 1 && opts_pls.do_abs_diff == 0) || ...
+        s.group_do_merge == 1;
     
     s.do_custom_colourmap = s.doing_cat_vs_dog;
     s.do_custom_colourmap = false;

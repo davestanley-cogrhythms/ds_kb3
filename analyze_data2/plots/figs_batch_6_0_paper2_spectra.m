@@ -118,7 +118,7 @@ currfigname = 'Fg6_00a';
         opts_pls.sort_pls = 0;               % Sort into preferred and non-preferred
         opts_pls.swap_pls = [];
         %opts_pls.swap_pls = [2,4;5,7];      
-        opts_pls.do_diff = 1;                % Take difference between adjacent pls (pls(:,:,2) - pls(:,:,1))
+        opts_pls.do_diff = 0;                % Take difference between adjacent pls (pls(:,:,2) - pls(:,:,1))
         opts_pls.do_diff_percent = 0;
         opts_pls.do_abs_diff = 0;            % Take absolute value after doing diff.
     opts_pls.target_pls_format = 0; % Convert pls to match this format!
@@ -159,7 +159,7 @@ currfigname = 'Fg6_00a';
 
     s.swap_mode = 0;
 
-    s.group_do_merge = 0;
+    s.group_do_merge = 1;
         s.groupmerge_operation = 0;
 
 % % Plot switches
@@ -173,7 +173,8 @@ currfigname = 'Fg6_00a';
     s.plot_on_electrode_distances = 0;
     
     s.doing_cat_vs_dog = (opts_pls.perm2pls && opts_pls.perm2pls_allow_signed == 1) || ...
-        (opts_pls.permdat2pls == 1 && opts_pls.do_diff == 1 && opts_pls.do_abs_diff == 0);
+        (opts_pls.permdat2pls == 1 && opts_pls.do_diff == 1 && opts_pls.do_abs_diff == 0) || ...
+        s.group_do_merge == 1;
     
     s.do_custom_colourmap = s.doing_cat_vs_dog;
     s.do_custom_colourmap = false;
@@ -198,11 +199,11 @@ currfigname = 'Fg6_00a';
         s.PM3Dsp_overlay_opts.do_contours = 0;
             s.overlay_raw_contours = 0;               % Overlays contours showing raw (non-diffed) FFC values.
             s.swap_in_groupdata_contours = 0;         % Overlays contours showing the same data being plotted in spectrogram (taken from group.data)
-            s.swap_in_grouppairs_merge_pvals = 0;     % Overlays contours showing p values
+            s.swap_in_grouppairs_merge_pvals = 1;     % Overlays contours showing p values
         s.PM3Dsp_overlay_opts.contour_nv = [];
         s.PM3Dsp_overlay_opts.contour_linespec = {'k.'};
         % Stats
-        s.PM3Dsp_stats_opts.stats_displaymode = 3;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
+        s.PM3Dsp_stats_opts.stats_displaymode = 0;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
         s.PM3Dsp_stats_opts.statsfunc = [];
         s.PM3Dsp_stats_opts.stats_comparison = [0];
         s.PM3Dsp_stats_opts.contours_alphas = [0.01 0.001 0.0001];
@@ -220,14 +221,16 @@ currfigname = 'Fg6_00a';
 
 opts_exclude.excludeL = 0;
 opts_exclude.excludeO = 1; 
-[wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm)
+[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
 
    
 
 opts_exclude.excludeL = 1;
 opts_exclude.excludeO = 0; 
-[wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm)
+[wrkspc_buffer, out2] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
 
+
+clear out1 out2
 
 
 %% Figure 6_01a - Cat vs Cat irr, etc, all electrodes
@@ -330,7 +333,7 @@ currfigname = 'Fg6_01a';
         opts_pls.sort_pls = 0;               % Sort into preferred and non-preferred
         opts_pls.swap_pls = [];
         %opts_pls.swap_pls = [2,4;5,7];      
-        opts_pls.do_diff = 1;                % Take difference between adjacent pls (pls(:,:,2) - pls(:,:,1))
+        opts_pls.do_diff = 0;                % Take difference between adjacent pls (pls(:,:,2) - pls(:,:,1))
         opts_pls.do_diff_percent = 0;
         opts_pls.do_abs_diff = 0;            % Take absolute value after doing diff.
     opts_pls.target_pls_format = 0; % Convert pls to match this format!
@@ -371,7 +374,7 @@ currfigname = 'Fg6_01a';
 
     s.swap_mode = 0;
 
-    s.group_do_merge = 0;
+    s.group_do_merge = 1;
         s.groupmerge_operation = 0;
 
 % % Plot switches
@@ -385,7 +388,8 @@ currfigname = 'Fg6_01a';
     s.plot_on_electrode_distances = 0;
     
     s.doing_cat_vs_dog = (opts_pls.perm2pls && opts_pls.perm2pls_allow_signed == 1) || ...
-        (opts_pls.permdat2pls == 1 && opts_pls.do_diff == 1 && opts_pls.do_abs_diff == 0);
+        (opts_pls.permdat2pls == 1 && opts_pls.do_diff == 1 && opts_pls.do_abs_diff == 0) || ...
+        s.group_do_merge == 1;
     
     s.do_custom_colourmap = s.doing_cat_vs_dog;
     s.do_custom_colourmap = false;
@@ -410,15 +414,15 @@ currfigname = 'Fg6_01a';
         s.PM3Dsp_overlay_opts.do_contours = 0;
             s.overlay_raw_contours = 0;               % Overlays contours showing raw (non-diffed) FFC values.
             s.swap_in_groupdata_contours = 0;         % Overlays contours showing the same data being plotted in spectrogram (taken from group.data)
-            s.swap_in_grouppairs_merge_pvals = 0;     % Overlays contours showing p values
+            s.swap_in_grouppairs_merge_pvals = 1;     % Overlays contours showing p values
         s.PM3Dsp_overlay_opts.contour_nv = [];
         s.PM3Dsp_overlay_opts.contour_linespec = {'k.'};
         % Stats
-        s.PM3Dsp_stats_opts.stats_displaymode = 3;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
+        s.PM3Dsp_stats_opts.stats_displaymode = 0;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
         s.PM3Dsp_stats_opts.statsfunc = [];
         s.PM3Dsp_stats_opts.stats_comparison = [0];
-        s.PM3Dsp_stats_opts.contours_alphas = [0.01 0.001 0.0001];
-        s.PM3Dsp_stats_opts.transparency_alpha = [0.01];
+        s.PM3Dsp_stats_opts.contours_alphas = [0.05 0.001 0.0001];
+        s.PM3Dsp_stats_opts.transparency_alpha = [0.05];
     
     s.opts_PSC.paperfig_mode = paperfig_mode;
     s.opts_PSC.remove_dependent = 0;
@@ -434,7 +438,7 @@ opts_exclude.excludeL = 0;
 opts_exclude.excludeO = 1; 
 ind = 1:2; myylims = [0 100];
 ind=1:5; myylims = [0 50];
-[wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
+[wrkspc_buffer, out3] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
 
    
 
@@ -442,10 +446,11 @@ opts_exclude.excludeL = 1;
 opts_exclude.excludeO = 0; 
 ind = 3:4; myylims = [0 100];
 ind=1:5; myylims = [0 50];
-[wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
+[wrkspc_buffer, out4] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
 
 
 
+clear out3 out4
 
 %% Figure 6_01b - Cat vs Cat irr, etc, only sig electrodes (signifcant FFC difference)
 clearvars -except wrkspc_buffer fv fv3
@@ -616,7 +621,8 @@ currfigname = 'Fg6_01b';
     s.plot_on_electrode_distances = 0;
     
     s.doing_cat_vs_dog = (opts_pls.perm2pls && opts_pls.perm2pls_allow_signed == 1) || ...
-        (opts_pls.permdat2pls == 1 && opts_pls.do_diff == 1 && opts_pls.do_abs_diff == 0);
+        (opts_pls.permdat2pls == 1 && opts_pls.do_diff == 1 && opts_pls.do_abs_diff == 0) || ...
+        s.group_do_merge == 1;
     
     s.do_custom_colourmap = s.doing_cat_vs_dog;
     s.do_custom_colourmap = false;
