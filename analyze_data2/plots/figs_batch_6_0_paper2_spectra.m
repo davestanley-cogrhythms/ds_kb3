@@ -587,7 +587,10 @@ currfigname = 'Fg6_00c';
     opts_perm.split_plusminus = 0;      % 0-Either; 1-Both; 2-Positive; 3-Negative
     opts_perm.alpha0 = 0.05;
     opts_perm.alpha_bh0 = 0.2;
-    opts_perm.alpha_bh0 = 0.05;
+    
+    
+    
+    %opts_perm.alpha_bh0 = 0.05;
     opts_perm.do_quantiles_mode = 0;
         opts_perm.chosen_quantile = .15;
         opts_perm.upper_quantile = 0;
