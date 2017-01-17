@@ -372,7 +372,7 @@ currfigname = 'Fg6_00b';
 
     s.swap_mode = 0;
 
-    s.group_do_merge = 1;
+    s.group_do_merge = 0;
         s.groupmerge_operation = 0;
 
 % % Plot switches
@@ -412,7 +412,7 @@ currfigname = 'Fg6_00b';
         s.PM3Dsp_overlay_opts.do_contours = 0;
             s.overlay_raw_contours = 0;               % Overlays contours showing raw (non-diffed) FFC values.
             s.swap_in_groupdata_contours = 0;         % Overlays contours showing the same data being plotted in spectrogram (taken from group.data)
-            s.swap_in_grouppairs_merge_pvals = 1;     % Overlays contours showing p values
+            s.swap_in_grouppairs_merge_pvals = 0;     % Overlays contours showing p values
         s.PM3Dsp_overlay_opts.contour_nv = [];
         s.PM3Dsp_overlay_opts.contour_linespec = {'k.'};
         % Stats
