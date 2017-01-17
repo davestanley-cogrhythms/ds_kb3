@@ -1,7 +1,5 @@
-function out = strcmp_anysubstring(str_cells,search_string)
-    % Searches through all strings str_cells; returns 1 for all cells
-    % containing search_string as a substring.
+function varargout = strcmp_anysubstring(varargin)
+    % Outdated; Alias for strcmp_substr
 
-    out = ~cellfun(@isempty,strfind(str_cells,search_string));
-
+    [varargout{1:nargout}] = strcmp_substr(varargin{:});
 end
