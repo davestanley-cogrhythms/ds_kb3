@@ -45,7 +45,7 @@ function [sp_out] = map_sp(mode1, mode2,mypairs1,mypairs2,sp,md,bad_any1,bad_any
 
                 clear inds
                 sp_out = false(size(mypairs2,1),size(sp,2));
-                do_either_electrode = 0;        % 1-Either electrode can carry a unit
+                do_either_electrode = 1;        % 1-Either electrode can carry a unit
                                                 % 0-Both electrodes must carry a unit
                 for i = 1:size(mypairs2,1)
                     

@@ -239,7 +239,7 @@ currfigname = 'Fg6_00b';
     % Setup params 
     clear group group0
 
-    data_mode = 45;
+    data_mode = 23;
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -437,6 +437,15 @@ opts_exclude.excludeO = 1;
 [tf_avail] = get_freqband_timeband(s.perm_mode,opts_exclude); s.tf_avail = tf_avail;
 
 switch data_mode
+    case 23
+        ind = [];
+        myylims = [0 100];
+        for i = [1:7]
+            s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+            s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+            [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
+        end
+    
     case 45
         ind = [];
         myylims = [0 100];
@@ -453,6 +462,14 @@ opts_exclude.excludeO = 0;
 [tf_avail] = get_freqband_timeband(s.perm_mode,opts_exclude); s.tf_avail = tf_avail;
 
 switch data_mode
+    case 23
+        ind = [];
+        myylims = [0 100];
+        for i = 1:14
+            s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+            s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+            [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
+        end
     case 45
         ind = [];
         myylims = [0 100];
@@ -475,7 +492,7 @@ currfigname = 'Fg6_00c';
     % Setup params 
     clear group group0
 
-    data_mode = 45;
+    data_mode = 23;
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
