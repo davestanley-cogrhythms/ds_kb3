@@ -16,7 +16,7 @@ function save_allfigs(currcommit,currfigname)
     mkdir(fullfile(basepath,sp));
     multiplot_on = 0;
     do_pdf = 0;
-    for i=[1:8]
+    for i=[1:21]
         %figure(i); %ylim([0 0.175])
 %         title('');
         %ylabel('');
