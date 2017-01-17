@@ -606,9 +606,11 @@ if plot_on_spect && is_spectrogram
                     center_F = tf_avail(j).freqband;
                     %mylabel = [num2str(j) ' ' tf_avail(j).label_short];
                     mylabel = [num2str(j) '.'];
-                    ctgs = group(i).ctgs;
-                    if (ctgs == 1 && strcmp(tf_avail(j).label_short(3),'A')) || ...
-                            (ctgs == 2 && strcmp(tf_avail(j).label_short(3),'B'))
+%                     ctgs = group(i).ctgs;
+%                     if (ctgs == 1 && strcmp(tf_avail(j).label_short(3),'A')) || ...
+%                             (ctgs == 2 && strcmp(tf_avail(j).label_short(3),'B'))
+                    if any(strcmp_substr(mylegend,{'Cat','Dog'})) && any(strcmp_substr(tf_avail(j).label,{'Cat','Dog'})) || ...
+                            any(strcmp_substr(mylegend,{'Goc','Tad'})) && any(strcmp_substr(tf_avail(j).label,{'Goc','Tad'})) 
                         add_spectrogram_tf_rectangle (center_T,center_F,fullband_T,fullband_F,mylabel,'k', '-', 1);
                     end
                 end

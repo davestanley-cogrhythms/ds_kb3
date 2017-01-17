@@ -1,6 +1,6 @@
 
 
-function add_spectrogram_tf_rectangle (center_T,center_F,fullband_T,fullband_F,mylabel,mycolor, mylinestyle, show_text, ctgs)
+function add_spectrogram_tf_rectangle2 (center_T,center_F,fullband_T,fullband_F,mylabel,mycolor, mylinestyle, show_text, mylegend)
 
     if nargin < 8
         show_text = 1;
@@ -24,9 +24,9 @@ function add_spectrogram_tf_rectangle (center_T,center_F,fullband_T,fullband_F,m
     rectangle('Position',[tstart,fstart,fullband_T,fullband_F],'EdgeColor',mycolor,'LineWidth',4,'LineStyle',mylinestyle);
     plot([tstart + fullband_T/2], [fstart + fullband_F/2],[mycolor 'x'],'MarkerSize',10,'LineWidth',2);
     
-    if exist('ctgs','var')
-        showtext_flag = ((ctgs == 1 || ctgs == 3) && (strcontains(mylabel,'Cat') || strcontains(mylabel,'Dog'))) || ...
-               ((ctgs == 2 || ctgs == 4) && (strcontains(mylabel,'Goc') || strcontains(mylabel,'Tad'))) ;
+    if exist('mylegend','var')
+        showtext_flag = any(strcmp_substr(mylegend,{'Cat','Dog'})) && any(strcmp_substr(mylabel,{'Cat','Dog'})) || ...
+               any(strcmp_substr(mylegend,{'Goc','Tad'})) && any(strcmp_substr(mylabel,{'Goc','Tad'}));
     else
         showtext_flag = 1;
     end
@@ -37,7 +37,12 @@ function add_spectrogram_tf_rectangle (center_T,center_F,fullband_T,fullband_F,m
 end
 
 
-function b = strcontains(mylabel,mytext)
-    b = ~isempty(strfind(mylabel,mytext));
-
-end
+% function b = strcontains(mylabel,mytext)
+%     if iscell(mytext)
+%         for i = 1:length(mytext)
+%             b = b || ~isempty(strfind(mylabel{i},mytext));      % If any Any are true...
+%         end
+%     else
+%         b = ~isempty(strfind(mylabel,mytext));
+%     end
+% end

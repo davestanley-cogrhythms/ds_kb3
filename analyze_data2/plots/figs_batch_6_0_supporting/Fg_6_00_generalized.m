@@ -355,6 +355,36 @@ if ~exist('group','var')
             group = group.query_legend(group0);
             
             
+        case 2.2                              % Sig vs non-sig
+            clear group
+            i=0;
+            i=i+1; group(i)=grt; group(i).criteria(1)=[1]; group(i).ctgs=1;
+            i=i+1; group(i)=grt; group(i).criteria(1)=[0]; group(i).ctgs=1;
+            i=i+1; group(i)=grt; group(i).criteria(1)=[1]; group(i).ctgs=2;
+            i=i+1; group(i)=grt; group(i).criteria(1)=[0]; group(i).ctgs=2;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=1;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=1;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=2;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=2;
+
+            if examine_Sch_based_on_animal
+                if opts_exclude.excludeO         % Animal L only
+                    group = group(1:4);
+                elseif opts_exclude.excludeL     % Animal O only
+                    group = group(5:8);
+                end
+            else
+                if (~isempty(strfind(tf_label_perm,'Cat')) || ~isempty(strfind(tf_label_perm,'Dog')))
+                    group = group(1:4);
+                elseif (~isempty(strfind(tf_label_perm,'Goc')) || ~isempty(strfind(tf_label_perm,'Tad')))
+                    group = group(5:8);
+                end
+            end
+            
+            % Calculate legend entries
+            group = group.query_legend(group0);
+            
+            
         case 2.5                              % Sig vs non-sig for Cat rel vs irrel
             clear group
             i=0;
@@ -639,9 +669,12 @@ if plot_on_spect && is_spectrogram
                     center_F = tf_avail(j).freqband;
                     %mylabel = [num2str(j) ' ' tf_avail(j).label_short];
                     mylabel = [num2str(j) '.'];
-                    ctgs = group(i).ctgs;
-                    if (ctgs == 1 && strcmp(tf_avail(j).label_short(3),'A')) || ...
-                            (ctgs == 2 && strcmp(tf_avail(j).label_short(3),'B'))
+                    mylegend = group(i).legend;
+%                     ctgs = group(i).ctgs;
+%                     if (ctgs == 1 && strcmp(tf_avail(j).label_short(3),'A')) || ...
+%                             (ctgs == 2 && strcmp(tf_avail(j).label_short(3),'B'))
+                    if any(strcmp_substr(mylegend,{'Cat','Dog'})) && any(strcmp_substr(tf_avail(j).label,{'Cat','Dog'})) || ...
+                            any(strcmp_substr(mylegend,{'Goc','Tad'})) && any(strcmp_substr(tf_avail(j).label,{'Goc','Tad'})) 
                         add_spectrogram_tf_rectangle (center_T,center_F,fullband_T,fullband_F,mylabel,'k', '-', 1);
                     end
                 end
