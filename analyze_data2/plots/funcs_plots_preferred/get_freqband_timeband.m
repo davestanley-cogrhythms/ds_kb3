@@ -40,6 +40,7 @@ function [s] = get_freqband_timeband(sfc_mode,opts_exclude)
                 s(i).timeband = [.901];  % 
                 s(i).freqband = [27.34];
                 s(i).label = 'Animal L Delay Cat (small red dot) HighBeta';
+                
 
             % % % % % % % % % % % % % % % % % % % % Scheme B % % % % % % % % % % % % % % % % % % % % 
             i=i+1;
@@ -53,6 +54,14 @@ function [s] = get_freqband_timeband(sfc_mode,opts_exclude)
                 s(i).timeband = [.481];  % 
                 s(i).freqband = [14.65];
                 s(i).label = 'Animal L Sample Tad Alpha';
+                
+            
+            % % % % % % % % % % % % % % % % % % % % Scheme A (new) % % % % % % % % % % % % % % % % % % % % 
+            i=i+1;
+                s(i).label_short = 'LSA2';
+                s(i).timeband = [.481];  % 
+                s(i).freqband = [14.65];
+                s(i).label = 'Animal L Sample Dog Alpha';
         end
         if ~opts_exclude.excludeO
             % % % % % % % % % % % % % % % % % % % % Scheme A % % % % % % % % % % % % % % % % % % % % 

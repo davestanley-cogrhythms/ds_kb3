@@ -204,9 +204,9 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
                 fullband_F = group(i).full_bandwidth_perm;
                 center_T = mean(group(i).timeband_perm);
                 center_F = mean(group(i).freqband_perm);
-                ctgs = group(i).ctgs;
+                mylegends = group(i).legend;
                 mylabel = group(i).tf_label_perm;
-                add_spectrogram_tf_rectangle (center_T,center_F,fullband_T,fullband_F,mylabel,'k', '-', show_text_perm,ctgs)
+                add_spectrogram_tf_rectangle2 (center_T,center_F,fullband_T,fullband_F,mylabel,'k', '-', show_text_perm,mylegends)
             end
         end
         
@@ -215,9 +215,9 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
             fullband_F = group(i).full_bandwidth;
             center_T = mean(group(i).timeband_stats);
             center_F = mean(group(i).freqband_stats);
-            ctgs = group(i).ctgs;
+            mylegends = group(i).legend;
             mylabel = group(i).tf_label_stats;
-            add_spectrogram_tf_rectangle (center_T,center_F,fullband_T,fullband_F,mylabel,'w', '--', show_text_stats,ctgs)
+            add_spectrogram_tf_rectangle2 (center_T,center_F,fullband_T,fullband_F,mylabel,'w', '--', show_text_stats,mylegends)
         end
         
         
