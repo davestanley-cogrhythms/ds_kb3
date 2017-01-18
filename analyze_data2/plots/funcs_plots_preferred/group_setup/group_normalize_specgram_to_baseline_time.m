@@ -23,7 +23,7 @@ function group = group_normalize_specgram_to_baseline_time(group,specgram_baseli
             data = data ./ repmat(mean(data(:,:,ind),3),[1,1,size(data,3)]);
         end
 
-        data = log(data);
+        %data = log(data);
         
         group(i).data = data;
     

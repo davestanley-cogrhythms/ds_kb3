@@ -35,10 +35,14 @@ function run_batch
     
 %     
 %     run_allstages(45.6013111012);
-    run_allstages(45.6013113041);
-    run_allstages(23.4013113041);
+%     run_allstages(45.6013113041);
+%     run_allstages(23.4013113041);
 %     run_allstages(45.6013103041);
-%     run_allstages(23.4013103041);
+    run_allstages(23.4017101010);
+    run_allstages(23.4015101011);
+    run_allstages(45.6017101010);
+    run_allstages(45.6015101011);
+    
 %     run_allstages(23.4013111013);
 %     run_allstages(23.4018111013);
     
@@ -62,7 +66,7 @@ function run_batch
 %     run_allstages(52.740001002);
 %     run_allstages(52.750001003);
     
-    run_allstages(52.700200004);
+%     run_allstages(52.700200004);
 %     run_allstages(52.750201003);
 
     

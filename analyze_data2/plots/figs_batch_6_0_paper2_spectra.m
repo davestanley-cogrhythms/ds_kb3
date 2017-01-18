@@ -1496,7 +1496,7 @@ currfigname = 'Fg6_02b';
     % Setup params 
     clear group group0
 
-    data_mode = 45;
+    data_mode = 23;
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -1629,7 +1629,7 @@ currfigname = 'Fg6_02b';
 
     s.swap_mode = 0;
 
-    s.group_do_merge = 0;
+    s.group_do_merge = 1;
         s.groupmerge_operation = 0;
 
 % % Plot switches
@@ -1659,8 +1659,6 @@ currfigname = 'Fg6_02b';
     % % Spectrogram plotting options
     s.opts_PM3Dsp.paperfig_mode=paperfig_mode;
     s.opts_PM3Dsp.symmetric_axes = s.doing_cat_vs_dog || opts_pls.spectrogram_normalize_to_baseline || s.do_group_normalize_specgram_to_baseline_time;
-    s.opts_PM3Dsp.symmetric_axes = 0;
-        warning('undo this');
     s.opts_PM3Dsp.uniform_zaxis_allgroups = 1;           % Makes z-axis the same for all groups plotted
     s.opts_PM3Dsp.do_subplots = 1;
         s.opts_PM3Dsp.max_subplots_per_fig = 16;
@@ -1671,7 +1669,7 @@ currfigname = 'Fg6_02b';
         s.PM3Dsp_overlay_opts.do_contours = 0;
             s.overlay_raw_contours = 0;               % Overlays contours showing raw (non-diffed) FFC values.
             s.swap_in_groupdata_contours = 0;         % Overlays contours showing the same data being plotted in spectrogram (taken from group.data)
-            s.swap_in_grouppairs_merge_pvals = 0;     % Overlays contours showing p values
+            s.swap_in_grouppairs_merge_pvals = 1;     % Overlays contours showing p values
         s.PM3Dsp_overlay_opts.contour_nv = [];
         s.PM3Dsp_overlay_opts.contour_linespec = {'k.'};
         % Stats
@@ -1690,30 +1688,30 @@ currfigname = 'Fg6_02b';
     s.opts_PDays.do_subplots = 1;
         s.opts_PDays.max_subplots_per_fig = 16;
         
-% 
-% opts_exclude.excludeL = 0;
-% opts_exclude.excludeO = 1;
-% [tf_avail] = get_freqband_timeband(s.perm_mode,opts_exclude); s.tf_avail = tf_avail;
-% 
-% switch data_mode
-%     case 23
-%         ind = [];
-%         myylims = [0 100];
-%         for i = [1:7]
-%             s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
-%             s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
-%             [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
-%         end
-%     
-%     case 45
-%         ind = [];
-%         myylims = [0 100];
-%         for i = [2:4]
-%             s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
-%             s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
-%             [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
-%         end
-% end
+
+opts_exclude.excludeL = 0;
+opts_exclude.excludeO = 1;
+[tf_avail] = get_freqband_timeband(s.perm_mode,opts_exclude); s.tf_avail = tf_avail;
+
+switch data_mode
+    case 23
+        ind = [];
+        myylims = [0 100];
+        for i = [1,3,4,5]
+            s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+            s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+            [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
+        end
+    
+    case 45
+        ind = [];
+        myylims = [0 100];
+        for i = [2:4]
+            s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+            s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
+            [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
+        end
+end
 
 
 opts_exclude.excludeL = 1;
@@ -1724,7 +1722,7 @@ switch data_mode
     case 23
         ind = [];
         myylims = [0 100];
-        for i = 1:14
+        for i = [1,2,9,10,11]
             s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
             s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
             [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
