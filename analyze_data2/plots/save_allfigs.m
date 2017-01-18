@@ -16,7 +16,7 @@ function save_allfigs(currcommit,currfigname)
     mkdir(fullfile(basepath,sp));
     multiplot_on = 0;
     do_pdf = 0;
-    for i=[1:21]
+    for i=[1:5]
         %figure(i); %ylim([0 0.175])
 %         title('');
         %ylabel('');
@@ -35,6 +35,7 @@ function save_allfigs(currcommit,currfigname)
 %             set(gcf,'Position',[0.8257    0.1256    0.1743    0.7689]);         % Size to compare Carracedo
                                                                                 % To get only 1 cell trace, run: data(1).model.specification.populations(1).size=1;
         end
+        tic
         if ~do_pdf
             set(i,'PaperPositionMode','auto');
 %             print(gcf,'-dpng','-r200',fullfile(basepath,sp,savenames{i}))
@@ -43,6 +44,7 @@ function save_allfigs(currcommit,currfigname)
             set(i,'PaperPositionMode','manual');
             print(i,'-dpdf',fullfile(basepath,sp,savenames{i}))
         end
+        toc
     end
     %%
     mycomment = ['Autocommit associated with saved figures. Figs_batch_6_0, Fg6_00 to Fg6_01b. plotmode 7 redo'];
