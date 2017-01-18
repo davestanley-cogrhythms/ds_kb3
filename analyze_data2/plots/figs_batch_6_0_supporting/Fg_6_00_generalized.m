@@ -385,6 +385,44 @@ if ~exist('group','var')
             group = group.query_legend(group0);
             
             
+        case 2.3                              % Sig vs non-sig, for RAW traces
+            clear group
+            i=0;
+            i=i+1; group(i)=grt; group(i).criteria(1)=[1]; group(i).ctgs=1;
+            i=i+1; group(i)=grt; group(i).criteria(1)=[0]; group(i).ctgs=1;
+            i=i+1; group(i)=grt; group(i).criteria(1)=[1]; group(i).ctgs=2;
+            i=i+1; group(i)=grt; group(i).criteria(1)=[0]; group(i).ctgs=2;
+            i=i+1; group(i)=grt; group(i).criteria(1)=[1]; group(i).ctgs=3;
+            i=i+1; group(i)=grt; group(i).criteria(1)=[0]; group(i).ctgs=3;
+            i=i+1; group(i)=grt; group(i).criteria(1)=[1]; group(i).ctgs=4;
+            i=i+1; group(i)=grt; group(i).criteria(1)=[0]; group(i).ctgs=4;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=1;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=1;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=2;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=2;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=3;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=3;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=4;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=4;
+
+            if examine_Sch_based_on_animal
+                if opts_exclude.excludeO         % Animal L only
+                    group = group(1:4);
+                elseif opts_exclude.excludeL     % Animal O only
+                    group = group(5:8);
+                end
+            else
+                if (~isempty(strfind(tf_label_perm,'Cat')) || ~isempty(strfind(tf_label_perm,'Dog')))
+                    group = group(1:8);
+                elseif (~isempty(strfind(tf_label_perm,'Goc')) || ~isempty(strfind(tf_label_perm,'Tad')))
+                    group = group(9:16);
+                end
+            end
+            
+            % Calculate legend entries
+            group = group.query_legend(group0);
+            
+            
         case 2.5                              % Sig vs non-sig for Cat rel vs irrel
             clear group
             i=0;
@@ -529,13 +567,14 @@ if overlay_raw_contours         % Load raw data too if needed and drop it in dat
 end
 clear group_temp
 
+if do_group_normalize_specgram_to_baseline_time
+    group = group_normalize_specgram_to_baseline_time(group,specgram_baseline_time,normalize_within_elects);
+end
+
 if do_group_collapse_pls2days
     group = group_collapse_pls2days(group);
 end
 
-if do_group_normalize_specgram_to_baseline_time
-    group = group_normalize_specgram_to_baseline_time(group,specgram_baseline_time,normalize_within_elects);
-end
 
 
 if group_do_merge
@@ -661,7 +700,8 @@ if plot_on_spect && is_spectrogram
             subplot_ind = 0;
             for i = ind
                 subplot_ind = subplot_ind + 1;
-                hsp.set_gca(subplot_ind);
+                %hsp.set_gca(subplot_ind);              % For subplotsq
+                subplotsq_tight(length(ind),subplot_ind);     % For subplot
                 for j = 1:length(tf_avail)
                     fullband_T = group(i).Nwind*get_dt;
                     fullband_F = group(i).full_bandwidth;
