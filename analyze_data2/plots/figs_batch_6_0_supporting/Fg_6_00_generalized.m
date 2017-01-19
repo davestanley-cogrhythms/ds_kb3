@@ -660,7 +660,7 @@ end
 if plot_on_spect && is_spectrogram
     
     if nargin < 7
-        myylims = [0 100];
+        myylims = [0 120];
     end
     %group = group.arrayload('zlims_desired',[0 3]);
     group = group.arrayload('ylims_desired',myylims);

@@ -12,7 +12,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
 % Setup params 
     clear group group0
 
-    data_mode = 22;
+    data_mode = 23;
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -35,7 +35,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
 %             s.sfc_mode =  22.451411103;     % FFC boundary vs non-boundary
             s.perm_mode = 52.700001001;
         case 23         % FFC spectrogram
-            s.sfc_mode =  23.4013113041;
+            s.sfc_mode =  23.4017101013;
             %s.sfc_mode = 23.4513101031;
             %s.sfc_mode =  23.4018111011;
             s.perm_mode = s.sfc_mode;
@@ -47,7 +47,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
             %s.perm_mode = 52.700001001;         % Units
         case 45         % PSD spectrogram
             %s.sfc_mode =  45.6018103043;
-            s.sfc_mode =  45.6018111011;
+            s.sfc_mode =  45.601710101;
             s.perm_mode = s.sfc_mode;
             s.perm_mode = 52.700001001;         % Units
         case 52         % Units time series
@@ -607,7 +607,7 @@ if plot_on_spect && is_spectrogram
                     center_F = tf_avail(j).freqband;
                     %mylabel = [num2str(j) ' ' tf_avail(j).label_short];
                     mylabel = [num2str(j) '.'];
-%                     ctgs = group(i).ctgs;
+                    mylegend = group(i).legend;
 %                     if (ctgs == 1 && strcmp(tf_avail(j).label_short(3),'A')) || ...
 %                             (ctgs == 2 && strcmp(tf_avail(j).label_short(3),'B'))
                     if any(strcmp_substr(mylegend,{'Cat','Dog'})) && any(strcmp_substr(tf_avail(j).label,{'Cat','Dog'})) || ...

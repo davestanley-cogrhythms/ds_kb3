@@ -1,6 +1,6 @@
 
 %%
-%error('This is meant to run in cell mode. Dont F5!');
+error('This is meant to run in cell mode. Dont F5!');
 
 
 %% All figures
@@ -26,7 +26,7 @@ currfigname = 'Fg6_00a';
     % Setup params 
     clear group group0
 
-    data_mode = 45;
+    data_mode = 23;
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -52,6 +52,7 @@ currfigname = 'Fg6_00a';
             %s.sfc_mode = 23.4513101031;
             %s.sfc_mode =  23.4013111011;
             s.sfc_mode =  23.4018111011;
+            %s.sfc_mode =  23.4014111000;
             s.perm_mode = s.sfc_mode;
         case 41         % PSD
             s.sfc_mode =  41.601811101;
@@ -223,7 +224,7 @@ opts_exclude.excludeL = 0;
 opts_exclude.excludeO = 1; 
 [wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
 
-   %%
+   
 
 opts_exclude.excludeL = 1;
 opts_exclude.excludeO = 0; 
