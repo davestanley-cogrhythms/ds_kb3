@@ -51,7 +51,7 @@ currfigname = 'Fg6_00a';
         case 23         % FFC spectrogram
             %s.sfc_mode = 23.4513101031;
             %s.sfc_mode =  23.4013111011;
-            s.sfc_mode =  23.4018111011;
+            s.sfc_mode =  23.4017101013;
             %s.sfc_mode =  23.4014111000;
             s.perm_mode = s.sfc_mode;
         case 41         % PSD
@@ -265,8 +265,10 @@ currfigname = 'Fg6_00b';
         case 23         % FFC spectrogram
             %s.sfc_mode = 23.4513101031;
             %s.sfc_mode =  23.4013111011;
-            s.sfc_mode =  23.4018111011;
-            s.perm_mode = s.sfc_mode;
+            s.sfc_mode =  23.4017101013;
+            s.perm_mode =  23.4018111011;
+%             s.sfc_mode =  23.4018111011;
+%             s.perm_mode = s.sfc_mode;
         case 41         % PSD
             s.sfc_mode =  41.601811101;
             s.perm_mode = 41.601811101;
@@ -322,8 +324,8 @@ currfigname = 'Fg6_00b';
     % More pls switches
     opts_pls = Opts_Pls;
     opts_pls.plotmode = 1;                   % 1-SFC; 2-PSD; 3-time series; 4-phase; 5-SpkPSD; 6- Abs(Cave*exp(i*phi)); 7 - angle(Cave*exp(i*phi)); 8-Cave*exp(i*phi))
-    opts_pls.permdat2pls = 0; % Instead of using Cave from sfc_mode, use Cave1 and Cave2 data from perm_mode
-    opts_pls.perm2pls = 1;                   % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
+    opts_pls.permdat2pls = 1; % Instead of using Cave from sfc_mode, use Cave1 and Cave2 data from perm_mode
+    opts_pls.perm2pls = 0;                   % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
         opts_pls.perm2pls_do_bh = 1;         % Do bh stepup instead of basic test
         opts_pls.perm2pls_dophi = 0;
         opts_pls.perm2pls_return_mode = 4;                 % Return mode of perm2pls (4=zscore)
@@ -332,7 +334,7 @@ currfigname = 'Fg6_00b';
         opts_pls.sort_pls = 0;               % Sort into preferred and non-preferred
         opts_pls.swap_pls = [];
         %opts_pls.swap_pls = [2,4;5,7];      
-        opts_pls.do_diff = 0;                % Take difference between adjacent pls (pls(:,:,2) - pls(:,:,1))
+        opts_pls.do_diff = 1;                % Take difference between adjacent pls (pls(:,:,2) - pls(:,:,1))
         opts_pls.do_diff_percent = 0;
         opts_pls.do_abs_diff = 0;            % Take absolute value after doing diff.
     opts_pls.target_pls_format = 0; % Convert pls to match this format!
@@ -518,8 +520,8 @@ currfigname = 'Fg6_00c';
         case 23         % FFC spectrogram
             %s.sfc_mode = 23.4513101031;
             %s.sfc_mode =  23.4013111011;
-            s.sfc_mode =  23.4018111011;
-            s.perm_mode = s.sfc_mode;
+            s.sfc_mode =  23.4017101013;
+%             s.sfc_mode =  23.4018111011;
             s.perm_mode = 52.700001001;         % Units
         case 41         % PSD
             s.sfc_mode =  41.601811101;
@@ -576,8 +578,8 @@ currfigname = 'Fg6_00c';
     % More pls switches
     opts_pls = Opts_Pls;
     opts_pls.plotmode = 1;                   % 1-SFC; 2-PSD; 3-time series; 4-phase; 5-SpkPSD; 6- Abs(Cave*exp(i*phi)); 7 - angle(Cave*exp(i*phi)); 8-Cave*exp(i*phi))
-    opts_pls.permdat2pls = 0; % Instead of using Cave from sfc_mode, use Cave1 and Cave2 data from perm_mode
-    opts_pls.perm2pls = 1;                   % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
+    opts_pls.permdat2pls = 1; % Instead of using Cave from sfc_mode, use Cave1 and Cave2 data from perm_mode
+    opts_pls.perm2pls = 0;                   % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
         opts_pls.perm2pls_do_bh = 1;         % Do bh stepup instead of basic test
         opts_pls.perm2pls_dophi = 0;
         opts_pls.perm2pls_return_mode = 4;                 % Return mode of perm2pls (4=zscore)
@@ -586,7 +588,7 @@ currfigname = 'Fg6_00c';
         opts_pls.sort_pls = 0;               % Sort into preferred and non-preferred
         opts_pls.swap_pls = [];
         %opts_pls.swap_pls = [2,4;5,7];      
-        opts_pls.do_diff = 0;                % Take difference between adjacent pls (pls(:,:,2) - pls(:,:,1))
+        opts_pls.do_diff = 1;                % Take difference between adjacent pls (pls(:,:,2) - pls(:,:,1))
         opts_pls.do_diff_percent = 0;
         opts_pls.do_abs_diff = 0;            % Take absolute value after doing diff.
     opts_pls.target_pls_format = 0; % Convert pls to match this format!
