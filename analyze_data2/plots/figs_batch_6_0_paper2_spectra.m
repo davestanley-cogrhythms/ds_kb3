@@ -269,8 +269,8 @@ currfigname = 'Fg6_00b';
 %             s.sfc_mode =  23.4017101013;
 %             s.perm_mode =  23.4018111011;
 %             s.sfc_mode =  23.4018111011;
-            s.perm_mode =  23.4018111011;
-            s.sfc_mode =  23.4013111013;
+            s.perm_mode =  23.4013111011;
+            s.sfc_mode =  23.4013111011;
 %             s.perm_mode =  23.4013111013;
 %             s.perm_mode = s.sfc_mode;
         case 41         % PSD
