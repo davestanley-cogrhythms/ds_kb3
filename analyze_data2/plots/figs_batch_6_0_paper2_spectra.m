@@ -19,6 +19,42 @@ run_setdefaultfig
 if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
 
 
+
+
+
+mode_23 = 
+mode_45 = 
+
+% Case 23
+% Ctgsetli Mode 0
+s.sfc_mode =  23.4013111011;
+s.sfc_mode =  23.4013111013;
+s.sfc_mode =  23.4018111011;
+s.sfc_mode =  23.4017101013;
+
+
+% Ctgsetli Mode 40
+s.sfc_mode =  23.4018103041;
+s.sfc_mode =  23.4018103041;
+
+
+% Case 52 - Units
+s.perm_mode = 52.700001001;
+s.perm_mode = 52.700001001;         % Units
+
+% Case 45 - PSD          
+s.sfc_mode =  45.6018111011;
+s.sfc_mode =  45.6018111011;
+s.sfc_mode =  45.6018111011;
+s.perm_mode = 45.6018111011;
+s.sfc_mode =  45.6017101013;
+
+s.sfc_mode =  45.6018103043;
+s.sfc_mode =  45.6018103043;
+
+
+
+
 %% Figure 6_00a - Cat vs Dog, all electrodes
 clearvars -except wrkspc_buffer fv fv3
 currfigname = 'Fg6_00a';
@@ -499,7 +535,7 @@ currfigname = 'Fg6_00c';
     % Setup params 
     clear group group0
 
-    data_mode = 23;
+    data_mode = 45;
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -697,7 +733,7 @@ currfigname = 'Fg6_00c';
         
 
 ind = [];
-myylims = [0 100];
+myylims = [0 120];
 opts_exclude.excludeL = 0;
 opts_exclude.excludeO = 1;
 
