@@ -65,7 +65,13 @@ function A = catstruct(varargin)
 %                  ML. Unique(...,'last') is no longer the deafult.
 %                  (thanks to Isabel P)
 
-error(nargchk(1,Inf,nargin)) ;
+
+if verLessThan('matlab','8.4')
+    error(nargchk(1,Inf,nargin));
+else
+    narginchk(1,Inf);
+end
+
 N = nargin ;
 
 if ~isstruct(varargin{end}),
