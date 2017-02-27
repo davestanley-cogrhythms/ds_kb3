@@ -138,6 +138,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     s.do_group_normalize_specgram_to_baseline_time = 0;
         s.normalize_within_elects = 1;
         s.specgram_baseline_time = -1.199;
+         s.gnsbt_do_log = 0;
     
     % Groupmode
     s.groupmode = 0;   % 0-Use default grouping (all pairs, enumerate over ctgs);
@@ -481,7 +482,7 @@ if do_group_collapse_pls2days
 end
 
 if do_group_normalize_specgram_to_baseline_time
-    group = group_normalize_specgram_to_baseline_time(group,specgram_baseline_time,normalize_within_elects);
+    group = group_normalize_specgram_to_baseline_time(group,specgram_baseline_time,normalize_within_elects,gnsbt_do_log);
 end
 
 

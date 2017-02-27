@@ -151,7 +151,7 @@ currfigname = 'Fg6_00a';
     s.do_group_collapse_pls2days = 1;
     s.do_group_normalize_specgram_to_baseline_time = 0;
         s.normalize_within_elects = 1;
-        s.specgram_baseline_time = -0.75;
+        s.specgram_baseline_time = -0.75; s.gnsbt_do_log = 0;
     
     % Groupmode
     s.groupmode = 0;   % 0-Use default grouping (all pairs, enumerate over ctgs);
@@ -369,7 +369,7 @@ currfigname = 'Fg6_00b';
     s.do_group_collapse_pls2days = 0;
     s.do_group_normalize_specgram_to_baseline_time = 0;
         s.normalize_within_elects = 1;
-        s.specgram_baseline_time = -0.75;
+        s.specgram_baseline_time = -0.75; s.gnsbt_do_log = 0;
     
     % Groupmode
     s.groupmode = 2.2;   % 0-Use default grouping (all pairs, enumerate over ctgs);
@@ -626,7 +626,7 @@ currfigname = 'Fg6_00c';
     s.do_group_collapse_pls2days = 0;
     s.do_group_normalize_specgram_to_baseline_time = 0;
         s.normalize_within_elects = 1;
-        s.specgram_baseline_time = -0.75;
+        s.specgram_baseline_time = -0.75; s.gnsbt_do_log = 0;
     
     % Groupmode
     s.groupmode = 2.2;   % 0-Use default grouping (all pairs, enumerate over ctgs);
@@ -871,7 +871,7 @@ currfigname = 'Fg6_01a';
     s.do_group_collapse_pls2days = 1;
     s.do_group_normalize_specgram_to_baseline_time = 0;
         s.normalize_within_elects = 1;
-        s.specgram_baseline_time = -0.75;
+        s.specgram_baseline_time = -0.75; s.gnsbt_do_log = 0;
     
     % Groupmode
     s.groupmode = 0;   % 0-Use default grouping (all pairs, enumerate over ctgs);
@@ -1104,7 +1104,7 @@ currfigname = 'Fg6_01b';
     s.do_group_collapse_pls2days = 1;
     s.do_group_normalize_specgram_to_baseline_time = 0;
         s.normalize_within_elects = 1;
-        s.specgram_baseline_time = -0.75;
+        s.specgram_baseline_time = -0.75; s.gnsbt_do_log = 0;
     
     % Groupmode
     s.groupmode = 2.5;   % 0-Use default grouping (all pairs, enumerate over ctgs);
@@ -1410,7 +1410,7 @@ currfigname = 'Fg6_00a';
     s.do_group_collapse_pls2days = 1;
     s.do_group_normalize_specgram_to_baseline_time = 1;
         s.normalize_within_elects = 1;
-        s.specgram_baseline_time = -.75;
+        s.specgram_baseline_time = -0.75; s.gnsbt_do_log = 0;
     
     % Groupmode
     s.groupmode = 0;   % 0-Use default grouping (all pairs, enumerate over ctgs);
@@ -1626,7 +1626,7 @@ currfigname = 'Fg6_02b';
     s.do_group_collapse_pls2days = 0;
     s.do_group_normalize_specgram_to_baseline_time = 1;
         s.normalize_within_elects = 1;
-        s.specgram_baseline_time = -0.75;
+        s.specgram_baseline_time = -0.75; s.gnsbt_do_log = 0; 
     
     % Groupmode
     s.groupmode = 2.3;   % 0-Use default grouping (all pairs, enumerate over ctgs);

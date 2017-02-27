@@ -568,7 +568,7 @@ end
 clear group_temp
 
 if do_group_normalize_specgram_to_baseline_time
-    group = group_normalize_specgram_to_baseline_time(group,specgram_baseline_time,normalize_within_elects);
+    group = group_normalize_specgram_to_baseline_time(group,specgram_baseline_time,normalize_within_elects,gnsbt_do_log);
 end
 
 if do_group_collapse_pls2days
