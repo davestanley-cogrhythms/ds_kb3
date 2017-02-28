@@ -220,7 +220,6 @@ function [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude
 %% Some override some parameters with some custom code
 
 data_type = mode2datatype(sfc_mode);
-is_spectrogram = get_is_spectrogram(sfc_mode);
 
 % do_group_normalize_specgram_to_baseline_time = 0;
 
