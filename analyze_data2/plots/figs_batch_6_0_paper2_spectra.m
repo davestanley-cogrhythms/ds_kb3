@@ -1393,7 +1393,7 @@ currfigname = 'Fg6_00a';
     
     % Group options
     s.do_group_collapse_pls2days = 1;
-    s.do_group_normalize_specgram_to_baseline_time = 0;
+    s.do_group_normalize_specgram_to_baseline_time = 1;
         s.normalize_within_elects = 1;
         s.specgram_baseline_time = -0.75; s.gnsbt_do_log = 0;
     
