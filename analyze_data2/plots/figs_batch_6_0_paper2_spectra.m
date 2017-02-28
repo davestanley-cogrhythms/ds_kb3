@@ -20,26 +20,28 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
 
 
 % % Case 23; Ctgsetli Mode 0; - FFC
-% mode_23_0 =  23.4013111011;
-% mode_23_0 =  23.4013111013;
-mode_23_0 =  23.4018111011;
-% mode_23_0 =  23.4017101013;
-
+% g.mode_23_0 =  23.4013111011;
+% g.mode_23_0 =  23.4013111013;
+g.mode_23_0 =  23.4018111011;
+% g.mode_23_0 =  23.4017101013;
 
 % % Case 23; Ctgsetli Mode 40; - FFC
-mode_23_40 =  23.4018103041;
+g.mode_23_40 =  23.4018103041;
 
 % % Case 52; Ctgsetli Mode 0; - Units
-mode_52_0 = 52.700001001;    
+g.mode_52_0 = 52.700001001;    
 
 % % Case 45; Ctgsetli Mode 0 - PSD
-mode_45_0 = 45.6018111011;
-% mode_45_0 = 45.6017101013;
-% mode_45_0 = 45.6018103043;
+g.mode_45_0 = 45.6013111011;
+% g.mode_45_0 = 45.6018111011;
+% g.mode_45_0 = 45.6017101013;
+
+% % Case 45; Ctgsetli Mode 40 - PSD
+g.mode_45_40 = 45.6018103043;
 
 
 %% Figure 6_00a - Cat vs Dog, all electrodes
-clearvars -except wrkspc_buffer fv fv3
+clearvars -except wrkspc_buffer fv fv3 g
 currfigname = 'Fg6_00a';
 
     % Setup params 
@@ -68,14 +70,14 @@ currfigname = 'Fg6_00a';
 %             s.sfc_mode =  22.451411103;     % FFC boundary vs non-boundary
             s.perm_mode = 52.700001001;
         case 23         % FFC spectrogram
-            s.sfc_mode = mode_23_0;
+            s.sfc_mode = g.mode_23_0;
             s.perm_mode = s.sfc_mode
         case 41         % PSD
             s.sfc_mode =  41.601811101;
             s.perm_mode = 41.601811101;
             %s.perm_mode = 52.700001001;         % Units
         case 45         % PSD spectrogram
-            s.sfc_mode =  mode_45_0
+            s.sfc_mode =  g.mode_45_0
             s.perm_mode = s.sfc_mode;
         case 52         % Units time series
             s.sfc_mode  = 52.700001001;
@@ -248,7 +250,7 @@ opts_exclude.excludeO = 0;
 clear out1 out2
 
 %% Figure 6_00b - Cat vs Dog, by electrode significance
-clearvars -except wrkspc_buffer fv fv3
+clearvars -except wrkspc_buffer fv fv3 g
 currfigname = 'Fg6_00b';
 
     % Setup params 
@@ -277,14 +279,14 @@ currfigname = 'Fg6_00b';
 %             s.sfc_mode =  22.451411103;     % FFC boundary vs non-boundary
             s.perm_mode = 52.700001001;
         case 23         % FFC spectrogram
-            s.sfc_mode = mode_23_0;
+            s.sfc_mode = g.mode_23_0;
             s.perm_mode = s.sfc_mode
         case 41         % PSD
             s.sfc_mode =  41.601811101;
             s.perm_mode = 41.601811101;
             %s.perm_mode = 52.700001001;         % Units
         case 45         % PSD spectrogram
-            s.sfc_mode =  mode_45_0
+            s.sfc_mode =  g.mode_45_0
             s.perm_mode = s.sfc_mode;
         case 52         % Units time series
             s.sfc_mode  = 52.700001001;
@@ -497,7 +499,7 @@ clear out1 out2
 
 
 %% Figure 6_00c - Cat vs Dog, by single unit significance
-clearvars -except wrkspc_buffer fv fv3
+clearvars -except wrkspc_buffer fv fv3 g
 currfigname = 'Fg6_00c';
 
     % Setup params 
@@ -526,15 +528,15 @@ currfigname = 'Fg6_00c';
 %             s.sfc_mode =  22.451411103;     % FFC boundary vs non-boundary
             s.perm_mode = 52.700001001;
         case 23         % FFC spectrogram
-            s.sfc_mode = mode_23_0;
-            s.perm_mode = mode_52_0;
+            s.sfc_mode = g.mode_23_0;
+            s.perm_mode = g.mode_52_0;
         case 41         % PSD
             s.sfc_mode =  41.601811101;
             s.perm_mode = 41.601811101;
             %s.perm_mode = 52.700001001;         % Units
         case 45         % PSD spectrogram
-            s.sfc_mode =  mode_45_0
-            s.perm_mode = mode_52_0;
+            s.sfc_mode =  g.mode_45_0
+            s.perm_mode = g.mode_52_0;
         case 52         % Units time series
             s.sfc_mode  = 52.700001001;
             s.perm_mode = 52.700001001;
@@ -740,13 +742,13 @@ opts_perm.split_plusminus = 3;      % 0-Either; 1-Both; 2-Positive; 3-Negative
 
 
 %% Figure 6_01a - Cat vs Cat irr, etc, all electrodes
-clearvars -except wrkspc_buffer fv fv3
+clearvars -except wrkspc_buffer fv fv3 g
 currfigname = 'Fg6_01a';
 
     % Setup params 
     clear group group0
 
-    data_mode = 23;
+    data_mode = 45;
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -769,15 +771,15 @@ currfigname = 'Fg6_01a';
 %             s.sfc_mode =  22.451411103;     % FFC boundary vs non-boundary
             s.perm_mode = 52.700001001;
         case 23         % FFC spectrogram
-            s.sfc_mode = mode_23_40;
-            s.perm_mode = mode_23_0;
+            s.sfc_mode = g.mode_23_40;
+            s.perm_mode = g.mode_23_0;
         case 41         % PSD
             s.sfc_mode =  41.601811101;
             s.perm_mode = 41.601811101;
             %s.perm_mode = 52.700001001;         % Units
         case 45         % PSD spectrogram
-            s.sfc_mode =  mode_45_40
-            s.perm_mode = mode_45_0;
+            s.sfc_mode =  g.mode_45_40
+            s.perm_mode = g.mode_45_0;
         case 52         % Units time series
             s.sfc_mode  = 52.700001001;
             s.perm_mode = 52.700001001;
@@ -954,7 +956,7 @@ ind=1:5; myylims = [0 50];
 clear out3 out4
 
 %% Figure 6_01b - Cat vs Cat irr, etc, only sig electrodes (signifcant FFC difference)
-clearvars -except wrkspc_buffer fv fv3
+clearvars -except wrkspc_buffer fv fv3 g
 currfigname = 'Fg6_01b';
 
     % Test mode
@@ -989,21 +991,21 @@ currfigname = 'Fg6_01b';
 %             s.sfc_mode =  22.451411103;     % FFC boundary vs non-boundary
             s.perm_mode = 52.700001001;
         case 23         % FFC spectrogram
-            s.sfc_mode =  mode_23_40;
+            s.sfc_mode =  g.mode_23_40;
             if testing_mode
-                s.sfc_mode =  mode_23_0;
+                s.sfc_mode =  g.mode_23_0;
             end
-            s.perm_mode = mode_23_0;
+            s.perm_mode = g.mode_23_0;
         case 41         % PSD
             s.sfc_mode =  41.601811101;
             s.perm_mode = 41.601811101;
             %s.perm_mode = 52.700001001;         % Units
         case 45         % PSD spectrogram
-            s.sfc_mode =  mode_45_40;
+            s.sfc_mode =  g.mode_45_40;
             if testing_mode
-                s.sfc_mode = mode_45_0;
+                s.sfc_mode = g.mode_45_0;
             end
-            s.perm_mode =  mode_45_0;
+            s.perm_mode =  g.mode_45_0;
         case 52         % Units time series
             s.sfc_mode  = 52.700001001;
             s.perm_mode = 52.700001001;
@@ -1268,7 +1270,7 @@ end
 
 
 %% Figure 6_02a - Cat, Dog, Goc, Tad only; all electrodes
-clearvars -except wrkspc_buffer fv fv3
+clearvars -except wrkspc_buffer fv fv3 g
 currfigname = 'Fg6_00a';
 
     % Setup params 
@@ -1297,14 +1299,14 @@ currfigname = 'Fg6_00a';
 %             s.sfc_mode =  22.451411103;     % FFC boundary vs non-boundary
             s.perm_mode = 52.700001001;
         case 23         % FFC spectrogram
-            s.sfc_mode =  mode_23_0;
+            s.sfc_mode =  g.mode_23_0;
             s.perm_mode = s.sfc_mode;
         case 41         % PSD
             s.sfc_mode =  41.601811101;
             s.perm_mode = 41.601811101;
             %s.perm_mode = 52.700001001;         % Units
         case 45         % PSD spectrogram
-            s.sfc_mode =  mode_45_0;
+            s.sfc_mode =  g.mode_45_0;
             s.perm_mode = s.sfc_mode;
         case 52         % Units time series
             s.sfc_mode  = 52.700001001;
@@ -1391,7 +1393,7 @@ currfigname = 'Fg6_00a';
     
     % Group options
     s.do_group_collapse_pls2days = 1;
-    s.do_group_normalize_specgram_to_baseline_time = 1;
+    s.do_group_normalize_specgram_to_baseline_time = 0;
         s.normalize_within_elects = 1;
         s.specgram_baseline_time = -0.75; s.gnsbt_do_log = 0;
     
@@ -1480,13 +1482,13 @@ clear out1 out2
 
 
 %% Figure 6_02b - Cat, Dog, Goc, Tad only; by electrode significance
-clearvars -except wrkspc_buffer fv fv3
+clearvars -except wrkspc_buffer fv fv3 g
 currfigname = 'Fg6_02b';
 
     % Setup params 
     clear group group0
 
-    data_mode = 23;
+    data_mode = 45;
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -1509,14 +1511,14 @@ currfigname = 'Fg6_02b';
 %             s.sfc_mode =  22.451411103;     % FFC boundary vs non-boundary
             s.perm_mode = 52.700001001;
         case 23         % FFC spectrogram
-            s.sfc_mode =  mode_23_0;
+            s.sfc_mode =  g.mode_23_0;
             s.perm_mode = s.sfc_mode;
         case 41         % PSD
             s.sfc_mode =  41.601811101;
             s.perm_mode = 41.601811101;
             %s.perm_mode = 52.700001001;         % Units
         case 45         % PSD spectrogram
-            s.sfc_mode =  mode_45_0;
+            s.sfc_mode =  g.mode_45_0;
             s.perm_mode = s.sfc_mode;
         case 52         % Units time series
             s.sfc_mode  = 52.700001001;

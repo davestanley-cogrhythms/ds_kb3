@@ -215,6 +215,23 @@ function [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude
     is_spectrogram = get_is_spectrogram(sfc_mode) && ~opts_pls.spectrogram2spectra_timeslice && ~opts_pls.spectrogram2ts_freqslice;
     
     [tf_avail] = get_freqband_timeband(s.perm_mode,opts_exclude);
+    
+    
+%% Some override some parameters with some custom code
+
+data_type = mode2datatype(sfc_mode);
+is_spectrogram = get_is_spectrogram(sfc_mode);
+
+% do_group_normalize_specgram_to_baseline_time = 0;
+
+if do_group_normalize_specgram_to_baseline_time
+    if strcmp(data_type,'FFC')
+        gnsbt_do_log = 0;
+    elseif strcmp(data_type,'PSD')
+        gnsbt_do_log = 1;
+    end
+end
+
 
 
 %% Import data if running as a function; define dependent parameters
@@ -307,6 +324,17 @@ if ~exist('group','var')
                 else group = group.query_colourmap_desired(group0);
                 end
             end
+            
+            [~, ~, ctgsetli_mode, ~, ~, ~, ~, ~, ~, ~, ctgsetli_mode2, ~] = build_sfcmode(sfc_mode, sfc_subgroups);
+            
+            if ctgsetli_mode == 0 && any(ctgsetli_mode2 == [0,1])
+                if opts_pls.perm2pls == 1 || (opts_pls.permdat2pls && opts_pls.do_diff)         % We're dealing with diffed data
+                    group = group([1,2,5]);
+                else
+                    group = group([1:4,9,10]);
+                end
+            end
+            
         case 1                          % Only sig units, all ctgs
             N = length(group0);
             
@@ -679,7 +707,7 @@ if plot_on_spect && is_spectrogram
     
     if isempty(ind)
         ind = 1:length(group);
-        if any(groupmode == [0,1]); ind = [1,2]; end
+        %if any(groupmode == [0,1]); ind = [1,2]; end
     end
     
     
