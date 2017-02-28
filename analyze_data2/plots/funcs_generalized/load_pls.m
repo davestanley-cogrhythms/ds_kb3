@@ -51,6 +51,7 @@ end
     spectrogram2ts_freqslice = pls_opts.spectrogram2ts_freqslice;    % If working with a spectrogram, take a slice at time given by freqband_stats.
     spectrogram_normalize_to_baseline = pls_opts.spectrogram_normalize_to_baseline;     % Normalize spectrograms to pre-cue data to a value of 1.0
             spectrogram_baseline_time = pls_opts.spectrogram_baseline_time;             % During pre-cue
+            spectrogram_baseline_dolog = pls_opts.spectrogram_baseline_dolog;
     
     
     % Test plot switches
@@ -278,17 +279,29 @@ if spectrogram_normalize_to_baseline
     normalize_within_elects = 1;    % 0 - normalize by mean of the pre-cue period.
                                     % 1 - normalize by each electrode individually. This within-electrode
                                     %    normalizing removes electrode-electrode variability.
+                                    
+                                    
+    normalize_across_timerange = 1;
+        normalizing_timerange = 0.25;
 
     pls = unwrap_3Dpls(pls,f,f2);
-    ind = find(f2 >= spectrogram_baseline_time, 1, 'first');     % Find index to normalize along
     
-    if ~normalize_within_elects
-        pls = pls ./ repmat(mean(pls(:,~bad_any,:,ind),2),[1,size(pls,2),1,size(pls,4)]);
+    if ~normalize_across_timerange
+        ind = find(f2 >= spectrogram_baseline_time, 1, 'first');     % Find index to normalize along
     else
-        pls = pls ./ repmat(pls(:,:,:,ind),[1,1,1,size(pls,4)]);
+        ind = find( (f2 >= spectrogram_baseline_time - normalizing_timerange) & (f2 <= spectrogram_baseline_time + normalizing_timerange)); 
     end
     
-    pls = log(pls);
+    if ~normalize_within_elects
+        pls = pls ./ repmat(mean(mean(pls(:,~bad_any,:,ind),4),2),[1,size(pls,2),1,size(pls,4)]);
+    else
+        pls = pls ./ repmat(mean(pls(:,:,:,ind),4),[1,1,1,size(pls,4)]);
+    end
+    
+    if spectrogram_baseline_dolog;
+        pls = log(pls);
+    end
+    
     pls = wrap_3Dpls(pls);
     
 end

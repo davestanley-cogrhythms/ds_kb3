@@ -331,6 +331,7 @@ if ~exist('group','var')
                     group = group([1,2,5]);
                 else
                     group = group([1:4,9,10]);
+                    group = group(1);
                 end
             end
             
@@ -594,7 +595,7 @@ if overlay_raw_contours         % Load raw data too if needed and drop it in dat
 end
 clear group_temp
 
-if do_group_normalize_specgram_to_baseline_time
+if do_group_normalize_specgram_to_baseline_time && is_spectrogram
     group = group_normalize_specgram_to_baseline_time(group,specgram_baseline_time,normalize_within_elects,gnsbt_do_log);
 end
 

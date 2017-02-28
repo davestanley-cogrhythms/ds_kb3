@@ -47,7 +47,7 @@ currfigname = 'Fg6_00a';
     % Setup params 
     clear group group0
 
-    data_mode = 23;
+    data_mode = 45;
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -143,7 +143,8 @@ currfigname = 'Fg6_00a';
     opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
     opts_pls.spectrogram_normalize_to_baseline = 0;          % Normalize spectrograms to pre-cue data to a value of 1.0
-            opts_pls.spectrogram_baseline_time = -1.199;       % During pre-cue
+            opts_pls.spectrogram_baseline_time = -0.75;       % During pre-cue
+            opts_pls.spectrogram_baseline_dolog = 1;
     
     
 
@@ -352,7 +353,8 @@ currfigname = 'Fg6_00b';
     opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
     opts_pls.spectrogram_normalize_to_baseline = 0;          % Normalize spectrograms to pre-cue data to a value of 1.0
-            opts_pls.spectrogram_baseline_time = -1.199;       % During pre-cue
+            opts_pls.spectrogram_baseline_time = -0.75;       % During pre-cue
+            opts_pls.spectrogram_baseline_dolog = 1;
     
     
 
@@ -601,7 +603,8 @@ currfigname = 'Fg6_00c';
     opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
     opts_pls.spectrogram_normalize_to_baseline = 0;          % Normalize spectrograms to pre-cue data to a value of 1.0
-            opts_pls.spectrogram_baseline_time = -1.199;       % During pre-cue
+            opts_pls.spectrogram_baseline_time = -0.75;       % During pre-cue
+            opts_pls.spectrogram_baseline_dolog = 1;
     
     
 
@@ -844,7 +847,8 @@ currfigname = 'Fg6_01a';
     opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
     opts_pls.spectrogram_normalize_to_baseline = 0;          % Normalize spectrograms to pre-cue data to a value of 1.0
-            opts_pls.spectrogram_baseline_time = -1.199;       % During pre-cue
+            opts_pls.spectrogram_baseline_time = -0.75;       % During pre-cue
+            opts_pls.spectrogram_baseline_dolog = 1;
     
     
 
@@ -1070,7 +1074,8 @@ currfigname = 'Fg6_01b';
     opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
     opts_pls.spectrogram_normalize_to_baseline = 0;          % Normalize spectrograms to pre-cue data to a value of 1.0
-            opts_pls.spectrogram_baseline_time = -1.199;       % During pre-cue
+            opts_pls.spectrogram_baseline_time = -0.75;       % During pre-cue
+            opts_pls.spectrogram_baseline_dolog = 1;
     
     
 
@@ -1372,7 +1377,8 @@ currfigname = 'Fg6_00a';
     opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
     opts_pls.spectrogram_normalize_to_baseline = 0;          % Normalize spectrograms to pre-cue data to a value of 1.0
-            opts_pls.spectrogram_baseline_time = -1.199;       % During pre-cue
+            opts_pls.spectrogram_baseline_time = -0.75;       % During pre-cue
+            opts_pls.spectrogram_baseline_dolog = 1;
     
     
 
@@ -1584,7 +1590,8 @@ currfigname = 'Fg6_02b';
     opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
     opts_pls.spectrogram_normalize_to_baseline = 0;          % Normalize spectrograms to pre-cue data to a value of 1.0
-            opts_pls.spectrogram_baseline_time = -1.199;       % During pre-cue
+            opts_pls.spectrogram_baseline_time = -0.75;       % During pre-cue
+            opts_pls.spectrogram_baseline_dolog = 1;
     
     
 

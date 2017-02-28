@@ -24,7 +24,8 @@ classdef Opts_Pls
         spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
         spectrogram2ts_freqslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
         spectrogram_normalize_to_baseline = 1;
-            spectrogram_baseline_time = -1.1;       % During pre-cue
+            spectrogram_baseline_time = -0.75;       % During pre-cue
+            spectrogram_baseline_dolog = 1;
         
     end
 end
