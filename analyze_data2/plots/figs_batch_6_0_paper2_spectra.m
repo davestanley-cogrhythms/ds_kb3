@@ -143,7 +143,7 @@ currfigname = 'Fg6_00a';
     opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
     opts_pls.spectrogram_normalize_to_baseline = 0;          % Normalize spectrograms to pre-cue data to a value of 1.0
-            opts_pls.spectrogram_baseline_time = -0.75;       % During pre-cue
+            opts_pls.spectrogram_baseline_time = -1.1;       % During pre-cue
             opts_pls.spectrogram_baseline_dolog = 1;
     
     
@@ -167,7 +167,7 @@ currfigname = 'Fg6_00a';
     s.do_group_collapse_pls2days = 1;
     s.do_group_normalize_specgram_to_baseline_time = 0;
         s.normalize_within_elects = 1;
-        s.specgram_baseline_time = -0.75; s.gnsbt_do_log = 0;
+        s.specgram_baseline_time = -1.1; s.gnsbt_do_log = 0;
     
     % Groupmode
     s.groupmode = 0;   % 0-Use default grouping (all pairs, enumerate over ctgs);
@@ -175,7 +175,7 @@ currfigname = 'Fg6_00a';
                        % 5:6-Separate into days
         s.examine_Sch_based_on_animal = 0;          % For animal L, do Cat/Dog; for O do Goc/Tad
 
-    s.swap_mode = 0;
+    s.swap_mode = 1;
 
     s.group_do_merge = 1;
         s.groupmerge_operation = 0;
@@ -207,6 +207,7 @@ currfigname = 'Fg6_00a';
     % % Spectrogram plotting options
     s.opts_PM3Dsp.paperfig_mode=paperfig_mode;
     s.opts_PM3Dsp.symmetric_axes = s.doing_cat_vs_dog || opts_pls.spectrogram_normalize_to_baseline || s.do_group_normalize_specgram_to_baseline_time;
+    s.opts_PM3Dsp.symmetric_axes = [];
     s.opts_PM3Dsp.uniform_zaxis_allgroups = 1;           % Makes z-axis the same for all groups plotted
     s.opts_PM3Dsp.do_subplots = 1;
         s.opts_PM3Dsp.max_subplots_per_fig = 16;
@@ -221,7 +222,7 @@ currfigname = 'Fg6_00a';
         s.PM3Dsp_overlay_opts.contour_nv = [];
         s.PM3Dsp_overlay_opts.contour_linespec = {'k.'};
         % Stats
-        s.PM3Dsp_stats_opts.stats_displaymode = 3;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
+        s.PM3Dsp_stats_opts.stats_displaymode = 0;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
         s.PM3Dsp_stats_opts.statsfunc = [];
         s.PM3Dsp_stats_opts.stats_comparison = [0];
         s.PM3Dsp_stats_opts.contours_alphas = [0.01 0.001 0.0001];
@@ -353,7 +354,7 @@ currfigname = 'Fg6_00b';
     opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
     opts_pls.spectrogram_normalize_to_baseline = 0;          % Normalize spectrograms to pre-cue data to a value of 1.0
-            opts_pls.spectrogram_baseline_time = -0.75;       % During pre-cue
+            opts_pls.spectrogram_baseline_time = -1.1;       % During pre-cue
             opts_pls.spectrogram_baseline_dolog = 1;
     
     
@@ -377,7 +378,7 @@ currfigname = 'Fg6_00b';
     s.do_group_collapse_pls2days = 0;
     s.do_group_normalize_specgram_to_baseline_time = 0;
         s.normalize_within_elects = 1;
-        s.specgram_baseline_time = -0.75; s.gnsbt_do_log = 0;
+        s.specgram_baseline_time = -1.1; s.gnsbt_do_log = 0;
     
     % Groupmode
     s.groupmode = 2.2;   % 0-Use default grouping (all pairs, enumerate over ctgs);
@@ -603,7 +604,7 @@ currfigname = 'Fg6_00c';
     opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
     opts_pls.spectrogram_normalize_to_baseline = 0;          % Normalize spectrograms to pre-cue data to a value of 1.0
-            opts_pls.spectrogram_baseline_time = -0.75;       % During pre-cue
+            opts_pls.spectrogram_baseline_time = -1.1;       % During pre-cue
             opts_pls.spectrogram_baseline_dolog = 1;
     
     
@@ -630,7 +631,7 @@ currfigname = 'Fg6_00c';
     s.do_group_collapse_pls2days = 0;
     s.do_group_normalize_specgram_to_baseline_time = 0;
         s.normalize_within_elects = 1;
-        s.specgram_baseline_time = -0.75; s.gnsbt_do_log = 0;
+        s.specgram_baseline_time = -1.1; s.gnsbt_do_log = 0;
     
     % Groupmode
     s.groupmode = 2.2;   % 0-Use default grouping (all pairs, enumerate over ctgs);
@@ -847,7 +848,7 @@ currfigname = 'Fg6_01a';
     opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
     opts_pls.spectrogram_normalize_to_baseline = 0;          % Normalize spectrograms to pre-cue data to a value of 1.0
-            opts_pls.spectrogram_baseline_time = -0.75;       % During pre-cue
+            opts_pls.spectrogram_baseline_time = -1.1;       % During pre-cue
             opts_pls.spectrogram_baseline_dolog = 1;
     
     
@@ -871,7 +872,7 @@ currfigname = 'Fg6_01a';
     s.do_group_collapse_pls2days = 1;
     s.do_group_normalize_specgram_to_baseline_time = 0;
         s.normalize_within_elects = 1;
-        s.specgram_baseline_time = -0.75; s.gnsbt_do_log = 0;
+        s.specgram_baseline_time = -1.1; s.gnsbt_do_log = 0;
     
     % Groupmode
     s.groupmode = 0;   % 0-Use default grouping (all pairs, enumerate over ctgs);
@@ -1074,7 +1075,7 @@ currfigname = 'Fg6_01b';
     opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
     opts_pls.spectrogram_normalize_to_baseline = 0;          % Normalize spectrograms to pre-cue data to a value of 1.0
-            opts_pls.spectrogram_baseline_time = -0.75;       % During pre-cue
+            opts_pls.spectrogram_baseline_time = -1.1;       % During pre-cue
             opts_pls.spectrogram_baseline_dolog = 1;
     
     
@@ -1098,7 +1099,7 @@ currfigname = 'Fg6_01b';
     s.do_group_collapse_pls2days = 1;
     s.do_group_normalize_specgram_to_baseline_time = 0;
         s.normalize_within_elects = 1;
-        s.specgram_baseline_time = -0.75; s.gnsbt_do_log = 0;
+        s.specgram_baseline_time = -1.1; s.gnsbt_do_log = 0;
     
     % Groupmode
     s.groupmode = 2.5;   % 0-Use default grouping (all pairs, enumerate over ctgs);
@@ -1377,7 +1378,7 @@ currfigname = 'Fg6_00a';
     opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
     opts_pls.spectrogram_normalize_to_baseline = 0;          % Normalize spectrograms to pre-cue data to a value of 1.0
-            opts_pls.spectrogram_baseline_time = -0.75;       % During pre-cue
+            opts_pls.spectrogram_baseline_time = -1.1;       % During pre-cue
             opts_pls.spectrogram_baseline_dolog = 1;
     
     
@@ -1401,7 +1402,7 @@ currfigname = 'Fg6_00a';
     s.do_group_collapse_pls2days = 1;
     s.do_group_normalize_specgram_to_baseline_time = 1;
         s.normalize_within_elects = 1;
-        s.specgram_baseline_time = -0.75; s.gnsbt_do_log = 0;
+        s.specgram_baseline_time = -1.1; s.gnsbt_do_log = 0;
     
     % Groupmode
     s.groupmode = 0;   % 0-Use default grouping (all pairs, enumerate over ctgs);
@@ -1587,11 +1588,12 @@ currfigname = 'Fg6_02b';
         opts_pls.do_abs_diff = 0;            % Take absolute value after doing diff.
     opts_pls.target_pls_format = 0; % Convert pls to match this format!
     opts_pls.collapse_pls_to_days = 0;
-    opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
+    opts_pls.spectrogram2spectra_timeslice = 1;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
-    opts_pls.spectrogram_normalize_to_baseline = 0;          % Normalize spectrograms to pre-cue data to a value of 1.0
-            opts_pls.spectrogram_baseline_time = -0.75;       % During pre-cue
+    opts_pls.spectrogram_normalize_to_baseline = 1;          % Normalize spectrograms to pre-cue data to a value of 1.0
+            opts_pls.spectrogram_baseline_time = -1.1;       % During pre-cue
             opts_pls.spectrogram_baseline_dolog = 1;
+    opts_pls.normalize_to_1_over_f = 1;
     
     
 
@@ -1612,19 +1614,19 @@ currfigname = 'Fg6_02b';
     
     % Group options
     s.do_group_collapse_pls2days = 0;
-    s.do_group_normalize_specgram_to_baseline_time = 1;
+    s.do_group_normalize_specgram_to_baseline_time = 0;
         s.normalize_within_elects = 1;
-        s.specgram_baseline_time = -0.75; s.gnsbt_do_log = 0; 
+        s.specgram_baseline_time = -1.1; s.gnsbt_do_log = 0; 
     
     % Groupmode
     s.groupmode = 2.3;   % 0-Use default grouping (all pairs, enumerate over ctgs);
                        % 1:4-Select various subgroups
                        % 5:6-Separate into days
-        s.examine_Sch_based_on_animal = 0;          % For animal L, do Cat/Dog; for O do Goc/Tad
+        s.examine_Sch_based_on_animal = 1;          % For animal L, do Cat/Dog; for O do Goc/Tad
 
     s.swap_mode = 0;
 
-    s.group_do_merge = 1;
+    s.group_do_merge = 0;
         s.groupmerge_operation = 0;
 
 % % Plot switches
@@ -1664,7 +1666,7 @@ currfigname = 'Fg6_02b';
         s.PM3Dsp_overlay_opts.do_contours = 0;
             s.overlay_raw_contours = 0;               % Overlays contours showing raw (non-diffed) FFC values.
             s.swap_in_groupdata_contours = 0;         % Overlays contours showing the same data being plotted in spectrogram (taken from group.data)
-            s.swap_in_grouppairs_merge_pvals = 1;     % Overlays contours showing p values
+            s.swap_in_grouppairs_merge_pvals = 0;     % Overlays contours showing p values
         s.PM3Dsp_overlay_opts.contour_nv = [];
         s.PM3Dsp_overlay_opts.contour_linespec = {'k.'};
         % Stats
@@ -1701,14 +1703,15 @@ switch data_mode
     case 45
         ind = [];
         myylims = [0 100];
-        for i = [2:4]
+        %for i = [2:4]
+        for i = [2]
             s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
             s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
             [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
         end
 end
 
-
+%%
 opts_exclude.excludeL = 1;
 opts_exclude.excludeO = 0;
 [tf_avail] = get_freqband_timeband(s.perm_mode,opts_exclude); s.tf_avail = tf_avail;

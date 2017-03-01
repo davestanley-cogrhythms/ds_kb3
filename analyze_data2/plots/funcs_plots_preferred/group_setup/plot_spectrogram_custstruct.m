@@ -23,7 +23,7 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
     if ~isfield(opts,'paperfig_mode'); opts.paperfig_mode = 0; end % paperfig_mode: 1=clean plots for paper; 0=plots with additional information for viewing
     if ~isfield(opts,'do_sgolay'); opts.do_sgolay = 0; end
     if ~isfield(opts,'stats_mode'); opts.stats_mode = 0; end
-    if ~isfield(opts,'symmetric_axes'); opts.symmetric_axes= 0; end
+    if ~isfield(opts,'symmetric_axes'); opts.symmetric_axes= []; end
     if ~isfield(opts,'uniform_zaxis_allgroups'); opts.uniform_zaxis_allgroups = 0; end
     if ~isfield(opts,'do_subplots'); opts.do_subplots = 0; end
     if ~isfield(opts,'max_subplots_per_fig'); opts.max_subplots_per_fig = 16; end
@@ -64,7 +64,16 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
     stats_opts = struct_addDef(stats_opts,'contours_alphas',[0.01 0.001 0.0001]);          % Chosen alpha value
     stats_opts = struct_addDef(stats_opts,'transparency_alpha',0.01);                      % Chosen alpha value
     
-    
+    if isempty(symmetric_axes)
+%         tic
+        temp = [group.data];
+        if any(temp(:) < 0)
+            symmetric_axes = 1;
+        else
+            symmetric_axes = 0;
+        end
+%         toc
+    end
                                     
     % First loop to remove nans and infs from data
     for i = 1:length(group);

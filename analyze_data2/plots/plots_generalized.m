@@ -114,7 +114,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
     opts_pls.spectrogram_normalize_to_baseline = 0;          % Normalize spectrograms to pre-cue data to a value of 1.0
-            opts_pls.spectrogram_baseline_time = -0.75;       % During pre-cue
+            opts_pls.spectrogram_baseline_time = -1.1;       % During pre-cue
             opts_pls.spectrogram_baseline_dolog = 1;
     
     
@@ -138,7 +138,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
     s.do_group_collapse_pls2days = 0;
     s.do_group_normalize_specgram_to_baseline_time = 0;
         s.normalize_within_elects = 1;
-        s.specgram_baseline_time = -1.199;
+        s.specgram_baseline_time = -1.1;
          s.gnsbt_do_log = 0;
     
     % Groupmode

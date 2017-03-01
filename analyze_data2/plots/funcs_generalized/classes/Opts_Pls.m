@@ -26,6 +26,7 @@ classdef Opts_Pls
         spectrogram_normalize_to_baseline = 1;
             spectrogram_baseline_time = -0.75;       % During pre-cue
             spectrogram_baseline_dolog = 1;
+        normalize_to_1_over_f = 0;
         
     end
 end

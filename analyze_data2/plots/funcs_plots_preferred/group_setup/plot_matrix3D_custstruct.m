@@ -1,9 +1,16 @@
 
 
 
-function [h1, out] = plot_matrix3D_custstruct(abscissa,group,opts_PM3D,opts,my_clist)
+function [h1, out] = plot_matrix3D_custstruct(abscissa,group,opts_PM3D,opts,my_clist,my_linestyle,my_linewidth)
 
 % Set defaults
+    if nargin < 7
+        my_linewidth = [];
+    end
+    if nargin < 6
+        my_linestyle = [];
+    end
+    
     if nargin < 5;
         my_clist = [];
     end
@@ -27,6 +34,8 @@ function [h1, out] = plot_matrix3D_custstruct(abscissa,group,opts_PM3D,opts,my_c
     if ~isfield(opts,'max_subplots_per_fig'); opts.max_subplots_per_fig = 16; end
     
     if isempty(my_clist); my_clist = get_clist; end
+    if isempty(my_linestyle); my_linestyle = repmat({'-'},1,length(group)); end
+    if isempty(my_linewidth); my_linewidth = repmat(2,1,length(group)); end
     
     do_subplots = opts.do_subplots;
         max_subplots_per_fig = opts.max_subplots_per_fig;
@@ -47,12 +56,12 @@ function [h1, out] = plot_matrix3D_custstruct(abscissa,group,opts_PM3D,opts,my_c
             group_curr.xlims_desired = group(1).xlims_desired;
             group_curr.zlims_desired = group(1).zlims_desired;
             group_curr.data_name = group(1).data_name;
-            [h1, out] = plot_matrix3D_custstruct_subfunc(abscissa,group(i),opts_PM3D,opts,my_clist);
+            [h1, out] = plot_matrix3D_custstruct_subfunc(abscissa,group(i),opts_PM3D,opts,my_clist,my_linestyle,my_linewidth);
             set(gca,'FontSize',10);
         end
         
     else
-        [h1, out] = plot_matrix3D_custstruct_subfunc(abscissa,group,opts_PM3D,opts,my_clist);
+        [h1, out] = plot_matrix3D_custstruct_subfunc(abscissa,group,opts_PM3D,opts,my_clist,my_linestyle,my_linewidth);
     end
 
 
@@ -60,7 +69,7 @@ end
 
 
 
-function [h1, out] = plot_matrix3D_custstruct_subfunc(abscissa,group,opts_PM3D,opts,my_clist)
+function [h1, out] = plot_matrix3D_custstruct_subfunc(abscissa,group,opts_PM3D,opts,my_clist,my_linestyle,my_linewidth)
 
 
     % Import variables from structures
@@ -142,7 +151,15 @@ function [h1, out] = plot_matrix3D_custstruct_subfunc(abscissa,group,opts_PM3D,o
                                                                                                                 
                                                                                                                 
             data_STE = group(i).data_STE;
-            hold on; [h1(i)] = plott_matrix3D_simplified(x,data_mu,data_STE,{colorspec{:},'LineWidth',2},{},opts_PM3D{find(strcmp(opts_PM3D,'showErrorbars'))+1});
+            LineSpec1 = {colorspec{:},'LineWidth',my_linewidth(i),'LineStyle',my_linestyle{i}};
+            if ischar(colorspec{2});
+                LineSpec2 = [colorspec{2}, my_linestyle{i}];
+                cmap = [];
+            else
+                LineSpec2 = [my_linestyle{i}];
+                cmap = colorspec{2};
+            end
+            hold on; [h1(i)] = plott_matrix3D_simplified(x,data_mu,data_STE,LineSpec1,LineSpec2,cmap,opts_PM3D{find(strcmp(opts_PM3D,'showErrorbars'))+1});
             
                                                                                                                 % ^^ This is a really cheap temporary hack!
             
@@ -361,26 +378,18 @@ function [h1, out] = plot_matrix3D_custstruct_subfunc(abscissa,group,opts_PM3D,o
 end
 
 
-function [hl1,hl2] = plott_matrix3D_simplified(t,X,Xste,LineSpec,LineSpec2,show_errorbars)
+function [hl1,hl2] = plott_matrix3D_simplified(t,X,Xste,LineSpec,LineSpec2,cmap,show_errorbars)
             t=t(:);
             t = mean(t,2);      % Some extra operations, but it's worth it.
             
-            % Transfer cmap over to LineSpec2 for boundedline if not already present
-            if isempty(find(strcmp(LineSpec2,'cmap')))
-                lsc_ind = find(strcmp(LineSpec,'Color'));
-                if ~isempty(lsc_ind)
-                    if ~ischar(LineSpec{lsc_ind+1})                 % Linespec is of form 'Color',[0 1 0]
-                        LineSpec2{end+1}='cmap'; % The color specification is a row vector
-                        LineSpec2{end+2}=LineSpec{lsc_ind+1};
-                    else
-                        Color=LineSpec(lsc_ind+1);         % Linespec is of form 'Color','b-'
-                    end
-                end
-            end
-            
-            hold on; hl1 = plot(t,squeeze(X),Color{:},LineSpec{:}); hold on; 
+
+            hold on; hl1 = plot(t,squeeze(X),LineSpec{:}); hold on; 
             if show_errorbars
-                hold on; hl2 = boundedline(t,squeeze(X),permute(squeeze(Xste),[1 3 2]),Color{:},'alpha',LineSpec2{:});
+                if isempty(cmap)
+                    hold on; hl2 = boundedline(t,squeeze(X),permute(squeeze(Xste),[1 3 2]),LineSpec2,'alpha');
+                else
+                    hold on; hl2 = boundedline(t,squeeze(X),permute(squeeze(Xste),[1 3 2]),LineSpec2,'alpha',cmap);
+                end
             end
 
 end

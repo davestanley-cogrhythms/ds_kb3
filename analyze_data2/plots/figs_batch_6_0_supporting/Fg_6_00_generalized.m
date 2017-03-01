@@ -221,17 +221,29 @@ function [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude
 
 data_type = mode2datatype(sfc_mode);
 
-% do_group_normalize_specgram_to_baseline_time = 0;
-
-if do_group_normalize_specgram_to_baseline_time
-    if strcmp(data_type,'FFC')
-        gnsbt_do_log = 0;
-    elseif strcmp(data_type,'PSD')
-        gnsbt_do_log = 1;
-    end
-end
-
-
+% % do_group_normalize_specgram_to_baseline_time = 0;
+% 
+% if do_group_normalize_specgram_to_baseline_time
+%     if strcmp(data_type,'FFC')
+%         gnsbt_do_log = 0;
+%     elseif strcmp(data_type,'PSD')
+%         gnsbt_do_log = 1;
+%     end
+%  
+% %     opts_PM3Dsp.symmetric_axes
+% end
+% 
+% if opts_pls.spectrogram_normalize_to_baseline
+%     opts_pls.spectrogram_normalize_to_baseline = 1;          % Normalize spectrograms to pre-cue data to a value of 1.0
+%             opts_pls.spectrogram_baseline_time = -1.1;       % During pre-cue
+%             opts_pls.spectrogram_baseline_dolog = 1;
+% 
+% 
+%   % Group options
+%     s.do_group_collapse_pls2days = 1;
+%     s.do_group_normalize_specgram_to_baseline_time = 0;
+%         s.normalize_within_elects = 1;
+%         s.specgram_baseline_time = -1.1; s.gnsbt_do_log = 0;
 
 %% Import data if running as a function; define dependent parameters
 
@@ -331,7 +343,7 @@ if ~exist('group','var')
                     group = group([1,2,5]);
                 else
                     group = group([1:4,9,10]);
-                    group = group(1);
+                    %group = group(1);
                 end
             end
             
@@ -633,7 +645,7 @@ end
 opts_PM3D = {'do_mean',1,'do_zscore',0,'showErrorbars', double(length(group) < 10)};
 if plot_on_spect && ~is_spectrogram
     
-    disable_split = 0;
+    disable_split = 1;
 
     N=length(group);
             
@@ -672,8 +684,24 @@ if plot_on_spect && ~is_spectrogram
         else
             inds = 1:N;
         end
+        
+        
+        swap_first_four = 1;
+        if swap_first_four
+            inds = [1,3,2,4];       % Sig cat, sig dog, non-sig cat, non-sig dog
+            
+            my_clist = 'rbrb';
+            my_linestyle = {'-','-','--','--'};
+            my_linewidth = [5,5,1,1];
+            
+        else
+            my_clist = 'rrbb';
+            my_linestyle = {'-','--','-','--'};
+            my_linewidth = [5,1,5,1];
+        end
+        
         figure;
-        [h1] = plot_matrix3D_custstruct([],group(inds),opts_PM3D,opts_PM3Dcs);
+        [h1] = plot_matrix3D_custstruct([],group(inds),opts_PM3D,opts_PM3Dcs,my_clist,my_linestyle,my_linewidth);
     end
     
     

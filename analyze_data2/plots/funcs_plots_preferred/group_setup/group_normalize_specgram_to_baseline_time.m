@@ -11,7 +11,7 @@ function group = group_normalize_specgram_to_baseline_time(group,specgram_baseli
                                     %    normalizing removes electrode-electrode variability.
                                     
     normalize_across_timerange = 1;
-        normalizing_timerange = 0.25;
+        normalizing_timerange = 0.1;
 
     for i = 1:length(group)
         if ~normalize_across_timerange

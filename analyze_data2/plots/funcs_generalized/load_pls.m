@@ -52,6 +52,7 @@ end
     spectrogram_normalize_to_baseline = pls_opts.spectrogram_normalize_to_baseline;     % Normalize spectrograms to pre-cue data to a value of 1.0
             spectrogram_baseline_time = pls_opts.spectrogram_baseline_time;             % During pre-cue
             spectrogram_baseline_dolog = pls_opts.spectrogram_baseline_dolog;
+    normalize_to_1_over_f = pls_opts.normalize_to_1_over_f;
     
     
     % Test plot switches
@@ -274,15 +275,25 @@ end
 
 
 %% Manipulations to spectrogram data
+
+% Normalize spectrogram if just doing power
+if normalize_to_1_over_f
+    if strcmp(group(1).data_name,'PSD')
+        pls = unwrap_3Dpls(pls,f,f2);
+        fmat = repmat([1; [f(2:end)]'],[1,size(pls,2),size(pls,3),size(pls,4)]);
+        pls = pls .* fmat.^1.0;
+        pls = wrap_3Dpls(pls);
+    end
+end
+
 % Normalize spectrogram to pre-cue data (only works for spectrogram data)
 if spectrogram_normalize_to_baseline
     normalize_within_elects = 1;    % 0 - normalize by mean of the pre-cue period.
                                     % 1 - normalize by each electrode individually. This within-electrode
                                     %    normalizing removes electrode-electrode variability.
                                     
-                                    
     normalize_across_timerange = 1;
-        normalizing_timerange = 0.25;
+        normalizing_timerange = 0.1;
 
     pls = unwrap_3Dpls(pls,f,f2);
     
@@ -305,6 +316,7 @@ if spectrogram_normalize_to_baseline
     pls = wrap_3Dpls(pls);
     
 end
+
    
 if spectrogram2spectra_timeslice
     if ~is_spectrogram
@@ -486,11 +498,7 @@ end
         if ~exist('f2','var'); f2 = []; end
     end
     
-    % Normalize spectrogram if just doing power
-%     if strcmp(group(1).data_name,'PSD')
-%         fmat = repmat([1; [f(2:end)]'],[1,size(pls,2),size(pls,3),size(pls,4)]);
-%         pls = pls .* fmat.^1.0;
-%     end
+
     
     
     
