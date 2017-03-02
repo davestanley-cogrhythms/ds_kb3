@@ -42,6 +42,17 @@ g.mode_45_0 = 45.6013111011;
 g.mode_45_40 = 45.6018103043;
 
 
+g.do_slicemode = 0;
+g.spectrogram_normalize_to_baseline = 0;
+g.compare_rel_irrel_mode = 0;
+    
+g.autosave_figs = 1;
+g.data_mode = 52.2;
+
+g.currcommit = '_FR_';
+
+
+
 %% Figure 6_10a - Plot unit FR based on bias - raw
 clearvars -except wrkspc_buffer fv fv3 g
 currfigname = 'Fg6_10a';
@@ -177,7 +188,7 @@ currfigname = 'Fg6_10a';
                        % 5:6-Separate into days
         s.examine_Sch_based_on_animal = 1;          % For animal L, do Cat/Dog; for O do Goc/Tad
 
-    s.swap_mode = 0;
+    s.swap_mode = 0; s.compare_rel_irrel_mode = g.compare_rel_irrel_mode;
 
     s.group_do_merge = 0;
         s.groupmerge_operation = 0;
@@ -204,7 +215,7 @@ currfigname = 'Fg6_10a';
     paperfig_mode = 1;
     s.opts_PM3Dcs.paperfig_mode=paperfig_mode;
     s.opts_PM3Dcs.stats_mode = 0;
-    s.opts_PM3Dcs.do_subplots = 0;
+    s.opts_PM3Dcs.do_subplots = 1;
         s.opts_PM3Dcs.max_subplots_per_fig = 16;
     % % Spectrogram plotting options
     s.opts_PM3Dsp.paperfig_mode=paperfig_mode;
@@ -247,18 +258,19 @@ opts_exclude.excludeO = 1;
 % % Sample Stage
 s.curr_stage_sp = 2;
 opts_perm.split_plusminus = 2;      % 0-Either; 1-Both; 2-Positive; 3-Negative        
-[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
+[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
+
 opts_perm.split_plusminus = 3;      % 0-Either; 1-Both; 2-Positive; 3-Negative        
-[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
-%%
+[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
+
 % % Delay Stage
 s.curr_stage_sp = 3;
 opts_perm.split_plusminus = 2;      % 0-Either; 1-Both; 2-Positive; 3-Negative        
-[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
+[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
 opts_perm.split_plusminus = 3;      % 0-Either; 1-Both; 2-Positive; 3-Negative        
-[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
+[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
 
-%%
+
 
 % % Animal O
 opts_exclude.excludeL = 1;
@@ -267,18 +279,19 @@ opts_exclude.excludeO = 0;
 % % Sample Stage
 s.curr_stage_sp = 2;
 opts_perm.split_plusminus = 2;      % 0-Either; 1-Both; 2-Positive; 3-Negative        
-[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
+[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
 opts_perm.split_plusminus = 3;      % 0-Either; 1-Both; 2-Positive; 3-Negative        
-[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
+[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
 %
 % % Delay Stage
 s.curr_stage_sp = 3;
 opts_perm.split_plusminus = 2;      % 0-Either; 1-Both; 2-Positive; 3-Negative        
-[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
+[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
 opts_perm.split_plusminus = 3;      % 0-Either; 1-Both; 2-Positive; 3-Negative        
-[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
+[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
 
 
+if g.autosave_figs; save_allfigs(g.currcommit,currfigname,1); end
 
 
 clear out1 out2
@@ -420,7 +433,7 @@ currfigname = 'Fg6_10b';
                        % 5:6-Separate into days
         s.examine_Sch_based_on_animal = 1;          % For animal L, do Cat/Dog; for O do Goc/Tad
 
-    s.swap_mode = 0;
+    s.swap_mode = 0; s.compare_rel_irrel_mode = g.compare_rel_irrel_mode;
 
     s.group_do_merge = 0;
         s.groupmerge_operation = 0;
@@ -447,7 +460,7 @@ currfigname = 'Fg6_10b';
     paperfig_mode = 1;
     s.opts_PM3Dcs.paperfig_mode=paperfig_mode;
     s.opts_PM3Dcs.stats_mode = 0;
-    s.opts_PM3Dcs.do_subplots = 0;
+    s.opts_PM3Dcs.do_subplots = 1;
         s.opts_PM3Dcs.max_subplots_per_fig = 16;
     % % Spectrogram plotting options
     s.opts_PM3Dsp.paperfig_mode=paperfig_mode;
@@ -490,16 +503,16 @@ opts_exclude.excludeO = 1;
 % % Sample Stage
 s.curr_stage_sp = 2;
 opts_perm.split_plusminus = 2;      % 0-Either; 1-Both; 2-Positive; 3-Negative        
-[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
+[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
 opts_perm.split_plusminus = 3;      % 0-Either; 1-Both; 2-Positive; 3-Negative        
-[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
-%%
+[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
+
 % % Delay Stage
 s.curr_stage_sp = 3;
 opts_perm.split_plusminus = 2;      % 0-Either; 1-Both; 2-Positive; 3-Negative        
-[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
+[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
 opts_perm.split_plusminus = 3;      % 0-Either; 1-Both; 2-Positive; 3-Negative        
-[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
+[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
 
 
 
@@ -510,19 +523,19 @@ opts_exclude.excludeO = 0;
 % % Sample Stage
 s.curr_stage_sp = 2;
 opts_perm.split_plusminus = 2;      % 0-Either; 1-Both; 2-Positive; 3-Negative        
-[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
+[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
 opts_perm.split_plusminus = 3;      % 0-Either; 1-Both; 2-Positive; 3-Negative        
-[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
+[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
 
 % % Delay Stage
 s.curr_stage_sp = 3;
 opts_perm.split_plusminus = 2;      % 0-Either; 1-Both; 2-Positive; 3-Negative        
-[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
+[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
 opts_perm.split_plusminus = 3;      % 0-Either; 1-Both; 2-Positive; 3-Negative        
-[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm);
+[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
 
 
-
+if g.autosave_figs; save_allfigs(g.currcommit,currfigname,1); end
 
 clear out1 out2
 

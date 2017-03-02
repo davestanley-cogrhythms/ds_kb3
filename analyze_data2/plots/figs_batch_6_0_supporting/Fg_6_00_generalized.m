@@ -503,7 +503,7 @@ if ~exist('group','var')
                 if opts_exclude.excludeO         % Animal L only
                     group = group(1:4);
                 elseif opts_exclude.excludeL     % Animal O only
-                    group = group(13:16);
+                    group = group(9:12);
                 end
             else
                 if (~isempty(strfind(tf_label_perm,'Cat')) || ~isempty(strfind(tf_label_perm,'Dog')))

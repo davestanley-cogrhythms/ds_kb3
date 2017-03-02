@@ -1,6 +1,6 @@
 
 %%
-error('This is meant to run in cell mode. Dont F5!');
+% error('This is meant to run in cell mode. Dont F5!');
 
 
 %% All figures
@@ -22,9 +22,9 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
 % % Case 23; Ctgsetli Mode 0; - FFC
 % g.mode_23_0 =  23.4013111011;
 % g.mode_23_0 =  23.4013111013;
-% g.mode_23_0 =  23.4018111011;
+g.mode_23_0 =  23.4018111011;
 % g.mode_23_0 =  23.4017101013;
-g.mode_23_0 =  23.4013111001;
+% g.mode_23_0 =  23.4013111001;
 
 % % Case 23; Ctgsetli Mode 40; - FFC
 g.mode_23_40 =  23.4018103041;
@@ -34,21 +34,22 @@ g.mode_52_0 = 52.700001001;
 
 % % Case 45; Ctgsetli Mode 0 - PSD
 % g.mode_45_0 = 45.6013111011;
-% g.mode_45_0 = 45.6018111011;
+g.mode_45_0 = 45.6018111011;
 % g.mode_45_0 = 45.6017101013;
-g.mode_45_0 = 45.6013111001;
+% g.mode_45_0 = 45.6013111001;
 
 % % Case 45; Ctgsetli Mode 40 - PSD
 g.mode_45_40 = 45.6018103043;
 
-g.compare_rel_irrel_mode = 1;
 
+g.compare_rel_irrel_mode = 0;
+g.spectrogram_normalize_to_baseline = 1;
 g.do_slicemode = 0;
-    g.spectrogram_normalize_to_baseline = 1;
     
 g.autosave_figs = 1;
+g.data_mode = 45;
 
-g.currcommit = '003_paper2_';
+g.currcommit = '_';
 
 
 %% Figure 6_00a - Cat vs Dog, all electrodes
@@ -58,7 +59,7 @@ currfigname = 'Fg6_00a';
     % Setup params 
     clear group group0
 
-    data_mode = 45;
+    data_mode = g.data_mode
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -274,7 +275,7 @@ currfigname = 'Fg6_00b';
     % Setup params 
     clear group group0
 
-    data_mode = 45;
+    data_mode = g.data_mode
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -525,7 +526,7 @@ currfigname = 'Fg6_00c';
     % Setup params 
     clear group group0
 
-    data_mode = 45;
+    data_mode = g.data_mode
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -654,7 +655,7 @@ currfigname = 'Fg6_00c';
     s.groupmode = 2.2;   % 0-Use default grouping (all pairs, enumerate over ctgs);
                        % 1:4-Select various subgroups
                        % 5:6-Separate into days
-        s.examine_Sch_based_on_animal = 0;          % For animal L, do Cat/Dog; for O do Goc/Tad
+        s.examine_Sch_based_on_animal = 1;          % For animal L, do Cat/Dog; for O do Goc/Tad
 
     s.swap_mode = 0;
     s.compare_rel_irrel_mode = g.compare_rel_irrel_mode;
@@ -772,7 +773,7 @@ currfigname = 'Fg6_01a';
     % Setup params 
     clear group group0
 
-    data_mode = 45;
+    data_mode = g.data_mode
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -994,7 +995,7 @@ currfigname = 'Fg6_01b';
     clear group group0
     
 
-    data_mode = 23;
+    data_mode = g.data_mode
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -1304,7 +1305,7 @@ currfigname = 'Fg6_00a';
     % Setup params 
     clear group group0
 
-    data_mode = 45;
+    data_mode = g.data_mode
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -1518,7 +1519,7 @@ currfigname = 'Fg6_02b';
     % Setup params 
     clear group group0
 
-    data_mode = 45;
+    data_mode = g.data_mode
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
