@@ -31,6 +31,7 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
     if ~isfield(opts,'show_range_perm'); opts.show_range_perm = 1; end      % Rectangle associated with permutation data (used to select significant cells)
     if ~isfield(opts,'show_text_stats'); opts.show_text_stats = 1; end
     if ~isfield(opts,'show_text_perm'); opts.show_text_perm = 1; end
+    if ~isfield(opts,'visible'); opts.visible = 'on'; end
     
     % Import variables from opts structure
     paperfig_mode = opts.paperfig_mode;
@@ -39,11 +40,12 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
     uniform_zaxis_allgroups = opts.uniform_zaxis_allgroups;
     do_subplots = opts.do_subplots;
         max_subplots_per_fig = opts.max_subplots_per_fig;
-        use_subplot_grid = 0;
+        use_subplot_grid = 1;
     show_range_stats = opts.show_range_stats;
     show_range_perm = opts.show_range_perm;
     show_text_stats = opts.show_text_stats;
     show_text_perm = opts.show_text_perm;
+    visible = opts.visible;
     
     % Overlay options structure
         % For transparency
@@ -125,10 +127,10 @@ function [hsp, out] = plot_spectrogram_custstruct(group,opts,overlay_opts,stats_
     for i = 1:length(group)
         % Manage figure creation
         if do_subplots;
-            [hsp, curr_subplots,returns] = new_subplot(max_subplots_per_fig,curr_subplots,hsp,use_subplot_grid);    % Create a new subplot entry or start a new figure if current fig is full.
+            [hsp, curr_subplots,returns] = new_subplot(max_subplots_per_fig,curr_subplots,hsp,use_subplot_grid,@figl,visible);    % Create a new subplot entry or start a new figure if current fig is full.
             if strcmp(returns,'q') || strcmp(returns,'Q'); break; end
         else
-            figure;
+            figure('visible',visible);
         end
         
         % Pull out data

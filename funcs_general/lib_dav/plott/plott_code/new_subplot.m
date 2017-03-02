@@ -1,11 +1,15 @@
 
-function [hsp, i, returns] = new_subplot(Nmax,i,hsp,use_subplot_grid, fig_handle)
+function [hsp, i, returns] = new_subplot(Nmax,i,hsp,use_subplot_grid, fig_handle,visible)
 
     if nargin < 4
         use_subplot_grid = 0;
     end
     if nargin < 5
         fig_handle = @figl;
+    end
+
+    if nargin < 6
+        visible = 'on';
     end
 
     % i is total number of subplots in all figures
@@ -30,7 +34,7 @@ function [hsp, i, returns] = new_subplot(Nmax,i,hsp,use_subplot_grid, fig_handle
 
     %[i j]
     if use_subplot_grid
-        if j==1; fig_handle(); hsp = subplot_gridsq(Nmax); end   % Start a new figure if necessary
+        if j==1; fig_handle('visible',visible); hsp = subplot_gridsq(Nmax); end   % Start a new figure if necessary
         hsp.set_gca(j);
     else
         if j==1; fig_handle();end                                         % Start a new figure if necessary

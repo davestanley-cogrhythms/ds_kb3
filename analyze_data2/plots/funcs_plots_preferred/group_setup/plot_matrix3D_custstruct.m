@@ -33,6 +33,7 @@ function [h1, out] = plot_matrix3D_custstruct(abscissa,group,opts_PM3D,opts,my_c
     if ~isfield(opts,'do_subplots'); opts.do_subplots = 0; end
     if ~isfield(opts,'groups_per_subplot'); opts.groups_per_subplot = 4; end
     if ~isfield(opts,'max_subplots_per_fig'); opts.max_subplots_per_fig = 16; end
+    if ~isfield(opts,'visible'); opts.visible = 'on'; end
     
     if isempty(my_clist); my_clist = get_clist; end
     if isempty(my_linestyle); my_linestyle = repmat({'-'},1,length(group)); end
@@ -42,6 +43,7 @@ function [h1, out] = plot_matrix3D_custstruct(abscissa,group,opts_PM3D,opts,my_c
         max_subplots_per_fig = opts.max_subplots_per_fig;
         use_subplot_grid = 1;
     groups_per_subplot = opts.groups_per_subplot;
+    visible = opts.visible;
         
         
     if do_subplots
@@ -51,7 +53,7 @@ function [h1, out] = plot_matrix3D_custstruct(abscissa,group,opts_PM3D,opts,my_c
         max_subplots_per_fig = min(max_subplots_per_fig,N_subplots);         % Reduce max subplots if length of group is less
         for i = 1:N_subplots
             % Manage figure creation
-            [hsp, curr_subplots,returns] = new_subplot(max_subplots_per_fig,curr_subplots,hsp,use_subplot_grid);    % Create a new subplot entry or start a new figure if current fig is full.
+            [hsp, curr_subplots,returns] = new_subplot(max_subplots_per_fig,curr_subplots,hsp,use_subplot_grid,@figl,visible);    % Create a new subplot entry or start a new figure if current fig is full.
             if strcmp(returns,'q') || strcmp(returns,'Q'); break; end
             
             % Import some metadata info from group(1)

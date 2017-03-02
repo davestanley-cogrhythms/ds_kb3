@@ -45,6 +45,10 @@ g.compare_rel_irrel_mode = 1;
 
 g.do_slicemode = 0;
     g.spectrogram_normalize_to_baseline = 1;
+    
+g.autosave_figs = 1;
+
+g.currcommit = '003_paper2_';
 
 
 %% Figure 6_00a - Cat vs Dog, all electrodes
@@ -246,17 +250,21 @@ currfigname = 'Fg6_00a';
         s.opts_PDays.max_subplots_per_fig = 16;
         
 
+ind = [];
+myylims = [];
+% myylims = [0 60];
 opts_exclude.excludeL = 0;
 opts_exclude.excludeO = 1; 
-[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
+[wrkspc_buffer, out1] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm,ind,myylims);
 
    
 
 opts_exclude.excludeL = 1;
 opts_exclude.excludeO = 0; 
-[wrkspc_buffer, out2] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
+[wrkspc_buffer, out2] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm,ind,myylims);
 
 
+if g.autosave_figs; save_allfigs(g.currcommit,currfigname,1); end
 clear out1 out2
 
 %% Figure 6_00b - Cat vs Dog, by electrode significance
@@ -505,7 +513,7 @@ switch data_mode
         end
 end
         
-
+if g.autosave_figs; save_allfigs(g.currcommit,currfigname,1); end
 clear out1 out2
 
 
@@ -753,7 +761,9 @@ s.curr_stage_sp = 3;
 opts_perm.split_plusminus = 3;      % 0-Either; 1-Both; 2-Positive; 3-Negative
 [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm,ind,myylims);
 
+if g.autosave_figs; save_allfigs(g.currcommit,currfigname,1); end
 
+error('endof script for now');
 
 %% Figure 6_01a - Cat vs Cat irr, etc, all electrodes
 clearvars -except wrkspc_buffer fv fv3 g
@@ -967,7 +977,7 @@ ind = 3:4; myylims = [0 100];
 ind=1:5; myylims = [0 50];
 [wrkspc_buffer, out4] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm,ind,myylims);
 
-
+if g.autosave_figs; save_allfigs(g.currcommit,currfigname,1); end
 
 clear out3 out4
 
@@ -1283,7 +1293,7 @@ switch data_mode
         
 end
 
-
+if g.autosave_figs; save_allfigs(g.currcommit,currfigname,1); end
 
 
 
@@ -1495,7 +1505,7 @@ opts_exclude.excludeL = 1;
 opts_exclude.excludeO = 0; 
 [wrkspc_buffer, out2] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm);
 
-
+if g.autosave_figs; save_allfigs(g.currcommit,currfigname,1); end
 clear out1 out2
 
 
@@ -1749,5 +1759,5 @@ switch data_mode
         end
 end
         
-
+if g.autosave_figs; save_allfigs(g.currcommit,currfigname,1); end
 clear out1 out2

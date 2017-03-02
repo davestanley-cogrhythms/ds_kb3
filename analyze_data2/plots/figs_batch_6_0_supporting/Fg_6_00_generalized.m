@@ -216,6 +216,10 @@ data_type = mode2datatype(sfc_mode);
 opts_pls.spectrogram_normalize_to_baseline = g.spectrogram_normalize_to_baseline;
 % do_group_normalize_specgram_to_baseline_time = g.spectrogram_normalize_to_baseline;
 
+if g.autosave_figs
+    opts_PM3Dcs.visible='off';
+    opts_PM3Dsp.visible='off';
+end
 
 if g.do_slicemode
     
@@ -793,8 +797,8 @@ if plot_on_spect && is_spectrogram
             subplot_ind = 0;
             for i = ind
                 subplot_ind = subplot_ind + 1;
-                %hsp.set_gca(subplot_ind);              % For subplotsq
-                subplotsq(length(ind),subplot_ind);     % For subplot
+                hsp.set_gca(subplot_ind);              % For subplotsq
+                %subplotsq(length(ind),subplot_ind);     % For subplot
                 for j = 1:length(tf_avail)
                     fullband_T = group(i).Nwind*get_dt;
                     fullband_F = group(i).full_bandwidth;
