@@ -204,7 +204,7 @@ currfigname = 'Fg6_00a';
     paperfig_mode = 1;
     s.opts_PM3Dcs.paperfig_mode=paperfig_mode;
     s.opts_PM3Dcs.stats_mode = 0;
-    s.opts_PM3Dcs.do_subplots = 0;
+    s.opts_PM3Dcs.do_subplots = 1;
         s.opts_PM3Dcs.max_subplots_per_fig = 16;
     % % Spectrogram plotting options
     s.opts_PM3Dsp.paperfig_mode=paperfig_mode;
@@ -415,7 +415,7 @@ currfigname = 'Fg6_00b';
     paperfig_mode = 1;
     s.opts_PM3Dcs.paperfig_mode=paperfig_mode;
     s.opts_PM3Dcs.stats_mode = 0;
-    s.opts_PM3Dcs.do_subplots = 0;
+    s.opts_PM3Dcs.do_subplots = 1;
         s.opts_PM3Dcs.max_subplots_per_fig = 16;
     % % Spectrogram plotting options
     s.opts_PM3Dsp.paperfig_mode=paperfig_mode;
@@ -668,7 +668,7 @@ currfigname = 'Fg6_00c';
     paperfig_mode = 1;
     s.opts_PM3Dcs.paperfig_mode=paperfig_mode;
     s.opts_PM3Dcs.stats_mode = 0;
-    s.opts_PM3Dcs.do_subplots = 0;
+    s.opts_PM3Dcs.do_subplots = 1;
         s.opts_PM3Dcs.max_subplots_per_fig = 16;
     % % Spectrogram plotting options
     s.opts_PM3Dsp.paperfig_mode=paperfig_mode;
@@ -909,7 +909,7 @@ currfigname = 'Fg6_01a';
     paperfig_mode = 1;
     s.opts_PM3Dcs.paperfig_mode=paperfig_mode;
     s.opts_PM3Dcs.stats_mode = 0;
-    s.opts_PM3Dcs.do_subplots = 0;
+    s.opts_PM3Dcs.do_subplots = 1;
         s.opts_PM3Dcs.max_subplots_per_fig = 16;
     % % Spectrogram plotting options
     s.opts_PM3Dsp.paperfig_mode=paperfig_mode;
@@ -1136,7 +1136,7 @@ currfigname = 'Fg6_01b';
     paperfig_mode = 1;
     s.opts_PM3Dcs.paperfig_mode=paperfig_mode;
     s.opts_PM3Dcs.stats_mode = 0;
-    s.opts_PM3Dcs.do_subplots = 0;
+    s.opts_PM3Dcs.do_subplots = 1;
         s.opts_PM3Dcs.max_subplots_per_fig = 16;
     % % Spectrogram plotting options
     s.opts_PM3Dsp.paperfig_mode=paperfig_mode;
@@ -1439,7 +1439,7 @@ currfigname = 'Fg6_00a';
     paperfig_mode = 1;
     s.opts_PM3Dcs.paperfig_mode=paperfig_mode;
     s.opts_PM3Dcs.stats_mode = 0;
-    s.opts_PM3Dcs.do_subplots = 0;
+    s.opts_PM3Dcs.do_subplots = 1;
         s.opts_PM3Dcs.max_subplots_per_fig = 16;
     % % Spectrogram plotting options
     s.opts_PM3Dsp.paperfig_mode=paperfig_mode;
@@ -1653,7 +1653,7 @@ currfigname = 'Fg6_02b';
     paperfig_mode = 1;
     s.opts_PM3Dcs.paperfig_mode=paperfig_mode;
     s.opts_PM3Dcs.stats_mode = 0;
-    s.opts_PM3Dcs.do_subplots = 0;
+    s.opts_PM3Dcs.do_subplots = 1;
         s.opts_PM3Dcs.max_subplots_per_fig = 16;
     % % Spectrogram plotting options
     s.opts_PM3Dsp.paperfig_mode=paperfig_mode;
@@ -1713,7 +1713,7 @@ switch data_mode
         end
 end
 
-%%
+
 opts_exclude.excludeL = 1;
 opts_exclude.excludeO = 0;
 [tf_avail] = get_freqband_timeband(s.perm_mode,opts_exclude); s.tf_avail = tf_avail;

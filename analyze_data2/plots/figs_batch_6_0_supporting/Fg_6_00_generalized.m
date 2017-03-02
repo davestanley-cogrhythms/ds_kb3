@@ -644,70 +644,52 @@ end
 %% Test Plot groups, at last
 opts_PM3D = {'do_mean',1,'do_zscore',0,'showErrorbars', double(length(group) < 10)};
 if plot_on_spect && ~is_spectrogram
-    
-    disable_split = 1;
-
+  
     N=length(group);
-            
-    if (N > 5) && ~disable_split
-        
-        curr_subplots = 1;
-        hsp = [];
-        
-        inds = 1:floor(N/2);
-        %inds = 1:4;
-        [hsp, curr_subplots,returns] = new_subplot(2,curr_subplots,hsp,1);    % Create a new subplot entry or start a new figure if current fig is full.
-        [h1] = plot_matrix3D_custstruct([],group(inds),opts_PM3D,opts_PM3Dcs);
-        
-        inds = floor(N/2)+1:N;
-        %inds = 5:8;
-        [hsp, curr_subplots,returns] = new_subplot(2,curr_subplots,hsp,1);    % Create a new subplot entry or start a new figure if current fig is full.
-        [h1] = plot_matrix3D_custstruct([],group(inds),opts_PM3D,opts_PM3Dcs);
-        
-    elseif (groupmode == 3) && ~disable_split
-        
-        curr_subplots = 1;
-        hsp = [];
-        for i = 1:floor(N/2)
-            inds = i*2-1:i*2;
-            [hsp, curr_subplots,returns] = new_subplot(2,curr_subplots,hsp,1);    % Create a new subplot entry or start a new figure if current fig is full.
-            [h1] = plot_matrix3D_custstruct([],group(inds),opts_PM3D,opts_PM3Dcs);
+   
+    if get_iscromer && groupmode == 0
+        if length(group) > 5
+            inds=[1:4,9,10];
+        else
+            inds=[1,2,5];
         end
-        
     else
-        if get_iscromer && groupmode == 0
-            if length(group) > 5
-                inds=[1:4,9,10];
-            else
-                inds=[1,2,5];
-            end
-        else
-            inds = 1:N;
-        end
-        
-        if ~strcmp(data_type,'FR')
-            swap_first_four = 1;
-            if swap_first_four 
-                inds = [1,3,2,4];       % Sig cat, sig dog, non-sig cat, non-sig dog
-
-                my_clist = 'rbrb';
-                my_linestyle = {'-','-','--','--'};
-                my_linewidth = [5,5,1,1];
-
-            else
-                my_clist = 'rrbb';
-                my_linestyle = {'-','--','-','--'};
-                my_linewidth = [5,1,5,1];
-            end
-        else
-            my_clist = get_clist;
-            my_linestyle = [];
-            my_linewidth = [];
-        end
-        
-        figure;
-        [h1] = plot_matrix3D_custstruct([],group(inds),opts_PM3D,opts_PM3Dcs,my_clist,my_linestyle,my_linewidth);
+        inds = 1:N;
     end
+
+    
+    if ~strcmp(data_type,'FR')
+        swap_every_four = 1;                    % This swaps groups 1 with 3 and 2 with 4, causing sig electrodes to be side by side
+        if swap_every_four 
+            inds2 = zeros(4,ceil(N)/4);
+            inds2(:) = inds;
+            inds2 = inds2([1,3,2,4],:);         % Sig cat, sig dog, non-sig cat, non-sig dog
+            inds = inds2(:);
+
+            my_clist = 'rbrb';
+            my_linestyle = {'-','-','--','--'};
+            my_linewidth = [5,5,1,1];
+
+        else
+            my_clist = 'rrbb';
+            my_linestyle = {'-','--','-','--'};
+            my_linewidth = [5,1,5,1];
+        end
+
+        % Replicate it a bunch of times
+        my_clist = repmat(my_clist,1,20);
+        my_linestyle = repmat(my_linestyle,1,40);
+        my_linewidth = repmat(my_linewidth,1,40);
+
+    else
+        my_clist = get_clist;
+        my_linestyle = [];
+        my_linewidth = [];
+    end
+
+    figure;
+    [h1] = plot_matrix3D_custstruct([],group(inds),opts_PM3D,opts_PM3Dcs,my_clist,my_linestyle,my_linewidth);
+
     
     
 %     gr_sp = group_individualize(group(1));

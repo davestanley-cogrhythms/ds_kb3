@@ -31,6 +31,7 @@ function [h1, out] = plot_matrix3D_custstruct(abscissa,group,opts_PM3D,opts,my_c
     if ~isfield(opts,'stats_mode'); opts.stats_mode = 0; end        % stats_mode: 2=different from 1; 3=different from 0
     if ~isfield(opts,'remove_dependent'); opts.remove_dependent = 0; end
     if ~isfield(opts,'do_subplots'); opts.do_subplots = 0; end
+    if ~isfield(opts,'groups_per_subplot'); opts.groups_per_subplot = 4; end
     if ~isfield(opts,'max_subplots_per_fig'); opts.max_subplots_per_fig = 16; end
     
     if isempty(my_clist); my_clist = get_clist; end
@@ -40,23 +41,25 @@ function [h1, out] = plot_matrix3D_custstruct(abscissa,group,opts_PM3D,opts,my_c
     do_subplots = opts.do_subplots;
         max_subplots_per_fig = opts.max_subplots_per_fig;
         use_subplot_grid = 1;
+    groups_per_subplot = opts.groups_per_subplot;
         
         
     if do_subplots
         curr_subplots = 1;
         hsp = [];
-        max_subplots_per_fig = min(max_subplots_per_fig,length(group));         % Reduce max subplots if length of group is less
-        for i = 1:length(group)
+        N_subplots = ceil(length(group)/groups_per_subplot);
+        max_subplots_per_fig = min(max_subplots_per_fig,N_subplots);         % Reduce max subplots if length of group is less
+        for i = 1:N_subplots
             % Manage figure creation
             [hsp, curr_subplots,returns] = new_subplot(max_subplots_per_fig,curr_subplots,hsp,use_subplot_grid);    % Create a new subplot entry or start a new figure if current fig is full.
             if strcmp(returns,'q') || strcmp(returns,'Q'); break; end
             
             % Import some metadata info from group(1)
-            group_curr = group(i);
-            group_curr.xlims_desired = group(1).xlims_desired;
-            group_curr.zlims_desired = group(1).zlims_desired;
-            group_curr.data_name = group(1).data_name;
-            [h1, out] = plot_matrix3D_custstruct_subfunc(abscissa,group(i),opts_PM3D,opts,my_clist,my_linestyle,my_linewidth);
+            group_curr = group((i-1)*groups_per_subplot+1:i*groups_per_subplot);
+            group_curr(1).xlims_desired = group(1).xlims_desired;
+            group_curr(1).zlims_desired = group(1).zlims_desired;
+            group_curr(1).data_name = group(1).data_name;
+            [h1, out] = plot_matrix3D_custstruct_subfunc(abscissa,group_curr,opts_PM3D,opts,my_clist,my_linestyle,my_linewidth);
             set(gca,'FontSize',10);
         end
         
