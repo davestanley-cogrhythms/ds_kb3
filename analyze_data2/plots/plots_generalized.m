@@ -12,7 +12,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
 % Setup params 
     clear group group0
 
-    data_mode = 23;
+    data_mode = 45;
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -55,7 +55,7 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
             s.perm_mode = 52.700001001;
         case 52.2         % Units
             %s.sfc_mode  =  52.700201001;
-            s.sfc_mode  =  52.700200004;
+            s.sfc_mode  =  52.700201001;
             s.perm_mode =  52.700001001;
             %s.sfc_mode =  41.601811101;
     end

@@ -39,6 +39,8 @@ g.mode_45_0 = 45.6013111011;
 % % Case 45; Ctgsetli Mode 40 - PSD
 g.mode_45_40 = 45.6018103043;
 
+g.do_slicemode = 1;
+
 
 %% Figure 6_00a - Cat vs Dog, all electrodes
 clearvars -except wrkspc_buffer fv fv3 g
@@ -175,7 +177,7 @@ currfigname = 'Fg6_00a';
                        % 5:6-Separate into days
         s.examine_Sch_based_on_animal = 0;          % For animal L, do Cat/Dog; for O do Goc/Tad
 
-    s.swap_mode = 1;
+    s.swap_mode = 0;
 
     s.group_do_merge = 1;
         s.groupmerge_operation = 0;
@@ -1588,7 +1590,7 @@ currfigname = 'Fg6_02b';
         opts_pls.do_abs_diff = 0;            % Take absolute value after doing diff.
     opts_pls.target_pls_format = 0; % Convert pls to match this format!
     opts_pls.collapse_pls_to_days = 0;
-    opts_pls.spectrogram2spectra_timeslice = 1;   % If working with a spectrogram, take a slice at time given by timeband_stats.
+    opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
     opts_pls.spectrogram_normalize_to_baseline = 1;          % Normalize spectrograms to pre-cue data to a value of 1.0
             opts_pls.spectrogram_baseline_time = -1.1;       % During pre-cue
@@ -1626,7 +1628,7 @@ currfigname = 'Fg6_02b';
 
     s.swap_mode = 0;
 
-    s.group_do_merge = 0;
+    s.group_do_merge = 1;
         s.groupmerge_operation = 0;
 
 % % Plot switches

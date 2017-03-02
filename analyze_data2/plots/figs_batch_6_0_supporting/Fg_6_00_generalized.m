@@ -395,7 +395,7 @@ if ~exist('group','var')
             group = group.query_legend(group0);
             
             
-        case 2.2                              % Sig vs non-sig
+        case 2.2                              % Sig vs non-sig raw
             clear group
             i=0;
             i=i+1; group(i)=grt; group(i).criteria(1)=[1]; group(i).ctgs=1;
@@ -449,7 +449,7 @@ if ~exist('group','var')
                 if opts_exclude.excludeO         % Animal L only
                     group = group(1:4);
                 elseif opts_exclude.excludeL     % Animal O only
-                    group = group(5:8);
+                    group = group(13:16);
                 end
             else
                 if (~isempty(strfind(tf_label_perm,'Cat')) || ~isempty(strfind(tf_label_perm,'Dog')))
@@ -685,19 +685,24 @@ if plot_on_spect && ~is_spectrogram
             inds = 1:N;
         end
         
-        
-        swap_first_four = 1;
-        if swap_first_four
-            inds = [1,3,2,4];       % Sig cat, sig dog, non-sig cat, non-sig dog
-            
-            my_clist = 'rbrb';
-            my_linestyle = {'-','-','--','--'};
-            my_linewidth = [5,5,1,1];
-            
+        if ~strcmp(data_type,'FR')
+            swap_first_four = 1;
+            if swap_first_four 
+                inds = [1,3,2,4];       % Sig cat, sig dog, non-sig cat, non-sig dog
+
+                my_clist = 'rbrb';
+                my_linestyle = {'-','-','--','--'};
+                my_linewidth = [5,5,1,1];
+
+            else
+                my_clist = 'rrbb';
+                my_linestyle = {'-','--','-','--'};
+                my_linewidth = [5,1,5,1];
+            end
         else
-            my_clist = 'rrbb';
-            my_linestyle = {'-','--','-','--'};
-            my_linewidth = [5,1,5,1];
+            my_clist = get_clist;
+            my_linestyle = [];
+            my_linewidth = [];
         end
         
         figure;
