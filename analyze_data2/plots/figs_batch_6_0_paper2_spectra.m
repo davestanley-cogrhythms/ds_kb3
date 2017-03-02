@@ -47,7 +47,7 @@ g.spectrogram_normalize_to_baseline = 0;
 g.do_slicemode = 0;
     
 g.autosave_figs = 1;
-g.data_mode = 23;
+g.data_mode = 45;
 
 g.currcommit = '_';
 
@@ -141,8 +141,8 @@ currfigname = 'Fg6_00a';
     opts_pls.perm2pls = 1;                   % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
         opts_pls.perm2pls_do_bh = 1;         % Do bh stepup instead of basic test
         opts_pls.perm2pls_dophi = 0;
-        opts_pls.perm2pls_return_mode = 4;                 % Return mode of perm2pls (4=zscore)
-        opts_pls.perm2pls_allow_signed = 1;                % 0=Abs(Diff); 1=Diff;
+        opts_pls.perm2pls_return_mode = 1;                 % Return mode of perm2pls (4=zscore)
+        opts_pls.perm2pls_allow_signed = 0;                % 0=Abs(Diff); 1=Diff;
         opts_pls.perm2pls_split_plusminus = 0;             % 0-Return everything; 1-return pos+negative in separate columns; 2-return only positive (pls.*Ramp(Diff)); 3-return only negative (pls.*Ramp(-Diff)); 4-return only significant cells (doesn't really have a use now)
         opts_pls.sort_pls = 0;               % Sort into preferred and non-preferred
         opts_pls.swap_pls = [];
@@ -224,8 +224,8 @@ currfigname = 'Fg6_00a';
     s.opts_PM3Dsp.uniform_zaxis_allgroups = 1;           % Makes z-axis the same for all groups plotted
     s.opts_PM3Dsp.do_subplots = 1;
         s.opts_PM3Dsp.max_subplots_per_fig = 16;
-    s.opts_PM3Dsp.show_range_stats = 1;
-    s.opts_PM3Dsp.show_range_perm = 1;
+    s.opts_PM3Dsp.show_range_stats = 0;
+    s.opts_PM3Dsp.show_range_perm = 0;
         % Overlay Options - Transparency & Contours
         s.PM3Dsp_overlay_opts.do_transparency = 0;
         s.PM3Dsp_overlay_opts.do_contours = 0;
@@ -235,7 +235,7 @@ currfigname = 'Fg6_00a';
         s.PM3Dsp_overlay_opts.contour_nv = [];
         s.PM3Dsp_overlay_opts.contour_linespec = {'k.'};
         % Stats
-        s.PM3Dsp_stats_opts.stats_displaymode = 3;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
+        s.PM3Dsp_stats_opts.stats_displaymode = 0;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
         s.PM3Dsp_stats_opts.statsfunc = [];
         s.PM3Dsp_stats_opts.stats_comparison = [0];
         s.PM3Dsp_stats_opts.contours_alphas = [0.01 0.001 0.0001];
@@ -252,7 +252,7 @@ currfigname = 'Fg6_00a';
         
 
 ind = [];
-myylims = [];
+myylims = [0 80];
 % myylims = [0 60];
 opts_exclude.excludeL = 0;
 opts_exclude.excludeO = 1; 
