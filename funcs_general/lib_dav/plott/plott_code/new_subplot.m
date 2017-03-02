@@ -11,6 +11,9 @@ function [hsp, i, returns] = new_subplot(Nmax,i,hsp,use_subplot_grid, fig_handle
     if nargin < 6
         visible = 'on';
     end
+    
+    % Force use_subplot_grid to zero
+    use_subplot_grid = 0;
 
     % i is total number of subplots in all figures
     % j  is number of subplots in current figure

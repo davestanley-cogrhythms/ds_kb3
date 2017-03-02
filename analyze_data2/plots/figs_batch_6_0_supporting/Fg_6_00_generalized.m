@@ -797,8 +797,8 @@ if plot_on_spect && is_spectrogram
             subplot_ind = 0;
             for i = ind
                 subplot_ind = subplot_ind + 1;
-                hsp.set_gca(subplot_ind);              % For subplotsq
-                %subplotsq(length(ind),subplot_ind);     % For subplot
+                %hsp.set_gca(subplot_ind);              % For subplotsq
+                subplotsq(length(ind),subplot_ind);     % For subplot
                 for j = 1:length(tf_avail)
                     fullband_T = group(i).Nwind*get_dt;
                     fullband_F = group(i).full_bandwidth;

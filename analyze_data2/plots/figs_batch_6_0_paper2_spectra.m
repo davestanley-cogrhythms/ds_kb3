@@ -43,11 +43,11 @@ g.mode_45_40 = 45.6018103043;
 
 
 g.compare_rel_irrel_mode = 0;
-g.spectrogram_normalize_to_baseline = 1;
+g.spectrogram_normalize_to_baseline = 0;
 g.do_slicemode = 0;
     
 g.autosave_figs = 1;
-g.data_mode = 45;
+g.data_mode = 23;
 
 g.currcommit = '_';
 
@@ -137,8 +137,8 @@ currfigname = 'Fg6_00a';
     % More pls switches
     opts_pls = Opts_Pls;
     opts_pls.plotmode = 1;                   % 1-SFC; 2-PSD; 3-time series; 4-phase; 5-SpkPSD; 6- Abs(Cave*exp(i*phi)); 7 - angle(Cave*exp(i*phi)); 8-Cave*exp(i*phi))
-    opts_pls.permdat2pls = 1; % Instead of using Cave from sfc_mode, use Cave1 and Cave2 data from perm_mode
-    opts_pls.perm2pls = 0;                   % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
+    opts_pls.permdat2pls = 0; % Instead of using Cave from sfc_mode, use Cave1 and Cave2 data from perm_mode
+    opts_pls.perm2pls = 1;                   % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
         opts_pls.perm2pls_do_bh = 1;         % Do bh stepup instead of basic test
         opts_pls.perm2pls_dophi = 0;
         opts_pls.perm2pls_return_mode = 4;                 % Return mode of perm2pls (4=zscore)
@@ -176,7 +176,7 @@ currfigname = 'Fg6_00a';
     s.sp_threshold = 10;
     
     % Group options
-    s.do_group_collapse_pls2days = 1;
+    s.do_group_collapse_pls2days = 0;
     s.do_group_normalize_specgram_to_baseline_time = 0;
         s.normalize_within_elects = 1;
         s.specgram_baseline_time = -1.1; s.gnsbt_do_log = 0;
@@ -190,7 +190,7 @@ currfigname = 'Fg6_00a';
     s.swap_mode = 0;
     s.compare_rel_irrel_mode = g.compare_rel_irrel_mode;
 
-    s.group_do_merge = 1;
+    s.group_do_merge = 0;
         s.groupmerge_operation = 0;
 
 % % Plot switches
@@ -235,7 +235,7 @@ currfigname = 'Fg6_00a';
         s.PM3Dsp_overlay_opts.contour_nv = [];
         s.PM3Dsp_overlay_opts.contour_linespec = {'k.'};
         % Stats
-        s.PM3Dsp_stats_opts.stats_displaymode = 0;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
+        s.PM3Dsp_stats_opts.stats_displaymode = 3;    % 0-no stats; 1 transparency; 2-contours; 3-both (overwrites default overlay settings above)
         s.PM3Dsp_stats_opts.statsfunc = [];
         s.PM3Dsp_stats_opts.stats_comparison = [0];
         s.PM3Dsp_stats_opts.contours_alphas = [0.01 0.001 0.0001];
@@ -267,6 +267,7 @@ opts_exclude.excludeO = 0;
 
 if g.autosave_figs; save_allfigs(g.currcommit,currfigname,1); end
 clear out1 out2
+error('done');
 
 %% Figure 6_00b - Cat vs Dog, by electrode significance
 clearvars -except wrkspc_buffer fv fv3 g
