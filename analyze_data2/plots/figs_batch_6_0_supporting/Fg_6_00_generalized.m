@@ -1,6 +1,6 @@
 
 
-function [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims)
+function [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm,ind,myylims)
 
 % 
 % % Setup params 
