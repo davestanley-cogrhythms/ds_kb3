@@ -47,9 +47,9 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
             %s.perm_mode = 52.700001001;         % Units
         case 45         % PSD spectrogram
             %s.sfc_mode =  45.6018103043;
-            s.sfc_mode =  45.601710101;
+            s.sfc_mode =  45.6018111011;
             s.perm_mode = s.sfc_mode;
-            s.perm_mode = 52.700001001;         % Units
+%             s.perm_mode = 52.700001001;         % Units
         case 52         % Units time series
             s.sfc_mode  = 52.700001001;
             s.perm_mode = 52.700001001;

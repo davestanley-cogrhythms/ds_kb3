@@ -34,7 +34,7 @@ function [hsp, i, returns] = new_subplot(Nmax,i,hsp,use_subplot_grid, fig_handle
         hsp.set_gca(j);
     else
         if j==1; fig_handle();end                                         % Start a new figure if necessary
-        subplotsq_tight(Nmax,j);
+        subplotsq(Nmax,j);
     end
     
     

@@ -116,7 +116,7 @@ function [s] = get_freqband_timeband(sfc_mode,opts_exclude)
         end
         
         
-    elseif any(sfc_mode == [45.6013111010, 45.6013111011,45.6013111013])
+    elseif any(sfc_mode == [45.6013111010, 45.6013111011,45.6013111013,45.6013111001])
         if ~opts_exclude.excludeL
             % % % % % % % % % % % % % % % % % % % % Scheme A % % % % % % % % % % % % % % % % % % % % 
             i=i+1;
@@ -155,6 +155,13 @@ function [s] = get_freqband_timeband(sfc_mode,opts_exclude)
                 s(i).timeband = [.511];  % 
                 s(i).freqband = [15.62];
                 s(i).label = 'Animal L Sample Tad Alpha';
+                
+            % % % % % % % % % % % % % % % % % % % % Scheme A (new) % % % % % % % % % % % % % % % % % % % % 
+            i=i+1;
+                s(i).label_short = 'LSA2';
+                s(i).timeband = [.481];  % 
+                s(i).freqband = [14.65];
+                s(i).label = 'Animal L Sample Dog Alpha';
         end
         if ~opts_exclude.excludeO
             % % % % % % % % % % % % % % % % % % % % Scheme A % % % % % % % % % % % % % % % % % % % % 

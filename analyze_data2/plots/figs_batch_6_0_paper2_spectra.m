@@ -22,8 +22,9 @@ if ~exist('wrkspc_buffer','var'); wrkspc_buffer = struct; end
 % % Case 23; Ctgsetli Mode 0; - FFC
 % g.mode_23_0 =  23.4013111011;
 % g.mode_23_0 =  23.4013111013;
-g.mode_23_0 =  23.4018111011;
+% g.mode_23_0 =  23.4018111011;
 % g.mode_23_0 =  23.4017101013;
+g.mode_23_0 =  23.4013111001;
 
 % % Case 23; Ctgsetli Mode 40; - FFC
 g.mode_23_40 =  23.4018103041;
@@ -32,14 +33,18 @@ g.mode_23_40 =  23.4018103041;
 g.mode_52_0 = 52.700001001;    
 
 % % Case 45; Ctgsetli Mode 0 - PSD
-g.mode_45_0 = 45.6013111011;
+% g.mode_45_0 = 45.6013111011;
 % g.mode_45_0 = 45.6018111011;
 % g.mode_45_0 = 45.6017101013;
+g.mode_45_0 = 45.6013111001;
 
 % % Case 45; Ctgsetli Mode 40 - PSD
 g.mode_45_40 = 45.6018103043;
 
-g.do_slicemode = 1;
+g.compare_rel_irrel_mode = 1;
+
+g.do_slicemode = 0;
+    g.spectrogram_normalize_to_baseline = 1;
 
 
 %% Figure 6_00a - Cat vs Dog, all electrodes
@@ -178,6 +183,7 @@ currfigname = 'Fg6_00a';
         s.examine_Sch_based_on_animal = 0;          % For animal L, do Cat/Dog; for O do Goc/Tad
 
     s.swap_mode = 0;
+    s.compare_rel_irrel_mode = g.compare_rel_irrel_mode;
 
     s.group_do_merge = 1;
         s.groupmerge_operation = 0;
@@ -260,7 +266,7 @@ currfigname = 'Fg6_00b';
     % Setup params 
     clear group group0
 
-    data_mode = 23;
+    data_mode = 45;
     switch data_mode
         case 2.0          % SFC
             s.sfc_mode =  2.0511101;
@@ -290,7 +296,7 @@ currfigname = 'Fg6_00b';
             s.perm_mode = 41.601811101;
             %s.perm_mode = 52.700001001;         % Units
         case 45         % PSD spectrogram
-            s.sfc_mode =  g.mode_45_0
+            s.sfc_mode =  g.mode_45_0;
             s.perm_mode = s.sfc_mode;
         case 52         % Units time series
             s.sfc_mode  = 52.700001001;
@@ -389,6 +395,7 @@ currfigname = 'Fg6_00b';
         s.examine_Sch_based_on_animal = 0;          % For animal L, do Cat/Dog; for O do Goc/Tad
 
     s.swap_mode = 0;
+    s.compare_rel_irrel_mode = g.compare_rel_irrel_mode;
 
     s.group_do_merge = 1;
         s.groupmerge_operation = 0;
@@ -449,7 +456,7 @@ currfigname = 'Fg6_00b';
     s.opts_PDays.do_subplots = 1;
         s.opts_PDays.max_subplots_per_fig = 16;
         
-
+%%
 opts_exclude.excludeL = 0;
 opts_exclude.excludeO = 1;
 [tf_avail] = get_freqband_timeband(s.perm_mode,opts_exclude); s.tf_avail = tf_avail;
@@ -467,14 +474,14 @@ switch data_mode
     case 45
         ind = [];
         myylims = [0 100];
-        for i = [2:8]
+        for i = [1:4]
             s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
             s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
             [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm,ind,myylims);
         end
 end
 
-
+%%
 opts_exclude.excludeL = 1;
 opts_exclude.excludeO = 0;
 [tf_avail] = get_freqband_timeband(s.perm_mode,opts_exclude); s.tf_avail = tf_avail;
@@ -491,7 +498,7 @@ switch data_mode
     case 45
         ind = [];
         myylims = [0 100];
-        for i = 1:8
+        for i = 4:8
             s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
             s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
             [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclude,opts_pls,opts_perm,ind,myylims);
@@ -642,6 +649,7 @@ currfigname = 'Fg6_00c';
         s.examine_Sch_based_on_animal = 0;          % For animal L, do Cat/Dog; for O do Goc/Tad
 
     s.swap_mode = 0;
+    s.compare_rel_irrel_mode = g.compare_rel_irrel_mode;
 
     s.group_do_merge = 1;
         s.groupmerge_operation = 0;
@@ -883,6 +891,7 @@ currfigname = 'Fg6_01a';
         s.examine_Sch_based_on_animal = 0;          % For animal L, do Cat/Dog; for O do Goc/Tad
 
     s.swap_mode = 0;
+    s.compare_rel_irrel_mode = g.compare_rel_irrel_mode;
 
     s.group_do_merge = 1;
         s.groupmerge_operation = 0;
@@ -1110,6 +1119,7 @@ currfigname = 'Fg6_01b';
         s.examine_Sch_based_on_animal = 0;          % For animal L, do Cat/Dog; for O do Goc/Tad
 
     s.swap_mode = 0;
+    s.compare_rel_irrel_mode = g.compare_rel_irrel_mode;
 
     s.group_do_merge = 0;
         s.groupmerge_operation = 0;
@@ -1402,7 +1412,7 @@ currfigname = 'Fg6_00a';
     
     % Group options
     s.do_group_collapse_pls2days = 1;
-    s.do_group_normalize_specgram_to_baseline_time = 1;
+    s.do_group_normalize_specgram_to_baseline_time = 0;
         s.normalize_within_elects = 1;
         s.specgram_baseline_time = -1.1; s.gnsbt_do_log = 0;
     
@@ -1413,6 +1423,7 @@ currfigname = 'Fg6_00a';
         s.examine_Sch_based_on_animal = 0;          % For animal L, do Cat/Dog; for O do Goc/Tad
 
     s.swap_mode = 0;
+    s.compare_rel_irrel_mode = g.compare_rel_irrel_mode;
 
     s.group_do_merge = 0;
         s.groupmerge_operation = 0;
@@ -1592,7 +1603,7 @@ currfigname = 'Fg6_02b';
     opts_pls.collapse_pls_to_days = 0;
     opts_pls.spectrogram2spectra_timeslice = 0;   % If working with a spectrogram, take a slice at time given by timeband_stats.
     opts_pls.spectrogram2ts_freqslice = 0;
-    opts_pls.spectrogram_normalize_to_baseline = 1;          % Normalize spectrograms to pre-cue data to a value of 1.0
+    opts_pls.spectrogram_normalize_to_baseline = 0;          % Normalize spectrograms to pre-cue data to a value of 1.0
             opts_pls.spectrogram_baseline_time = -1.1;       % During pre-cue
             opts_pls.spectrogram_baseline_dolog = 1;
     opts_pls.normalize_to_1_over_f = 0;
@@ -1627,6 +1638,7 @@ currfigname = 'Fg6_02b';
         s.examine_Sch_based_on_animal = 1;          % For animal L, do Cat/Dog; for O do Goc/Tad
 
     s.swap_mode = 0;
+    s.compare_rel_irrel_mode = g.compare_rel_irrel_mode;
 
     s.group_do_merge = 1;
         s.groupmerge_operation = 0;
@@ -1691,7 +1703,7 @@ currfigname = 'Fg6_02b';
 opts_exclude.excludeL = 0;
 opts_exclude.excludeO = 1;
 [tf_avail] = get_freqband_timeband(s.perm_mode,opts_exclude); s.tf_avail = tf_avail;
-
+%%
 switch data_mode
     case 23
         ind = [];

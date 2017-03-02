@@ -207,7 +207,39 @@ function [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclu
     s = fix_freqband_format(s);     % Converts s.freqband_stats from [18] to [18 18]
     vars_pull(s);
     
-    % Annoying stuff that needs to be calculated (parameters based on other parameters...)
+    
+%% Some override some parameters with some custom code
+
+data_type = mode2datatype(sfc_mode);
+
+% Turn on pre-cue normalization if desired (likely for case 45)
+opts_pls.spectrogram_normalize_to_baseline = g.spectrogram_normalize_to_baseline;
+% do_group_normalize_specgram_to_baseline_time = g.spectrogram_normalize_to_baseline;
+
+
+if g.do_slicemode
+    
+    % Turn on slice mode
+    opts_pls.spectrogram2spectra_timeslice = 1;
+    
+    
+    
+    % Switch groupmode to being for raw data
+    if any(groupmode == [2.2]); groupmode = 2.3; end
+    
+    % Turn off group merge
+    group_do_merge = 0;
+    
+    % Ensure we're working with raw data
+    opts_pls.permdat2pls = 1; % Instead of using Cave from sfc_mode, use Cave1 and Cave2 data from perm_mode
+    opts_pls.perm2pls = 0;                   % Instead of using Cave from sfc_mode, show differences between Cave1 and Cave2 normalized by shuffle (zscore)
+        opts_pls.do_diff = 0;                % Take difference between adjacent pls (pls(:,:,2) - pls(:,:,1))
+        
+    
+end
+
+%% % Annoying stuff that needs to be calculated (parameters based on other parameters...)
+
     opts_pls.timeband_stats = timeband_stats;
     opts_pls.tf_label_stats = tf_label_stats;
     opts_perm.timeband_perm = timeband_perm;
@@ -216,10 +248,6 @@ function [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,g,opts_exclu
     
     [tf_avail] = get_freqband_timeband(s.perm_mode,opts_exclude);
     
-    
-%% Some override some parameters with some custom code
-
-data_type = mode2datatype(sfc_mode);
 
 % % do_group_normalize_specgram_to_baseline_time = 0;
 % 
@@ -340,10 +368,18 @@ if ~exist('group','var')
             
             if ctgsetli_mode == 0 && any(ctgsetli_mode2 == [0,1])
                 if opts_pls.perm2pls == 1 || (opts_pls.permdat2pls && opts_pls.do_diff)         % We're dealing with diffed data
-                    group = group([1,2,5]);
+                    if ~compare_rel_irrel_mode
+%                     group = group([1,2,5]);
+                        group = group([1,2]);
+                    else
+                        group = group([1:4]);
+                    end    
                 else
-                    group = group([1:4,9,10]);
-                    %group = group(1);
+                    if ~compare_rel_irrel_mode
+                        group = group([1:4]);
+                    else
+                        group = group([1:8]);
+                    end
                 end
             end
             
@@ -380,6 +416,7 @@ if ~exist('group','var')
             i=0;
             i=i+1; group(i)=grt; group(i).criteria(1)=[1]; group(i).ctgs=1;
             i=i+1; group(i)=grt; group(i).criteria(1)=[0]; group(i).ctgs=1;
+            
             i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=2;
             i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=2;
 
@@ -402,10 +439,16 @@ if ~exist('group','var')
             i=i+1; group(i)=grt; group(i).criteria(1)=[0]; group(i).ctgs=1;
             i=i+1; group(i)=grt; group(i).criteria(1)=[1]; group(i).ctgs=2;
             i=i+1; group(i)=grt; group(i).criteria(1)=[0]; group(i).ctgs=2;
-            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=1;
-            i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=1;
+            
             i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=2;
             i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=2;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=1;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=1;
+            
+            if compare_rel_irrel_mode
+                [group(3:4).ctgs] = deal(3);
+                [group(7:8).ctgs] = deal(4);
+            end
 
             if examine_Sch_based_on_animal
                 if opts_exclude.excludeO         % Animal L only
@@ -436,14 +479,21 @@ if ~exist('group','var')
             i=i+1; group(i)=grt; group(i).criteria(1)=[0]; group(i).ctgs=3;
             i=i+1; group(i)=grt; group(i).criteria(1)=[1]; group(i).ctgs=4;
             i=i+1; group(i)=grt; group(i).criteria(1)=[0]; group(i).ctgs=4;
-            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=1;
-            i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=1;
-            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=2;
-            i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=2;
             i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=3;
             i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=3;
             i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=4;
             i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=4;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=1;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=1;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=2;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=2;
+            
+            if compare_rel_irrel_mode
+                [group(5:6).ctgs] = deal(5);
+                [group(7:8).ctgs] = deal(6);
+                [group(13:14).ctgs] = deal(7);
+                [group(15:16).ctgs] = deal(8);
+            end
 
             if examine_Sch_based_on_animal
                 if opts_exclude.excludeO         % Animal L only
@@ -472,18 +522,19 @@ if ~exist('group','var')
             i=i+1; group(i)=grt; group(i).criteria(1)=[0]; group(i).ctgs=2;
             i=i+1; group(i)=grt; group(i).criteria(1)=[1]; group(i).ctgs=5;
             i=i+1; group(i)=grt; group(i).criteria(1)=[0]; group(i).ctgs=5;
-            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=3;
-            i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=3;
+            
             i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=4;
             i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=4;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=3;
+            i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=3;
             i=i+1; group(i)=grt; group(i).criteria(2)=[1]; group(i).ctgs=5;
             i=i+1; group(i)=grt; group(i).criteria(2)=[0]; group(i).ctgs=5;
 
             if examine_Sch_based_on_animal
                 if opts_exclude.excludeO         % Animal L only
-                    group = group(1:4);
+                    group = group(1:6);
                 elseif opts_exclude.excludeL     % Animal O only
-                    group = group(5:8);
+                    group = group(7:12);
                 end
             end
             
@@ -687,7 +738,6 @@ if plot_on_spect && ~is_spectrogram
         my_linewidth = [];
     end
 
-    figure;
     [h1] = plot_matrix3D_custstruct([],group(inds),opts_PM3D,opts_PM3Dcs,my_clist,my_linestyle,my_linewidth);
 
     
@@ -702,7 +752,7 @@ end
 %% Test spectrogram
 if plot_on_spect && is_spectrogram
     
-    if nargin < 7
+    if nargin < 8
         myylims = [0 120];
     end
     %group = group.arrayload('zlims_desired',[0 3]);
@@ -716,7 +766,7 @@ if plot_on_spect && is_spectrogram
     end
     
     if groupmode == 0; opts_PM3Dsp.show_text_stats = 1; opts_PM3Dsp.show_text_perm = 1; end
-    if nargin < 6
+    if nargin < 7
         ind = [];
     end
     
@@ -744,7 +794,7 @@ if plot_on_spect && is_spectrogram
             for i = ind
                 subplot_ind = subplot_ind + 1;
                 %hsp.set_gca(subplot_ind);              % For subplotsq
-                subplotsq_tight(length(ind),subplot_ind);     % For subplot
+                subplotsq(length(ind),subplot_ind);     % For subplot
                 for j = 1:length(tf_avail)
                     fullband_T = group(i).Nwind*get_dt;
                     fullband_F = group(i).full_bandwidth;
