@@ -1595,7 +1595,7 @@ currfigname = 'Fg6_02b';
     opts_pls.spectrogram_normalize_to_baseline = 1;          % Normalize spectrograms to pre-cue data to a value of 1.0
             opts_pls.spectrogram_baseline_time = -1.1;       % During pre-cue
             opts_pls.spectrogram_baseline_dolog = 1;
-    opts_pls.normalize_to_1_over_f = 1;
+    opts_pls.normalize_to_1_over_f = 0;
     
     
 
@@ -1705,8 +1705,8 @@ switch data_mode
     case 45
         ind = [];
         myylims = [0 100];
-        %for i = [2:4]
-        for i = [2]
+        for i = [2:4]
+        %for i = [2]
             s.freqband_stats = tf_avail(i).freqband; s.timeband_stats = tf_avail(i).timeband; s.tf_label_stats = tf_avail(i).label; s.tf_labels_stats = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
             s.freqband_perm = tf_avail(i).freqband; s.timeband_perm = tf_avail(i).timeband; s.tf_label_perm = tf_avail(i).label; s.tf_labels_perm = tf_avail(i).label_short; fprintf(['Selecting '  tf_avail(i).label_short ':' tf_avail(i).label '\n']);
             [wrkspc_buffer, out] = Fg_6_00_generalized(wrkspc_buffer,s,opts_exclude,opts_pls,opts_perm,ind,myylims);
