@@ -769,7 +769,7 @@ if plot_on_spect && is_spectrogram
         group = group.arrayload('xlims_desired',[ -1.2 1.62]);
     end
     
-    if groupmode == 0; opts_PM3Dsp.show_text_stats = 0; opts_PM3Dsp.show_text_perm = 0; end
+    if groupmode == 0; opts_PM3Dsp.show_text_stats = 1; opts_PM3Dsp.show_text_perm = 1; end
     if nargin < 7
         ind = [];
     end

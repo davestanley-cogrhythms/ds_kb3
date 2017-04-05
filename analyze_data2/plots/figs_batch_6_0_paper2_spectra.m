@@ -224,8 +224,8 @@ currfigname = 'Fg6_00a';
     s.opts_PM3Dsp.uniform_zaxis_allgroups = 1;           % Makes z-axis the same for all groups plotted
     s.opts_PM3Dsp.do_subplots = 1;
         s.opts_PM3Dsp.max_subplots_per_fig = 16;
-    s.opts_PM3Dsp.show_range_stats = 0;
-    s.opts_PM3Dsp.show_range_perm = 0;
+    s.opts_PM3Dsp.show_range_stats = 1;
+    s.opts_PM3Dsp.show_range_perm = 1;
         % Overlay Options - Transparency & Contours
         s.PM3Dsp_overlay_opts.do_transparency = 0;
         s.PM3Dsp_overlay_opts.do_contours = 0;
