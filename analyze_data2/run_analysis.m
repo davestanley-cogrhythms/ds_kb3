@@ -14,68 +14,72 @@ if ~isdeployed
     addpath(genpath('./funcs_run_analysis_precalc'));
 end
 
-% if ~exist('sfc_mode','var'); sfc_mode = 22.401311101; end
-% if ~exist('sfc_mode','var'); sfc_mode = 52.70121010; end
-%if ~exist('sfc_mode','var'); sfc_mode = 2.30151010; end
-if ~exist('sfc_mode','var'); sfc_mode = 45.6018101001; end
-%if ~exist('sfc_mode','var'); sfc_mode = 40.60000100; end
-    % sfc_mode = 1 -> fries
-    % sfc_mode = 2 -> chronux SFC
-    % sfc_mode = 3 -> coherogram (segmented)
-    % sfc_mode = 4 -> SFC analysis trial-by-trial
-    % sfc_mode = 5 -> unit analysis # NO LONGER WORKS!
-        % sfc_mode = 5.1 -> unit analysis, only this version reports the smoothed mean firing rates instad of firing rates per trial
-    % sfc_mode = 6 -> raster_plotting
-    % sfc_mode = 7 -> Lepage (not yet implemented)
-    % sfc_mode = 8 -> spectrogram
-    % sfc_mode = 9 -> evoked responses
-    % sfc_mode = 12 -> GBC PL
-    % sfc_mode = 13 -> GBC Log
-    % sfc_mode = 14 -> SFA PL
-    % sfc_mode = 15 -> SFA Log
-    % sfc_mode = 16 -> SFA PL_Fast
-    
-    % 20 <= sfc_mode < 29 - LFP-LFP comparisons (FFC)
-    % sfc_mode = 22 -> LFP using Chronux
-    
-    % 30 <= sfc_mode < 40 - SFC all elects and FFC comparisons
-    % sfc_mode = 32 -> SFC (all elects) and FFC using chronux
-    
-    % sfc_mode = 40 -> Amplitude-Amplitude coupling, trial by trial
-    % sfc_mode = 41 -> PSD amplitude
-    % sfc_mode = 42 -> Cross-frequency coupling ESC method
-    % sfc_mode = 43 -> Cross-frequency coupling MI method
-    % sfc_mode = 44 -> Cross-frequency coupling CFC method
+if ~exist('sfc_mode','var'); sfc_mode = 41.6018101001; end
+    % % A summary of the coding scheme of sfc_mode is below. See function
+    % build_sfcmode.m and get_options.m for more information
+    % 
+    % % Choice of analysis method
+    % sfc_mode = 2 -> chronux SFC spectra
+    % sfc_mode = 22 -> chronux FFC spectra
+    % sfc_mode = 23 -> chronux FFC spectrogram
+    % sfc_mode = 41 -> chronux PSD spectra
+    % sfc_mode = 46 -> chronux PSD spectrogram
     % sfc_mode = 52 -> Used for unit firing rate analysis (the non-parametric kind)
-    
-    % sfc_mode = *.0   -> unit vs main electrode! - not applicable for unit analysis (sfc_mode=5.*)
-    % sfc_mode = *.2   -> unit vs instead adjacent electrode!
-    % sfc_mode = *.3   -> unit vs all electrodes
-    % sfc_mode = *.4   -> all field-field pairs
-    % sfc_mode = *.5   -> all spike-spike pairs
-    % sfc_mode = *.6   -> all electrodes
-    % sfc_mode = *.7   -> units only
-    
-    % sfc_mode = *.?X  -> Modify ctgsetli:
-    %     X=0, default;
-    %     X=1, analyse switch trials;
-    %     X=2 reaction times match trials;
-    %     X=3 reaction times congruent/incongruent;
-    %     X=4 analyse boundary trials;
-    %     .... (see ctgsetli)
-    % sfc_mode = *.??1  -> Use Mikio's scaled SFC
+    % 
+    % % Selection of electrodes/units
+    % sfc_mode = *.0   -> unit vs main electrode!               (use for SFC analysis; usually not useful due to spike contamination)
+    % sfc_mode = *.2   -> unit vs instead adjacent electrode!   (use for SFC analysis)
+    % sfc_mode = *.3   -> unit vs all electrodes                (use for SFC analysis)
+    % sfc_mode = *.4   -> all field-field pairs                 (use for FFC analysis)
+    % sfc_mode = *.5   -> all spike-spike pairs                 (unused)
+    % sfc_mode = *.6   -> all electrodes                        (use for PSD analysis)
+    % sfc_mode = *.7   -> units only                            (use for units analysis)
+    % 
+    % % Grouping of trials
+    % sfc_mode = *.?X  -> See get_ctgsetli for details
+    % 
+    % % Spike thinning (for SFC analysis only)
+    % sfc_mode = *.??0  -> No thinning
+    % sfc_mode = *.??1  -> Use Mikio's scaled SFC (default)
     % sfc_mode = *.??2  -> Use traditional thinning of SPKs
+    % 
+    % % Tapers selection presets (for SFC/FFC/PSD only)
     % sfc_mode = *.???1 -> Use long bandwidth for multi-taper with asymptotic errors
     % sfc_mode = *.???2 -> Use long bandwidth for multi-taper and Jackknife errors
     % sfc_mode = *.???X -> X={0,3,4,5} - X=0, Use tapers=get_tapers; X=3, tapers=[1,1]; X=4, tapers=[3,5]; X=5, tapers=[5,9]; other options too
-    % sfc_mode = *.????1 -> Use baseline subtract
-    % sfc_mode = *.?????X -> Permutation mode: X=0, no permutations; X=1, permutation test ctg9/10 (Buschman); X=2, bootstrap test if ctg9/10 same
-    % sfc_mode = *.??????1 -> Correct for uneven trial number bias
+
+    % % Other flags
+    % sfc_mode = *.????1 -> 1-Use baseline subtract (generally always set to 1)
+    % sfc_mode = *.?????X -> Permutation mode: X=0, no permutations; X=1, permutation test for difference; X=2, bootstrap test for equivalence 
+    % 
+    % % Number of trials correction (7th decimal place)
     % sfc_mode = *.??????X -> Correct for uneven trial number bias
-    %                         1-Min trials across pairs of i0s single cell; 2-Min trials across pairs of i0s all cells
-    %                         3-Min trials across all i0s single cell; 4-Min trials all i0s all cells
-    
+    %                         1-Min trials across pairs of i0s single cell (default)
+    %                         2-Min trials across pairs of i0s all cells
+    %                         3-Min trials across all i0s single cell (used for Fig 4 in Cerebral cortex paper);
+    %                         4-Min trials all i0s all cells
+    % 
+    % % Partial coherence flag (8th decimal place)
+    % sfc_mode = *.???????X -> 1-Do partial coherence; 0-normal method (* partial coherence doesn't work with all methods)
+    % 
+    % % Ctgsetli mode part 2 (9th decimal place)
+    % sfc_mode = *.????????X -> There are more than 10 possible settings for
+    %                           ctgsetli mode. This flag chooses the other
+    %                           settings
+    % 
+    % % Nwind_mode (10th decimal place)
+    % sfc_mode = *.?????????X -> Controls length of sliding window to use for
+    %                            spectrogram (FFC or PSD) or FR calculations.
+    %                           0: 300 ms
+    %                           1: 600 ms
+    %                           2: 800 ms
+    %                           3: 1000 ms
+    %                           See Nwind_mode variable in get_options.m
+    %                           to customize this!
+
+
 if ~exist('stage','var'); stage = 4; end
+    % See function get_stagesir.m for more information
     % stage = 1 - pre sample on
     % stage = 2 - sample stage
     % stage = 3 - delay stage
