@@ -14,7 +14,7 @@ if ~isdeployed
     addpath(genpath('./funcs_run_analysis_precalc'));
 end
 
-if ~exist('sfc_mode','var'); sfc_mode = 41.6018101001; end
+if ~exist('sfc_mode','var'); sfc_mode = 41.6018101000; end
     % % A summary of the coding scheme of sfc_mode is below. See function
     % build_sfcmode.m and get_options.m for more information
     % 
@@ -49,12 +49,12 @@ if ~exist('sfc_mode','var'); sfc_mode = 41.6018101001; end
     % sfc_mode = *.???X -> X={0,3,4,5} - X=0, Use tapers=get_tapers; X=3, tapers=[1,1]; X=4, tapers=[3,5]; X=5, tapers=[5,9]; other options too
 
     % % Other flags
-    % sfc_mode = *.????1 -> 1-Use baseline subtract (generally always set to 1)
-    % sfc_mode = *.?????X -> Permutation mode: X=0, no permutations; X=1, permutation test for difference; X=2, bootstrap test for equivalence 
+    % sfc_mode = *.????1 -> 1-Use baseline subtract (DEFAULT: set to 1)
+    % sfc_mode = *.?????X -> Permutation mode: X=0, no permutations; X=1, permutation test for difference
     % 
     % % Number of trials correction (7th decimal place)
     % sfc_mode = *.??????X -> Correct for uneven trial number bias
-    %                         1-Min trials across pairs of i0s single cell (default)
+    %                         1-Min trials across pairs of i0s single cell (DEFAULT)
     %                         2-Min trials across pairs of i0s all cells
     %                         3-Min trials across all i0s single cell (used for Fig 4 in Cerebral cortex paper);
     %                         4-Min trials all i0s all cells
@@ -91,7 +91,7 @@ if ~exist('stage','var'); stage = 3; end
     
 % i0 = 17;
 % j0 = 1;
-if ~exist('i0','var'); i0 = [1:100]; end       % There are a max of 11 categories Roy data; There are fewer for Cromer
+if ~exist('i0','var'); i0 = [1:2]; end         % There are a max of 11 categories Roy data; There are fewer for Cromer
 if ~exist('j0','var'); j0 = [1:100]; end       % There are a max of 35 units per file for Cromer data; This is about 16 for Roy
 %if ~exist('j0','var'); j0 = 8; end       % There are a max of 35 units per file for Cromer data; This is about 16 for Roy
 if ~exist('outname_embed_i0j0','var'); outname_embed_i0j0 = 0; end      % Adds a suffix to the file name stating which i0 j0 were swept over
@@ -172,9 +172,6 @@ function calc_stats(filename_orig, sfc_mode, curr_stage, bad_trials, filenum, i0
         return
     end
     
-    % Assign function handle for spike-field or field-field coherence
-    coherence_func = @calc_sfc_struct;
-    
     % Load data
     load (fullfile(getpath('path_lfp_sample_delay'),filename_orig));
     lfp_sample = double(lfp_sample);
@@ -201,7 +198,7 @@ function calc_stats(filename_orig, sfc_mode, curr_stage, bad_trials, filenum, i0
     % Do analysis of coherence! (permutation test or otherwise)
     if permutation_test == 0    % Default mode
         permutation_mode = 0;
-        sfc = coherence_func(lfp_sample, lfp_sample_indices, filename_orig, sfc_mode, curr_stage, bad_trials, ctgsall, filenum, i0, j0, permutation_mode, os);
+        sfc = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sfc_mode, curr_stage, bad_trials, ctgsall, filenum, i0, j0, permutation_mode, os);
         
     elseif (permutation_test == 1) || (permutation_test == 2)                    % Do permutation test for significance
         
@@ -217,7 +214,7 @@ function calc_stats(filename_orig, sfc_mode, curr_stage, bad_trials, filenum, i0
             
             % Get actual statistic
             permutation_mode = 0;
-            sfc_stat = coherence_func(lfp_sample, lfp_sample_indices, filename_orig, sfc_mode, curr_stage, bad_trials, ctgsall, filenum, i0curr(1:2), j0, permutation_mode, os);
+            sfc_stat = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sfc_mode, curr_stage, bad_trials, ctgsall, filenum, i0curr(1:2), j0, permutation_mode, os);
             isphi = isfield(sfc_stat{end},'phiave');
             if length(sfc_stat) < i0curr(2); continue; end; % If i0 was larger than size(ctgsetli0), continue
             Cave1 = sfc_stat{i0curr(1)}.Cave;
@@ -231,7 +228,8 @@ function calc_stats(filename_orig, sfc_mode, curr_stage, bad_trials, filenum, i0
 
             % Generate null distribution
             sz = size(dCave);
-            Npermut = 50;
+            Npermut = 5;                   % Default should be > 50
+            warning('Increase Npermut; set artificially low for testing. Should be >50');
                 if floor(sfc_mode) == 44
                     Npermute = 50;          % Do fewer permutations when in cfc mode for calculating PAC
                 end
@@ -244,7 +242,7 @@ function calc_stats(filename_orig, sfc_mode, curr_stage, bad_trials, filenum, i0
             clear sfc_temp_all sfc_temp
             for k = 1:Npermut
                 k
-                sfc_temp_all{k} = coherence_func(lfp_sample, lfp_sample_indices, filename_orig, sfc_mode, curr_stage, bad_trials, ctgsall, filenum, i0curr(1:2), j0, permutation_mode, os);
+                sfc_temp_all{k} = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sfc_mode, curr_stage, bad_trials, ctgsall, filenum, i0curr(1:2), j0, permutation_mode, os);
             end
             
             for k = 1:Npermut
@@ -309,6 +307,7 @@ function calc_stats(filename_orig, sfc_mode, curr_stage, bad_trials, filenum, i0
     toc(ticID2);
 %     profile viewer
 %     profile off
+    keyboard
     save(outname,'sfc');
    
 end
@@ -324,7 +323,6 @@ function sfc = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sf
     sfc_mode_group = os.sfc_mode_group;
 
     exclude_clipping_trials = os.exclude_clipping_trials;
-    drop_clipping_electrodes_for_partial_coh = 1;
     curr_stage = os.curr_stage;
     Nwind = os.Nwind;
     dt = os.dt;
@@ -350,12 +348,6 @@ function sfc = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sf
         warning('Baseline subtract was turned off automatically.\n');
     end
     
-    % If doing partial coherence, make sure we're in mode 22
-    if do_partial_coherence == 1
-        if sfc_mode_group ~= 22
-            warning('For partial coherence mode, must be in sfc_mode == 22.*. Wont work with other modes because matrix must be symmetric to take inverse.');
-        end
-    end
 
     md = load (fullfile(getpath('path_metadata'),filename_orig));     % Load metadata
     %load (fullfile(getpath('path_lfp'),filename));     % Load full file
@@ -402,39 +394,7 @@ function sfc = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sf
     end
     
     
-    % If we're doing partial coherence, we want to remove the bad
-    % electrodes from the pool since they might remove signal components
-    % we would otherwise want to keep.
-    if do_partial_coherence
-        
-            % Identify bad clipping electrodes
-            path_badchannels = fullfile(getpath('path_badchannels'));
-            name_clip = ['id_clipping_s' num2str(curr_stage) '.mat'];
-            s_clip = load(fullfile(path_badchannels,name_clip));
-
-            % Optional - use custom thresholds for selecting bad files
-            clth = get_clipping_threshold_trials;
-            li_clip_all = cat(2,s_clip.clippingstat{:});
-            bad_clip_all = li_clip_all > clth(2);   % All files; used for testing purposes only
-
-            li_clip = s_clip.clippingstat{filenum};
-            bad_clip = li_clip > clth(2);           % Current file
-            
-            % If all electrodes are "bad", pick 2 at random and make them
-            % good so we don't crash. These will be excluded later.
-            while sum(~bad_clip) < 2; bad_clip(unidrnd(length(bad_clip),1,1)) = false; end
-            
-            bad_clip_pairs = bad_clip(mypairs(:,1)) | bad_clip(mypairs(:,2));
-            clear bad_clip_all
-            
-            
-            
-        if ~drop_clipping_electrodes_for_partial_coh
-            bad_clip = false(1,Nelects);
-            bad_clip_pairs = false(1,size(mypairs,1));
-        end
-    end
-            
+    
 % % % % % % % % % % % % % % % % % % % % % %     Calculate Ctgsetli's % % % % % % % % % % % % % % % % % % % % % %
     
     % Precalculate ctgsetli's
@@ -445,47 +405,11 @@ function sfc = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sf
         ctgsetli0 = ctgsetli0(1:size(lfp_sample,2),:);       % Shorten ctgsetli if we're missing lfp data. Should only be for file #29. Only do this if we are consider LFP
     end
     
-    
-    if do_partial_coherence
-        j0_precalc = 1:Ncoherences;     % Precalc all ctgsetli_goods
-    else
-        j0_precalc = j0;                % Just precalc the ones of interest
-    end
-    
-    if ~do_partial_coherence
+
+     
+        [ctgsetli_good, ctgsetli_maxes] = calc_ctgsetli_goods(j0,Ncoherences,sfc_mode_group,exclude_clipping_trials,bad_trials,filenum,md,ctgsetli0,ue_pairs,permutation_mode,mypairs,ctgsall,coh_debias_mode,i0);
         
-        [ctgsetli_good, ctgsetli_maxes] = calc_ctgsetli_goods(j0_precalc,Ncoherences,sfc_mode_group,exclude_clipping_trials,bad_trials,filenum,md,ctgsetli0,ue_pairs,permutation_mode,mypairs,ctgsall,coh_debias_mode,i0);
-        
-        
-    else
-    
-        % Generate a ctgsetli good set across all electrodes, since we're using
-        % all of them.
-    
-        if ~all(bad_clip_pairs)
-            bad_trials_pairs = zeros(size(bad_trials{filenum},1),size(mypairs,1));
-            for j = j0_precalc
-                if j > Ncoherences; continue; end
-                curr_lfp = mypairs(j,1);
-                curr_lfp2 = mypairs(j,2);
-                bad_trials_pairs(:,j) = bad_trials{filenum}(:,curr_lfp) | bad_trials{filenum}(:,curr_lfp2);
-            end
-            
-            bad_trials_any = any(bad_trials_pairs(:,~bad_clip_pairs),2);
-            ctgsetli_good_all = ctgsetli0 & repmat(~bad_trials_any(:),1,size(ctgsetli0,2));
-            
-            if permutation_mode == 1
-                if length(i0) ~= 2; warning('When permutation_mode=1, length(i0) must be 2.'); return; end
-                ctgsetli_good_all = permute_ctgsetli(ctgsetli_good_all, i0);
-            end
-            ctgsetli_maxes_all = calc_ctgsetli_maxes(ctgsetli_good_all,ctgsall,coh_debias_mode);
-            
-        end
-    end
-    
-    
-    
-    
+
 % % % % % % % % % % % % % % % % % % % % % %   End  Calculate Ctgsetli's % % % % % % % % % % % % % % % % % % % % % %
     
     
@@ -495,7 +419,7 @@ function sfc = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sf
     if any(ue_pairs == [3,4,6])
         [currlfp_all0,lfpia_stage] = get_LFP_ts(lfp_sample,curr_stage,md,lfp_sample_indices);
     end
-    if ue_pairs == 3 || ue_pairs == 5 || (ue_pairs == 2 && do_partial_coherence)      % Only calculate this if doing spikes, since profiler says it's slow.
+    if ue_pairs == 3 || ue_pairs == 5 || (ue_pairs == 2)      % Only calculate this if doing spikes, since profiler says it's slow.
         [currspike_all0] = get_spike_ts_all(Nunits,curr_stage,md);
     end
     
@@ -606,51 +530,6 @@ function sfc = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sf
         end
         
         
-        if do_partial_coherence
-            % Get current trials (note this is independent of j now)
-            curr_trials = ctgsetli_good_all(:,i);
-            Ntrials_min = ctgsetli_maxes_all(i);
-            
-            % Do baseline subtraction from all electrodes
-            if any(ue_pairs == [0,2,3,5])
-                currspike_all_ctg = do_baseline_subtract(currspike_all0(:,curr_trials,:),baseline_subtract);
-            end
-            if any(ue_pairs == [3,4,6])
-                currlfp_all_ctg = do_baseline_subtract(currlfp_all0(:,curr_trials,:),baseline_subtract);
-            end
-            
-            if permutation_mode == 2
-                warning('Need to test that bootstrap works with partial coherence; I have not tested this yet');
-                Ntrials_curr = sum(curr_trials);
-                perm = floor(unifrnd(1,Ntrials_curr+1-0.0001,1,Ntrials_curr)); % Uniform sampling from 1 to Ntrials
-                if any(ue_pairs == [2,3,5]); currspike_all0 = currspike_all0(:,perm,:); end
-                if any(ue_pairs == [3,4,6]); currlfp_all0 = currlfp_all0(:,perm,:); end
-            end
-            
-            % Run partial coherence, precalculating everything in advance!
-            params.Fs = 1/dt;
-            params.trialave = 1;        
-            params.fname = @coherencyc;
-            
-            % Compute partial coherence only for "good" electrode pairs
-            [Cave_all_temp,phiall_temp,~,~,~,f]=coherency_trials_downsample(Ntrials_min,baseline_subtract,@partcoh_stupidwrapper_full,currlfp_all_ctg(:,:,~bad_clip),currlfp_all_ctg(:,:,~bad_clip),params);
-            
-            % Fill in remaining pairs with NaN's; we should now be back up
-            % to full dimensionality
-            Cave_all0 = Inf*ones(size(Cave_all_temp,1),Nelects,Nelects);
-            Cave_all0(:,~bad_clip,~bad_clip) = Cave_all_temp;
-            phiall = Inf*ones(size(phiall_temp,1),Nelects,Nelects);
-            phiall(:,~bad_clip,~bad_clip) = phiall_temp;
-            clear Cave_all_temp phiall_temp
-            
-            % Rearrange into 1D based on mypairs.
-            sz=size(Cave_all0);
-            ind = sub2ind([sz(2),sz(3)],mypairs(:,1),mypairs(:,2));
-            Cave_all = Cave_all0(:,ind);
-            phiall = phiall(:,ind);
-%             Cave_all = Cave_all
-        end
-        
         
         for j = j0
             j;
@@ -666,7 +545,6 @@ function sfc = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sf
 
             if sfc_mode_group ~=5
                 
-                if ~do_partial_coherence
                     curr_trials = ctgsetli_good{j}(:,i);
                     Ntrials_min = ctgsetli_maxes{j}(i);
                 
@@ -691,20 +569,7 @@ function sfc = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sf
                             clear currspike1
                     end
                     
-                    if permutation_mode == 2
-                        % Bootstrap a new distribution of trials             
-                        Ntrials_curr = sum(curr_trials);
-                        perm = floor(unifrnd(1,Ntrials_curr+1-0.0001,1,Ntrials_curr)); % Uniform sampling from 1 to Ntrials
 
-                        % Test plotting...
-                        % figure; plot(1:Ntrials_curr); hold on; plot(perm,'g'); hold on; plot(sort(perm),'r.'); legend('Original indices (identity permutation)','permuted','permuted sorted');
-
-                        if exist('currspike1_ctg0','var'); currspike1_ctg0 = currspike1_ctg0(:,perm); end
-                        if exist('currspike2_ctg0','var'); currspike2_ctg0 = currspike2_ctg0(:,perm); end
-                        if exist('currlfp1_ctg0','var'); currlfp1_ctg0 = currlfp1_ctg0(:,perm); end
-                        if exist('currlfp2_ctg0','var'); currlfp2_ctg0 = currlfp2_ctg0(:,perm); end
-                    end
-                end
                 
             else
                 switch mode_subgroups(1)    % Check if mode is to do unit analysis trace plotting
@@ -726,7 +591,6 @@ function sfc = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sf
             end
             
             % Basline subtraction
-            if ~do_partial_coherence
                 % If not doing partial, only baseline subtract the electrodes we're
                 % considering
                 switch ue_pairs
@@ -744,30 +608,9 @@ function sfc = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sf
                     case 7
                         currspike1_ctg = do_baseline_subtract(currspike1_ctg0,baseline_subtract);
                 end
-            end
             
             switch sfc_mode_group
-                case 1
-                    %[C ftemp] = sfc_fries2D(currspike(:,1),currlfp(:,1),dt,wind_s);
-                    wind_s = round(0.2/dt);     % Window size for Fries method
-                    
-                    %tic
-                    [Cave f lfp_wind] = sfc_fries2D(currspike1_ctg,currlfp1_ctg,dt,wind_s);
-                    lfp_wind_mu = mean(lfp_wind,2);
-                    lfp_wind_std = std(lfp_wind,[],2);
-                    lfp_wind_ste = lfp_wind_std/sqrt(size(lfp_wind,2));
-                    %toc
-                    
-                    sfc{i}.Cave = [sfc{i}.Cave Cave(:)];
-                    sfc{i}.lfp_wind = [sfc{i}.lfp_wind lfp_wind_mu(:)];
-                    sfc{1}.f = f;
-                    
-                    sfc{i}.S12ave = [];
-                    sfc{i}.S1ave = [];
-                    sfc{i}.S2ave = [];
-                    sfc{i}.phiave = [];
-                    
-                    
+
                 case 2
                     %tic
                     params.Fs = 1/dt;
@@ -802,27 +645,6 @@ function sfc = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sf
                         end
                         [Cave,phi,S12ave,S1ave,S2ave,f,zerosp,confC,phistd,Cerr]=coherency_trials_downsample(Ntrials_min,baseline_subtract,@coherencycpb,currlfp1_ctg,currspike1_ctg,params);
                     end
-                    %toc
-%                     figure('Position',[  1          26        1280         769]);
-%                     range = 1
-%                     subplot(221); title([filename ' unit # ' num2str(j) ' ' unit_names2])
-%                     hold on; plot(f,Cave(:,range));legend('Cave'); xlabel('f (Hz)'); ylabel('SFC');
-%                     subplot(222); hold on; plot(f,S1ave(:,range));legend('S1ave'); xlabel('f (Hz)'); ylabel('Power');
-%                     subplot(223); hold on; plot(f,S2ave(:,range));legend('S2ave'); xlabel('f (Hz)'); ylabel('Power');
-%                     subplot(224); hold on; plot(sum(currspike_ctg)); legend('Tot spikes in each trial'); xlabel('Trial #'); ylabel('# Spikes');
-% 
-% 
-%                     figure; plot(f,Cave);
-%                     
-%                     figure
-%                     for jj = 1:size(currlfp2_ctg,3)
-%                         subplotsq(size(currlfp2_ctg,3),jj);
-%                         title([num2str(jj) '-' convert_unit_underscores(md.lfp_names(jj))])
-%                         [Cave3,phi2,S12ave2,S1ave2,S2ave2,f3]=coherencycpb(currlfp2_ctg(:,:,jj),currspike_ctg,params);
-%                         hold on; plot(f3,Cave3); ylim([0 0.25]);
-%                     end
-%                     keyboard
-
 
                     if plot_debug1_thinning
                         clf; plot(f,Cave);
@@ -844,17 +666,7 @@ function sfc = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sf
                     sfc{i}.Cerr1 = [sfc{i}.Cerr1 Cerr(1,:)'];
                     sfc{i}.Cerr2 = [sfc{i}.Cerr2 Cerr(2,:)'];
                     
-                    
-                    
-%                     params.trialave = 0;
-%                     [C,phi,S12,S1,S2,f]=coherencycpb(currlfp,currspike,params);
-%                     C = C(:,sum(isnan(C)) == 0);
-%                     Cave_cust = abs(mean(S12,2)./sqrt(mean(S1,2).*mean(S2,2)));
-% 
-%                     Aave = Cave; A=C; figure; plot(f,mean(Aave,2)); hold on; plot(f,mean(A,2),'r')
-%                     xlabel('f (Hz)'); ylabel('Coherence');legend('Pre-average','Post-average');
-%                     title(['F# '  filename 'mode ' num2str(sfc_mode_group) ' unit# ' num2str(curr_unit)])
-
+              
                 case 3
                     %tic
                     params.Fs = 1/dt;
@@ -920,180 +732,14 @@ function sfc = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sf
                     sfc{1}.F = F;
                     sfc{1}.F2 = F2;
                     sfc{1}.T = T;
-                    
-                case 4
 
-                    params.Fs = 1/dt;
-                    params.trialave = 0;
-                    
-                    
-                    %currlfp = zscore(currlfp); % Note- I found that taking the zscore doesn't make any difference. I guess this is because things are normalized already by the SFC operation.
-                    
-                    % Remove traces below a set number of spikes
-%                     [currlfp_ctg,currspike_ctg] = trim_lowspike_ctgs(currlfp_ctg,currspike_ctg,thresh);
-                    [Cave,phi,S12ave,S1ave,S2ave,f]=coherencycpb(currlfp1_ctg,currspike1_ctg,params);
-                    
-                    %freqband = [20 30];
-                    %index = (f >= freqband(1) & f < freqband(2));
-                    %S12ave = convert_average(S12ave,index);
-                    %S1ave = convert_average(S1ave,index);
-                    %S2ave = convert_average(S2ave,index);
-                    
-                    index = find(f >= 25,1,'first');
-                    S12ave = S12ave(index,:)';
-                    S1ave = S1ave(index,:)';
-                    S2ave = S2ave(index,:)';
-
-                    sfc{i}.S12ave = [sfc{i}.S12ave S12ave(:)];
-                    sfc{i}.S1ave = [sfc{i}.S1ave S1ave(:)];
-                    sfc{i}.S2ave = [sfc{i}.S2ave S2ave(:)];
-                    sfc{1}.f = f;
-                    
-                    
-                    
-%                     params.trialave = 0;
-%                     [C,phi,S12,S1,S2,f]=coherencycpb(currlfp,currspike,params);
-%                     C = C(:,sum(isnan(C)) == 0);
-%                     Cave_cust = abs(mean(S12,2)./sqrt(mean(S1,2).*mean(S2,2)));
-% 
-%                     Aave = Cave; A=C; figure; plot(f,mean(Aave,2)); hold on; plot(f,mean(A,2),'r')
-%                     xlabel('f (Hz)'); ylabel('Coherence');legend('Pre-average','Post-average');
-%                     title(['F# '  filename 'mode ' num2str(sfc_mode_group) ' unit# ' num2str(curr_unit)])
-
-
-                case 5
-                    sfc{i}.spikerates = [sfc{i}.spikerates spikerates(:)];
-                    
-                case 6
-                    [~, fbasename] = fileparts(filename_orig);
-                    fsavepath = fullfile(getpath('path_buffer_curr'),['mode_' num2str(sfc_mode,12) fname_suffix]);
-                    fsavename = fullfile(['f' num2str(filenum) 'u' num2str(j) '_' fbasename]);
-                    
-                    plot_sfc_on = 1;
-                    plot_unit_summary(currspike1,curr_stage,ctgsetli,filename_orig,md.unit_names{j},curr_unit,plot_sfc_on,fsavepath,fsavename);
-                    %plot_raster_with_sfc(currspike,curr_stage,ctgsetli,filename,md.unit_names{j});
-                    
-                case 8      % LFP Spectrogram
-                    params.Fs = 1/dt;
-                    params.trialave = 1;
-                    [Ssp, F, T] = spect_wrapper(currlfp1_ctg,'fs',1/dt,'Nwind',Nwind,'params',params);
-                    
-                    % Trim Cave to only go up to 250 Hz
-                    index = find(F <= 250);
-                    F = F(index);
-                    Ssp = Ssp(index,:);
-
-                    % Pack variables
-                    Ssp = permute(Ssp,[1,3,2]);
-                    sfc{i}.Ssp = cat(2,sfc{i}.Ssp,Ssp);
-
-                    sfc{1}.F = F;
-                    sfc{1}.T = T;
-                    
-                case 9      % Evoked potential
-                    E = mean(currlfp1_ctg,2);
-
-                    % Pack variables
-                    sfc{i}.E = cat(2,sfc{i}.E,E(:));
-                    
-                    
-                case 12
-                    
-                    % =================================================================
-                    % Parameters for Kyle modes
-                    % =================================================================
-                    bandwidth   = 10; % Hz.
-                    start_f     = 10.0;     % Hz
-                    stop_f      = 100.0;    % Hz
-                    n_trim      = 100;
-                    f_out       = 'out/glm_hs_simple.out'; 
-                    debug_level = 0;  % To get phase output set >= 1.
-
-                    v2  = m_form_v( currspike1_ctg,currlfp1_ctg);
-                    
-                    
-                    % ========================================
-                    % GBC -- piecewise linear
-                    % ========================================
-                    h_func        = @(x) ( max( x, 0 ));
-                    h_func_inv    = @(x) ( max( x, 0 ));
-                    h_func_deriv  = @(x) ( ones(size(x)) );
-
-                    
-                    gbc_out_pl  = gbc( v2, dt,                              ...
-                                     h_func, h_func_deriv, h_func_inv,    ...
-                                     bandwidth, start_f, stop_f, n_trim,  ...
-                                     f_out, debug_level );
-                    
-                    sout = gbc_out_pl;
-                    
-                    % Old fields (same as Chronux)
-                    sfc{i}.Cave = [sfc{i}.Cave sout.rho(:)];
-                    sfc{i}.S12ave = [sfc{i}.S12ave []];
-                    sfc{i}.S1ave = [sfc{i}.S1ave []];
-                    sfc{i}.S2ave = [sfc{i}.S2ave []];
-                    sfc{i}.phiave = [sfc{i}.phiave sout.phi_p_in_deg(:)/180*pi];        % Phi should be in radians (-pi to pi)
-                    sfc{1}.f = sout.f;
-                    % New fields
-                    sfc{i}.alpha = [];
-                    
-                    
-                    
-                case 15
-                    % =================================================================
-                    % Parameters for Kyle modes
-                    % =================================================================
-                    bandwidth   = 10; % Hz.
-                    start_f     = 20.0;     % Hz
-                    stop_f      = 100.0;    % Hz
-                    n_trim      = 100;
-                    f_out       = 'out/glm_hs_simple.out'; 
-                    debug_level = 0;  % To get phase output set >= 1.
-
-                    v2  = m_form_v( currspike1_ctg,currlfp1_ctg);
-
-
-                    log_out     = glm_sfa_log_dave( v2, dt, ...
-                                           bandwidth, start_f, stop_f, n_trim, ...
-                                           f_out, debug_level );
-
-                    sout = log_out;
-
-                    rho_log  = sqrt( log_out.coeffs(2,:).^2 + log_out.coeffs(3,:).^2 );
-                    alpha_log = log_out.coeffs(1,:);
-                    phipref = atan2( log_out.coeffs(3,:),log_out.coeffs(2,:));        % Phi should be in radians (-pi to pi)
-
-                    
-                    % Old fields (same as Chronux)
-                    sfc{i}.Cave = [sfc{i}.Cave rho_log(:)];
-                    sfc{i}.S12ave = [sfc{i}.S12ave []];
-                    sfc{i}.S1ave = [sfc{i}.S1ave []];
-                    sfc{i}.S2ave = [sfc{i}.S2ave []];
-                    sfc{i}.phiave = [sfc{i}.phiave phipref(:)];
-                    sfc{i}.p = [sfc{i}.p sout.p_zeromod(:)];
-                    sfc{1}.f = sout.f;
-                    % New fields
-                    sfc{i}.alpha = [sfc{i}.alpha alpha_log(:)];
-                    
                 
                 case 22         % FFC
                     params.Fs = 1/dt;
                     params.trialave = 1;
                     
-                    if ~do_partial_coherence
                         [Cave,phi,S12ave,S1ave,S2ave,f,confC,phistd,Cerr]=coherency_trials_downsample(Ntrials_min,baseline_subtract,@coherencyc,currlfp1_ctg,currlfp2_ctg,params);
-                    else
-                        %params.fname = @coherencyc;
-                        %params.chosen_dims = [mypairs(j,1) mypairs(j,2)];
-                        %[Cave,phi,S12ave,S1ave,S2ave,f,confC,phistd,Cerr]=coherency_trials_downsample(Ntrials_min,baseline_subtract,@partcoh_stupidwrapper,currlfp_all_ctg,currlfp_all_ctg,params);
-                        Cave = Cave_all(:,j); phi = phiall(:,j);
-                        confC=[];phistd=[];Cerr=[NaN;NaN];
-                        S1ave=[];S2ave=[];S12ave=[];
-                        
-                        ctgsetli_good{j}(:,i) = ctgsetli_good_all(:,i);
-                        
-                        
-                    end
+                    
                     
                     sfc{i}.Cave = [sfc{i}.Cave Cave(:)];
                     sfc{i}.S12ave = [sfc{i}.S12ave S12ave(:)];
@@ -1112,16 +758,12 @@ function sfc = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sf
                     params.Fs = 1/dt;
                     params.trialave = 1;
                     
-                    if ~do_partial_coherence
                         %[Cave,phi,S12ave,S1ave,S2ave,f,confC,phistd,Cerr]=coherency_trials_downsample(Ntrials_min,baseline_subtract,@coherencyc,currlfp1_ctg,currlfp2_ctg,params);
                         
                         coherencyc_Cerr = @(varargin) coherency_trials_downsample(Ntrials_min,baseline_subtract,@coherencyc,varargin{:});
                         fname = @(X,Y) coherencyc_Cerr(X,Y,params);
                         [Ssp, phi, S12ave, S1ave, S2ave, F, confC, phistd, Cerr, T] = func2spectrogram(currlfp1_ctg,currlfp2_ctg,'fs',1/dt,'Nwind',Nwind,'fract_overlap',fract_overlap,'fname',fname);
-                        
-                    else
-                        % Never implemented
-                    end
+                     
                     
                     f = F(:,1);
                     
@@ -1138,103 +780,6 @@ function sfc = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sf
                     sfc{1}.f2 = T;
                     sfc{i}.confC = [sfc{i}.confC confC(1)];
                     sfc{i}.phistd = [sfc{i}.phistd phistd(:)];
-                    
-                case 32         % SSC
-
-                    params.Fs = 1/dt;
-                    params.trialave = 1;
-                    
-                    if plot_debug1_thinning
-                         [Cave2,phi,S12ave,S1ave,S2ave,f2,zerosp,confC,phistd,Cerr]=coherency_trials_downsample(Ntrials_min,baseline_subtract,@coherencypb,currspike1_ctg,currspike2_ctg,params); 
-
-                         rate1 = mean(mean(currspike1_ctg0(:)))/dt; 
-                         rate2 = mean(mean(currspike2_ctg0(:)))/dt; 
-                         [Cave3,phi,S12ave,S1ave,S2ave,f3,zerosp,confC,phistd,Cerr]=coherency_trials_downsample(Ntrials_min,baseline_subtract,@Adjcoherencypb,currspike1_ctg,currspike2_ctg,params,[],StarRate,rate1,StarRate,rate2);  % NEeds updating to Mikio's method
-                     end
-                    
-                    % To be used if I want to look at correlation sometime
-%                     spikerates1 = mean(currspike1_ctg0,2); spikerates1 = spikerates1 / dt;
-%                     spikerates1 = sgolayfilt(spikerates1,3,round(0.151/dt));   % Apply 3rd-order filter, 151 ms 
-%                     spikerates2 = mean(currspike2_ctg0,2); spikerates2 = spikerates2 / dt;
-%                     spikerates2 = sgolayfilt(spikerates2,3,round(0.151/dt));   % Apply 3rd-order filter, 151 ms 
-                                     
-                    if thinning_mode == 0
-                        [Cave,phi,S12ave,S1ave,S2ave,f,zerosp,confC,phistd,Cerr]=coherency_trials_downsample(Ntrials_min,baseline_subtract,@coherencypb,currspike1_ctg,currspike2_ctg,params); 
-                    elseif thinning_mode == 1
-                        rate1 = mean(mean(currspike1_ctg0(:)))/dt; 
-                        rate2 = mean(mean(currspike2_ctg0(:)))/dt; 
-                        [Cave,phi,S12ave,S1ave,S2ave,f,zerosp,confC,phistd,Cerr]=coherency_trials_downsample(Ntrials_min,baseline_subtract,@Adjcoherencypb,currspike1_ctg,currspike2_ctg,params,[],StarRate,rate1,StarRate,rate2);  % NEeds updating to Mikio's method
-                    elseif thinning_mode == 2
-                        
-                        % % % % % % % % This is not working! % % % % % % %
-                        rate1 = mean(mean(currspike1_ctg0(:)))/dt; prob_thinning1 = StarRate / rate1;
-                        rate2 = mean(mean(currspike2_ctg0(:)))/dt; prob_thinning2 = StarRate / rate2;
-                        
-                        sz = size(currspike2_ctg0);
-                        [Nbs1] = est_Nbootstraps(prob_thinning1, sz(2));
-                        [Nbs2] = est_Nbootstraps(prob_thinning2, sz(2));
-                        Nbootstraps = min(Nbs1,Nbs2);
-                        clear Nbs1 Nbs2
-                        
-                        if Nbootstraps > 0
-                            [~, currspike1_ctg] = thin_spks_bootstrap([], currspike1_ctg0, prob_thinning1,Nbootstraps);     % Do thinning
-                            [~, currspike2_ctg] = thin_spks_bootstrap([], currspike2_ctg0, prob_thinning2,Nbootstraps);     
-                            
-                            currspike1_ctg = do_baseline_subtract(currspike1_ctg,baseline_subtract);           % Recalculate baseline subtract, if necessary
-                            currspike2_ctg = do_baseline_subtract(currspike2_ctg,baseline_subtract);           
-                        end
-                        
-                        [Cave,phi,S12ave,S1ave,S2ave,f,zerosp,confC,phistd,Cerr]=coherency_trials_downsample(Ntrials_min,baseline_subtract,@coherencypb,currspike1_ctg,currspike2_ctg,params);
-                        
-                    end
-                    
-                    if plot_debug1_thinning
-                        clf; plot(f,Cave);
-                        hold on; plot(f2,Cave2,'r');
-                        hold on; plot(f3,Cave3,'g');
-                        pause(1);
-                    end
-                    
-                    sfc{i}.Cave = [sfc{i}.Cave Cave(:)];
-                    sfc{i}.S12ave = [sfc{i}.S12ave S12ave(:)];
-                    sfc{i}.S1ave = [sfc{i}.S1ave S1ave(:)];
-                    sfc{i}.S2ave = [sfc{i}.S2ave S2ave(:)];
-                    sfc{i}.phiave = [sfc{i}.phiave phi(:)];
-                    sfc{1}.f = f;
-                    sfc{i}.confC = [sfc{i}.confC confC(:)];
-                    sfc{i}.phistd = [sfc{i}.phistd phistd(:)];
-                    
-                    sfc{i}.Cerr1 = [sfc{i}.Cerr1 Cerr(1,:)'];
-                    sfc{i}.Cerr2 = [sfc{i}.Cerr2 Cerr(2,:)'];
-                    
-                case 40                 % This calculates the cross frequency coupling
-                    params.Fs = 1/dt;
-                    currlfp1_ctg;
-                    params2 = params;
-                    params2.trialave = 0;
-                    [S,f,Serr] = mtspectrumc(currlfp1_ctg,params2);
-                    
-                    % Do CFC
-                    ind = (f >= 2) & (f <= 65);
-                    S=S(ind,:)';
-                    f=f(ind);
-                    [R,P,RLO,RUP] = corrcoef(S);
-                    
-                    
-%                     figure; imagesc(R)
-%                     figure; imagesc(f,f,(P < 0.05 & R < 0).*R); set(gca,'YDir','normal')
-                    
-                    R = permute(R,[1,3,2]);
-                    P = permute(P,[1,3,2]);
-                    RLO = permute(RLO,[1,3,2]);
-                    RUP = permute(RUP,[1,3,2]);
-                    sfc{i}.Cave = cat(2,sfc{i}.Cave,R);      % Use Cave label for our primary output
-                    sfc{i}.Ptr = cat(2,sfc{i}.Ptr,P);
-                    sfc{i}.Cerr1 = cat(2,sfc{i}.Cerr1,RLO);
-                    sfc{i}.Cerr2 = cat(2,sfc{i}.Cerr2,RUP);
-                    sfc{1}.f = f;
-                    
-                    
 
                 case 41                 % Just calculate power spectrum
                     params.Fs = 1/dt;
@@ -1251,65 +796,7 @@ function sfc = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sf
                     sfc{i}.Cerr1 = cat(2,sfc{i}.Cerr1,Serr(1,:)');
                     sfc{i}.Cerr2 = cat(2,sfc{i}.Cerr2,Serr(2,:)');
                     sfc{1}.f = f;
-                    
-                case {42,43,44}
-                    % Necessary inputs values
-                    sig_pac = currlfp1_ctg(:,:);
-                    Fs = 1/dt;
-                    switch sfc_mode_group
-                        case 42
-                            measure = 'esc';
-                        case 43
-                            measure = 'mi';
-                        case 44
-                            measure = 'cfc';
-                    end
-                            
-                    % Other input parameters (mostly defaults)
-                    sig_mod = sig_pac;
-                   ph_freq_vec = 2:3:29;    % Full range
-                   amp_freq_vec = 2:5:101; 
-%                     ph_freq_vec = 2:1:29;    % Expanded range
-%                     amp_freq_vec = 10:3:160; 
-%                     ph_freq_vec = 10:3:20;   % Sub range
-%                     amp_freq_vec = 15:10:55;
-%                     ph_freq_vec = [18 20]; % Single value
-%                     amp_freq_vec = [40 45];
-                    plt = 'n';
-                    waitbar = 0;
-                    width = 7;
-                    nfft = ceil(Fs/(diff(ph_freq_vec(1:2))));
-                    if tapers_mode == 2
-                        num_shf = 150;
-                    else
-                        num_shf = 0;
-                    end
-                    alpha = 0.05;
-                    dataname = '';
-                    sig_pac_name = '';
-                    sig_mod_name = '';
 
-                    % Calculate PAC
-                    [pacmat, freqvec_ph, freqvec_amp, p] = find_pac_shf (sig_pac, Fs, measure, ...
-                    sig_mod, ph_freq_vec, amp_freq_vec, plt, waitbar, width, nfft, num_shf, alpha,...
-                    dataname, sig_pac_name, sig_mod_name);
-                
-                    
-                    % Replace upper triangle with NaNs to save space. Only
-                    % works with square matrices
-%                     sub = upper_triangle_pairs(size(pacmat,1));
-%                     ind = sub2ind(size(pacmat),sub(:,1),sub(:,2));
-%                     pacmat_orig=pacmat; p_orig = p;
-%                     pacmat(ind) = NaN;
-%                     p(ind) = NaN;
-                    
-%                     figure; imagesc(freqvec_ph,freqvec_amp,pacmat); caxis([0 500]); colorbar
-
-                    sfc{i}.Cave = cat(2,sfc{i}.Cave,pacmat(:));     % Spectrum data
-                    sfc{i}.p = cat(2,sfc{i}.p,p(:));     % Spectrum data
-                    sfc{1}.f = ph_freq_vec;
-                    sfc{1}.f2 = amp_freq_vec;
-                    
                 case 52
                     switch tapers_mode
                         case 0          % Average entire spike train
@@ -1336,7 +823,7 @@ function sfc = calc_sfc_struct(lfp_sample, lfp_sample_indices, filename_orig, sf
             end
                     
                     
-            
+            % Adding metadata
             if sfc_mode_group ~=5
                 sfc{i}.Ntraces = [sfc{i}.Ntraces sum(curr_trials)];
                 sfc{i}.mypairs = [sfc{i}.mypairs mypairs(j,:)'];

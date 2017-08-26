@@ -14,7 +14,7 @@ end
 
 % if ~exist('sfc_mode','var'); sfc_mode = 22.401411101; end
 % if ~exist('sfc_mode','var'); sfc_mode = 52.700201001; end
-if ~exist('sfc_mode','var'); sfc_mode = 45.6018101041; end
+if ~exist('sfc_mode','var'); sfc_mode = 41.6018101001; end
     % % A summary of the coding scheme of sfc_mode is below. See function
     % build_sfcmode.m and get_options.m for more information
     % 
@@ -78,7 +78,7 @@ if ~exist('sfc_mode','var'); sfc_mode = 45.6018101041; end
     %                           to customize this!
 
 
-if ~exist('curr_stage','var'); curr_stage = 4; end
+if ~exist('curr_stage','var'); curr_stage = 3; end
     % See function get_stagesir.m for more information
     % stage = 1 - pre sample on
     % stage = 2 - sample stage
@@ -91,7 +91,7 @@ if ~exist('curr_stage','var'); curr_stage = 4; end
     
 % i0 = 17;
 % j0 = 1;
-if ~exist('i0','var'); i0 = [1:8]; end       % There are a max of 11 categories Roy data; There are fewer for Cromer
+if ~exist('i0','var'); i0 = [1:11]; end       % There are a max of 11 categories Roy data; There are fewer for Cromer
 if ~exist('j0','var'); j0 = [1:2]; end       % There are a max of 35 units per file for Cromer data; This is about 16 for Roy
 %if ~exist('j0','var'); j0 = 8; end       % There are a max of 35 units per file for Cromer data; This is about 16 for Roy
 if ~exist('outname_embed_i0j0','var'); outname_embed_i0j0 = 0; end      % Adds a suffix to the file name stating which i0 j0 were swept over
