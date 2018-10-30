@@ -21,7 +21,9 @@ addpath(currpath);
 addpath(genpath(fullfile(currpath,'funcs_general')));
 
 my_paths
-addpath(genpath(chronuxpath));
-addpath(genpath(sfcpath));
+addpath(genpath(chronuxpath));              % Chronux
+addpath(genpath(sfcpath));                  % Kyle's SFC code
+addpath(genpath(path_src,'lib_dav'));       % Dave's library
+addpath(genpath(path_src,'SigProc-Plott')); % SigProc-Plott code (make sure you're in dev branch!)
 
 

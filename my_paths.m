@@ -30,7 +30,7 @@ end
 
 % % SHOULD NOT HAVE TO CHANGE BELOW HERE
 % % Paths from git repositories (should not require editing)
-basepath = fullfile(path_src,'ds_kb');
+basepath = fullfile(path_src,'ds_kb3');
 chronuxpath = fullfile(path_src,'chronux');
 sfcpath = fullfile(path_src,'spike_field_assoc_dev');
 
