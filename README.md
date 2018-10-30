@@ -14,7 +14,7 @@ OR
     
     git clone --recursive https://github.com/davestanley-cogrhythms/ds_kb3.git
   
-### Clone necessary repos into src library
+### Clone necessary repos into src folder
   
     mkdir ~/src
     cd ~/src
@@ -28,5 +28,3 @@ OR
   
 Setup instructions are the same for Windows, but using Windows syntax
 
-
-### Submodules (none)
