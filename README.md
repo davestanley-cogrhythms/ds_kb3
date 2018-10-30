@@ -9,6 +9,10 @@ New version of LFP/unit analysis code, starting after submission of SFN 2016 pos
 ### Clone main repo
   
     git clone git@github.com:davestanley-cogrhythms/ds_kb3.git
+    
+OR
+    
+    git clone --recursive https://github.com/davestanley-cogrhythms/ds_kb3.git
   
 ### Clone necessary repos into src library
   
@@ -23,3 +27,6 @@ New version of LFP/unit analysis code, starting after submission of SFN 2016 pos
     git pull
   
 Setup instructions are the same for Windows, but using Windows syntax
+
+
+### Submodules (none)
