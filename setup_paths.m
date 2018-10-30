@@ -21,6 +21,8 @@ addpath(currpath);
 addpath(genpath(fullfile(currpath,'funcs_general')));
 
 my_paths
+
+% External paths
 addpath(genpath(chronuxpath));              % Chronux
 addpath(genpath(sfcpath));                  % Kyle's SFC code
 addpath(genpath(path_src,'lib_dav'));       % Dave's library
